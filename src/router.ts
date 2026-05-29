@@ -12,7 +12,7 @@ export function getRouter() {
         enabled: import.meta.env.SSR ? false : true,
         staleTime: 1000,
         gcTime: 1000 * 60,
-        retry: false,
+        retry: import.meta.env.SSR ? false : true,
       },
     },
   });
