@@ -10,6 +10,7 @@ import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image-url.pipe';
 import { Callout } from '../../lib/components/callout/callout';
 import { pizzeriasQueryOptions } from '../../lib/api/api-queries';
 import { injectQuery } from '@benjavicente/angular-query-experimental';
+import { icons } from '../../lib/assets';
 
 export const Route = createFileRoute('/(pizzerias)/pizzerias/')({
   head: () => ({ meta: [{ title: 'Pizzerias' }] }),
@@ -31,7 +32,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/')({
         <div class="relative mb-8 max-w-[420px]">
           <label for="pizzeria-search" class="sr-only">Search pizzerias</label>
           <img
-            src="/icons/search.svg"
+            [src]="icons.search"
             alt=""
             class="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2"
             width="20"
@@ -88,7 +89,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/')({
                       {{ pizzeria.city }}, {{ pizzeria.country }}
                     </p>
                     <p class="mt-auto text-xs text-text-muted">
-                      <span>{{ pizzeria._count.pizzas }} pizzas</span>
+                      <span class="tabular-nums">{{ pizzeria._count.pizzas }} pizzas</span>
                     </p>
                   </div>
                 </a>
@@ -113,6 +114,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/')({
 })
 class PizzeriaListPage {
   private readonly apiFetch = injectRouter().options.context.apiFetch;
+  protected readonly icons = icons;
 
   // Search input
   protected readonly searchInput = signal('');

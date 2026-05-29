@@ -10,6 +10,7 @@ import {
 import { injectRouter } from '@benjavicente/angular-router-experimental';
 import { injectMutation } from '@benjavicente/angular-query-experimental';
 import { deletePizzaMutationOptions } from '../../../../lib/api/api-mutations';
+import { icons } from '../../../../lib/assets';
 
 @Component({
   selector: '[rw-admin-pizza-row]',
@@ -18,8 +19,8 @@ import { deletePizzaMutationOptions } from '../../../../lib/api/api-mutations';
     <td class="max-w-56 truncate font-medium text-text" [attr.title]="pizza().name">
       {{ pizza().name }}
     </td>
-    <td class="whitespace-nowrap text-text-muted">€{{ pizza().basePrice | number: '1.2-2' }}</td>
-    <td class="whitespace-nowrap text-text-muted">€{{ menuListTotalPrice() | number: '1.2-2' }}</td>
+    <td class="whitespace-nowrap tabular-nums text-text-muted">€{{ pizza().basePrice | number: '1.2-2' }}</td>
+    <td class="whitespace-nowrap tabular-nums text-text-muted">€{{ menuListTotalPrice() | number: '1.2-2' }}</td>
     <td class="max-w-[22rem] text-sm leading-[1.45] text-text-muted">
       {{ pizza().toppings.length ? toppingLabels() : '—' }}
     </td>
@@ -31,7 +32,7 @@ import { deletePizzaMutationOptions } from '../../../../lib/api/api-mutations';
           [attr.aria-label]="'Edit ' + pizza().name"
           (click)="edit.emit(pizza())"
         >
-          <img src="/icons/edit.svg" alt="" width="20" height="20" aria-hidden="true" />
+          <img [src]="icons.edit" alt="" width="20" height="20" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -40,7 +41,7 @@ import { deletePizzaMutationOptions } from '../../../../lib/api/api-mutations';
           [attr.aria-label]="'Delete ' + pizza().name"
           (click)="promptDelete()"
         >
-          <img src="/icons/delete.svg" alt="" width="20" height="20" aria-hidden="true" />
+          <img [src]="icons.delete" alt="" width="20" height="20" aria-hidden="true" />
         </button>
       </span>
     </td>
@@ -61,6 +62,7 @@ export class AdminPizzaRow {
   readonly deleted = output<Pizza>();
   readonly deleteError = output<string>();
 
+  protected readonly icons = icons;
   protected readonly deleting = signal(false);
 
   protected toppingLabels(): string {

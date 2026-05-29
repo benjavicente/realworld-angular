@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
+import { icons } from '../../assets';
 
 @Component({
   selector: 'rw-modal',
@@ -17,7 +18,7 @@ import { DialogRef } from '@angular/cdk/dialog';
           aria-label="Close dialog"
           (click)="closeDialog()"
         >
-          <img src="/icons/close.svg" alt="" width="24" height="24" class="" />
+          <img [src]="icons.close" alt="" width="24" height="24" class="" />
         </button>
       </div>
       <div class="flex-1 overflow-y-auto p-6">
@@ -30,6 +31,7 @@ import { DialogRef } from '@angular/cdk/dialog';
 })
 export class Modal {
   public readonly dialogRef = inject(DialogRef);
+  protected readonly icons = icons;
 
   public readonly title = input('');
 

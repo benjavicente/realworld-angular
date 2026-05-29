@@ -20,7 +20,7 @@ import { ordersQueryOptions } from '../../lib/api/api-queries';
 import { injectQuery } from '@benjavicente/angular-query-experimental';
 
 export const Route = createFileRoute('/(orders)/orders/')({
-  beforeLoad: ({ context }) => requireAuth(context),
+  beforeLoad: ({ context, location }) => requireAuth(context, location),
   loader: ({ context }) =>
     context.queryClient.ensureQueryData(ordersQueryOptions(context.apiFetch, 1, 10)),
   component: () => OrdersListPage,
@@ -60,13 +60,13 @@ export const Route = createFileRoute('/(orders)/orders/')({
                     <div>
                       <p class="font-semibold text-text">{{ order.pizzeria.name }}</p>
                       <p class="mt-1 text-sm text-text-muted">
-                        {{ order.items.length }} pizza(s) &middot;
+                        <span class="tabular-nums">{{ order.items.length }}</span> pizza(s) &middot;
                         {{ order.createdAt | date: 'dd MMM yyyy, HH:mm' }}
                       </p>
                     </div>
                     <div class="flex flex-col items-end gap-2">
                       <rw-status-badge [status]="order.status" />
-                      <p class="font-semibold text-primary">€{{ order.total | number: '1.2-2' }}</p>
+                      <p class="font-semibold tabular-nums text-primary">€{{ order.total | number: '1.2-2' }}</p>
                     </div>
                   </a>
                 </li>

@@ -5,7 +5,7 @@ import { Button } from '../../lib/components/button/button';
 import { Link, createFileRoute, injectNavigate } from '@benjavicente/angular-router-experimental';
 import { injectMutation } from '@benjavicente/angular-query-experimental';
 import { loginMutationOptions } from '../../lib/api/api-mutations';
-import { requireGuest } from '../-guards';
+import { requireGuest, sanitizeRedirectPath, validateRedirectSearch } from '../-guards';
 import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form';
 import {
   composeValidators,
@@ -13,10 +13,12 @@ import {
   requiredText,
   validateSubmitFields,
 } from '../../lib/forms/tanstack-form';
+import { icons } from '../../lib/assets';
 
 export const Route = createFileRoute('/(auth)/auth/login')({
   head: () => ({ meta: [{ title: 'Login' }] }),
-  beforeLoad: ({ context }) => requireGuest(context),
+  validateSearch: validateRedirectSearch,
+  beforeLoad: ({ context, search }) => requireGuest(context, search.redirect),
   component: () => LoginPage,
 });
 
@@ -67,9 +69,7 @@ export const Route = createFileRoute('/(auth)/auth/login')({
               >
                 <input #showPassword type="checkbox" class="sr-only" (change)="(void 0)" />
                 <img
-                  [src]="
-                    showPassword.checked ? '/icons/visibility-off.svg' : '/icons/visibility.svg'
-                  "
+                  [src]="showPassword.checked ? icons['visibility-off'] : icons.visibility"
                   width="24"
                   height="24"
                   alt=""
@@ -78,19 +78,18 @@ export const Route = createFileRoute('/(auth)/auth/login')({
               </label>
             </rw-input>
           </ng-container>
-          <rw-button
-            type="button"
+          <button rw-button
+            type="submit"
             [isLoading]="loginFormState().isSubmitting"
             class="flex w-full flex-col"
-            (click)="handleSubmit($event)"
           >
             Log in
-          </rw-button>
+          </button>
         </form>
 
         <p class="mt-4 text-center text-sm text-text-muted">
           Don't have an account?
-          <a [link]="{ to: '/auth/register' }">Create one</a>
+          <a [link]="{ to: '/auth/register', search: { redirect: redirectTarget() } }">Create one</a>
         </p>
       </div>
     </div>
@@ -99,12 +98,15 @@ export const Route = createFileRoute('/(auth)/auth/login')({
 })
 class LoginPage {
   private readonly routerContext = Route.injectRouteContext();
+  private readonly search = Route.injectSearch();
   private readonly navigate = injectNavigate();
   private readonly loginMutation = injectMutation(() =>
     loginMutationOptions(this.routerContext().apiFetch),
   );
 
   protected readonly submitError = signal('');
+  protected readonly icons = icons;
+  protected readonly redirectTarget = () => sanitizeRedirectPath(this.search().redirect);
 
   protected readonly loginForm = injectForm({
     defaultValues: { email: '', password: '' },
@@ -112,7 +114,7 @@ class LoginPage {
       this.submitError.set('');
       try {
         await this.loginMutation.mutateAsync(value);
-        void this.navigate({ to: '/' });
+        void this.navigate({ href: this.redirectTarget() });
       } catch {
         this.submitError.set('Invalid credentials');
       }

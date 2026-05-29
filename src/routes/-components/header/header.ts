@@ -1,16 +1,19 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
-import { Link } from '@benjavicente/angular-router-experimental';
+import { Link, injectRouter } from '@benjavicente/angular-router-experimental';
 import { injectAuthState } from '../../../lib/services/auth';
 import { Avatar } from '../../../lib/components/avatar/avatar';
 import { PizzaLogo } from '../../../lib/components/pizza-logo/pizza-logo';
 import { injectCartClientItemCount } from '../../(shop)/-store/inject-cart';
-import { RoleDirective } from '../../../lib/directives/role.directive';
 import { injectHotkey } from '@tanstack/angular-hotkeys';
+import { icons } from '../../../lib/assets';
+
+const navLinkClass =
+  'cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline data-[status=active]:bg-surface-alt data-[status=active]:text-text';
 
 @Component({
   selector: 'rw-header',
-  imports: [Link, Avatar, PizzaLogo, RoleDirective],
+  imports: [Link, Avatar, PizzaLogo],
   template: `
     <header
       class="sticky top-0 z-[var(--z-sticky)] h-nav border-b border-border bg-surface"
@@ -31,57 +34,20 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
         <nav class="flex flex-1 items-center gap-2 max-md:hidden" aria-label="Main navigation">
           @if (!auth.isAdmin()) {
             <a
-              [link]="{
-                to: '/',
-                activeProps: {
-                  class:
-                    'cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline bg-surface-alt text-text',
-                },
-                activeOptions: { exact: true },
-              }"
-              class="cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline"
+              [link]="{ to: '/', activeOptions: { exact: true } }"
+              [class]="navLinkClass"
               >Pizzerias</a
             >
           }
 
-          <a
-            *rwRole="'CUSTOMER'"
-            [link]="{
-              to: '/orders',
-              activeProps: {
-                class:
-                  'cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline bg-surface-alt text-text',
-              },
-            }"
-            class="cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline"
-            >My Orders</a
-          >
+          @if (auth.isCustomer()) {
+            <a [link]="{ to: '/orders' }" [class]="navLinkClass">My Orders</a>
+          }
 
-          <a
-            *rwRole="'PIZZERIA_ADMIN'"
-            [link]="{
-              to: '/pizzerias/admin',
-              activeProps: {
-                class:
-                  'cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline bg-surface-alt text-text',
-              },
-            }"
-            class="cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline"
-            >My Pizzeria</a
-          >
-
-          <a
-            *rwRole="'PIZZERIA_ADMIN'"
-            [link]="{
-              to: '/orders',
-              activeProps: {
-                class:
-                  'cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline bg-surface-alt text-text',
-              },
-            }"
-            class="cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline"
-            >Orders</a
-          >
+          @if (auth.isAdmin()) {
+            <a [link]="{ to: '/pizzerias/admin' }" [class]="navLinkClass">My Pizzeria</a>
+            <a [link]="{ to: '/orders' }" [class]="navLinkClass">Orders</a>
+          }
         </nav>
 
         <!-- Actions -->
@@ -95,7 +61,7 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
               "
             >
               <span class="[&_img]:block [&_img]:size-[1.125rem]" aria-hidden="true">
-                <img src="/icons/shopping-cart.svg" alt="" width="24" height="24" />
+                <img [src]="icons['shopping-cart']" alt="" width="24" height="24" />
               </span>
               @if (cartItemCount() > 0) {
                 <span
@@ -107,7 +73,7 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
             </a>
           }
 
-          <ng-container *rwRole="['CUSTOMER', 'PIZZERIA_ADMIN']; else guestActionsTpl">
+          @if (auth.isAuthenticated()) {
             <a
               [link]="{ to: '/profile' }"
               class="flex rounded-full no-underline transition hover:shadow-[0_0_0_3px_var(--color-border)] hover:no-underline"
@@ -115,19 +81,18 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
             >
               <rw-avatar [name]="auth.user()!.name" size="sm" />
             </a>
-          </ng-container>
-          <ng-template #guestActionsTpl>
+          } @else {
             <a
-              [link]="{ to: '/auth/login' }"
+              [link]="{ to: '/auth/login', search: { redirect: redirectPath() } }"
               class="cursor-pointer rounded-md px-3 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text hover:no-underline max-md:hidden"
               >Log in</a
             >
             <a
-              [link]="{ to: '/auth/register' }"
+              [link]="{ to: '/auth/register', search: { redirect: redirectPath() } }"
               class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-text-on-primary no-underline transition hover:bg-primary-dark hover:no-underline max-md:hidden"
               >Join</a
             >
-          </ng-template>
+          }
 
           <!-- Mobile hamburger -->
           <button
@@ -138,7 +103,7 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
             aria-label="Toggle mobile menu"
             (click)="toggleMobileMenu()"
           >
-            <img src="/icons/menu.svg" alt="" aria-hidden="true" width="24" height="24" />
+            <img [src]="icons.menu" alt="" aria-hidden="true" width="24" height="24" />
           </button>
         </div>
       </div>
@@ -173,7 +138,7 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
               aria-label="Close mobile menu"
               (click)="closeMobileMenu()"
             >
-              <img src="/icons/close.svg" alt="" aria-hidden="true" width="24" height="24" />
+              <img [src]="icons.close" alt="" aria-hidden="true" width="24" height="24" />
             </button>
           </div>
           <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8 p-4">
@@ -186,26 +151,26 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
                 >
               }
 
-              <a
-                *rwRole="'CUSTOMER'"
-                [link]="{ to: '/orders' }"
-                class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
-                >My Orders</a
-              >
+              @if (auth.isCustomer()) {
+                <a
+                  [link]="{ to: '/orders' }"
+                  class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
+                  >My Orders</a
+                >
+              }
 
-              <a
-                *rwRole="'PIZZERIA_ADMIN'"
-                [link]="{ to: '/pizzerias/admin' }"
-                class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
-                >My Pizzeria</a
-              >
-
-              <a
-                *rwRole="'PIZZERIA_ADMIN'"
-                [link]="{ to: '/orders' }"
-                class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
-                >Orders</a
-              >
+              @if (auth.isAdmin()) {
+                <a
+                  [link]="{ to: '/pizzerias/admin' }"
+                  class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
+                  >My Pizzeria</a
+                >
+                <a
+                  [link]="{ to: '/orders' }"
+                  class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
+                  >Orders</a
+                >
+              }
 
               @if (!auth.isAdmin()) {
                 <a
@@ -223,16 +188,16 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
                 </a>
               }
 
-              <ng-container *rwRole="['CUSTOMER', 'PIZZERIA_ADMIN']">
+              @if (auth.isAuthenticated()) {
                 <a
                   [link]="{ to: '/profile' }"
                   class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
                   >Profile</a
                 >
-              </ng-container>
+              }
             </div>
 
-            <ng-container *rwRole="'GUEST'">
+            @if (!auth.isAuthenticated()) {
               <div class="mt-6 rounded-lg border border-border bg-surface-alt p-4">
                 <p class="mb-1 font-semibold text-text">Welcome back</p>
                 <p class="mb-4 text-sm text-text-muted">
@@ -240,18 +205,18 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
                 </p>
                 <div class="flex gap-3">
                   <a
-                    [link]="{ to: '/auth/login' }"
+                    [link]="{ to: '/auth/login', search: { redirect: redirectPath() } }"
                     class="flex-1 rounded-md px-4 py-2 text-center text-sm font-semibold no-underline border border-border text-text hover:bg-surface"
                     >Log in</a
                   >
                   <a
-                    [link]="{ to: '/auth/register' }"
+                    [link]="{ to: '/auth/register', search: { redirect: redirectPath() } }"
                     class="flex-1 rounded-md px-4 py-2 text-center text-sm font-semibold no-underline bg-primary text-text-on-primary hover:bg-primary-dark"
                     >Join</a
                   >
                 </div>
               </div>
-            </ng-container>
+            }
           </div>
         </nav>
       }
@@ -262,9 +227,16 @@ import { injectHotkey } from '@tanstack/angular-hotkeys';
 export class Header {
   protected readonly auth = injectAuthState();
   protected readonly cartItemCount = injectCartClientItemCount();
+  protected readonly navLinkClass = navLinkClass;
+  protected readonly icons = icons;
   private readonly document = inject(DOCUMENT);
+  private readonly router = injectRouter();
 
   protected readonly isMobileMenuOpen = signal(false);
+  protected readonly redirectPath = () => {
+    const href = this.router.state.location.href;
+    return href.startsWith('/auth/') ? '/' : href;
+  };
 
   public constructor() {
     injectHotkey('Escape', () => {

@@ -9,6 +9,7 @@ import type {
   PizzeriaDetail,
   PizzeriaSummary,
 } from '../../routes/(pizzerias)/-models/pizzeria.models';
+import { environment } from '../../environments/environment';
 
 export function pizzeriasQueryOptions(
   apiFetch: ApiFetch,
@@ -87,7 +88,7 @@ function orderSubscriptionStream(id: string, signal: AbortSignal): AsyncIterable
         reject: (reason: unknown) => void;
       } | null = null;
 
-      const eventSource = new EventSource(`/api/orders/${id}/subscribe`, {
+      const eventSource = new EventSource(`${environment.apiBaseUrl}/api/orders/${id}/subscribe`, {
         withCredentials: true,
       });
 
@@ -96,6 +97,7 @@ function orderSubscriptionStream(id: string, signal: AbortSignal): AsyncIterable
           return;
         }
         isDone = true;
+        signal.removeEventListener('abort', close);
         eventSource.close();
         pending?.resolve({ done: true, value: undefined });
         pending = null;
@@ -106,6 +108,7 @@ function orderSubscriptionStream(id: string, signal: AbortSignal): AsyncIterable
           return;
         }
         isDone = true;
+        signal.removeEventListener('abort', close);
         eventSource.close();
         pending?.reject(error);
         pending = null;

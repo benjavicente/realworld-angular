@@ -67,7 +67,9 @@ interface PizzaOrderFormModel {
         </div>
 
         <div class="flex flex-col gap-5">
-          <p class="m-0 border-0 p-0">Comes with: {{ defaultToppings }}</p>
+          <p class="m-0 text-sm leading-snug text-text-muted">
+            Comes with: {{ defaultToppings }}
+          </p>
 
           <ng-container
             [tanstackField]="orderForm"
@@ -110,7 +112,7 @@ interface PizzaOrderFormModel {
                       (change)="setExtraTopping(i, $any($event.target).checked)"
                     />
                     <span class="min-w-0 flex-1">{{ topping.label }}</span>
-                    <span class="text-xs text-text-muted"
+                    <span class="text-xs tabular-nums text-text-muted"
                       >+€{{ topping.price | number: '1.2-2' }}</span
                     >
                   </label>
@@ -121,15 +123,17 @@ interface PizzaOrderFormModel {
 
           <div class="flex items-center justify-between gap-4">
             <span class="font-medium">Quantity</span>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-3">
               <button
                 type="button"
-                class="flex size-8 items-center justify-center rounded-full border-[1.5px] border-border hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                class="flex size-8 shrink-0 items-center justify-center rounded-full border-[1.5px] border-border text-text hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:[&_svg]:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 [disabled]="orderFormState().values.quantity <= 1"
                 aria-label="Decrease quantity"
                 (click)="decrementQuantity()"
               >
-                <img src="/icons/remove.svg" alt="" width="24" height="24" aria-hidden="true" />
+                <svg class="size-6" viewBox="0 -960 960 960" aria-hidden="true">
+                  <path fill="currentColor" d="M200-440v-80h560v80H200Z" />
+                </svg>
               </button>
               <ng-container
                 [tanstackField]="orderForm"
@@ -137,36 +141,47 @@ interface PizzaOrderFormModel {
                 [validators]="{ onChange: minimumQuantity }"
                 #quantity="field"
               >
-                <span class="sr-only min-w-8 text-center font-semibold" aria-label="Quantity">{{
-                  quantity.api.state.value
-                }}</span>
+                <input
+                  type="number"
+                  min="1"
+                  class="inline-block w-18 rounded-md border-[1.5px] border-border bg-surface px-2 py-1 text-center text-base tabular-nums text-text transition focus:border-primary focus:shadow-focus focus:outline-none"
+                  [id]="quantity.api.name"
+                  [name]="quantity.api.name"
+                  [value]="quantity.api.state.value"
+                  aria-label="Quantity"
+                  (blur)="quantity.api.handleBlur()"
+                  (input)="quantity.api.handleChange($any($event.target).valueAsNumber)"
+                />
               </ng-container>
               <button
                 type="button"
-                class="flex size-8 items-center justify-center rounded-full border-[1.5px] border-border hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                class="flex size-8 shrink-0 items-center justify-center rounded-full border-[1.5px] border-border text-text hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 aria-label="Increase quantity"
                 (click)="incrementQuantity()"
               >
-                <img src="/icons/add.svg" alt="" width="24" height="24" aria-hidden="true" />
+                <svg class="size-6" viewBox="0 -960 960 960" aria-hidden="true">
+                  <path
+                    fill="currentColor"
+                    d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                  />
+                </svg>
               </button>
             </div>
           </div>
 
-          <div class="flex items-center justify-between gap-4">
-            <div
-              class="text-sm text-text-muted [&_strong]:block [&_strong]:text-lg [&_strong]:text-primary"
-            >
+          <div class="flex flex-col gap-4 border-t border-border pt-4">
+            <div class="flex items-center justify-between text-lg">
               <span>Total</span>
-              <strong>€{{ modalTotal() | number: '1.2-2' }}</strong>
+              <strong class="text-xl tabular-nums text-primary">€{{ modalTotal() | number: '1.2-2' }}</strong>
             </div>
-            <div class="flex justify-end gap-3 [&_rw-button]:min-w-32">
-              <rw-button
-                type="button"
+            <div class="flex justify-end [&_button[rw-button]]:min-w-32">
+              <button
+                rw-button
+                type="submit"
                 [isLoading]="orderFormState().isSubmitting"
-                (click)="addToCart()"
               >
                 Add to cart
-              </rw-button>
+              </button>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { icons } from '../../assets';
 
 @Component({
   selector: 'rw-callout',
@@ -7,7 +8,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
     @if (variant() === 'success') {
       <img
         class="size-5 shrink-0 [filter:invert(52%)_sepia(99%)_saturate(400%)_hue-rotate(73deg)_brightness(95%)_contrast(95%)]"
-        src="/icons/success.svg"
+        [src]="icons.success"
         alt=""
         width="24"
         height="24"
@@ -17,7 +18,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
     @if (variant() === 'error') {
       <img
         class="size-5 shrink-0 [filter:invert(22%)_sepia(96%)_saturate(1200%)_hue-rotate(336deg)_brightness(95%)_contrast(95%)]"
-        src="/icons/error.svg"
+        [src]="icons.error"
         alt=""
         width="24"
         height="24"
@@ -40,6 +41,8 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
   },
 })
 export class Callout {
+  protected readonly icons = icons;
+
   public readonly message = input('');
   public readonly heading = input('');
   public readonly variant = input<'error' | 'success' | 'neutral'>('error');

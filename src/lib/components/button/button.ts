@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  computed,
+  inject,
+  input,
+} from '@angular/core';
 
 /** Surface treatment: filled, border, or minimal. */
 export type ButtonVariant = 'plain' | 'outlined' | 'ghost';
@@ -8,40 +15,46 @@ export type ButtonPalette = 'primary' | 'secondary' | 'danger';
 export type ButtonSize = 'sm' | 'md';
 
 @Component({
-  selector: 'rw-button',
+  selector: 'button[rw-button],a[rw-button]',
   template: `
-    <button
-      [type]="type()"
-      [disabled]="isDisabled() || isLoading()"
-      [class]="buttonClasses()"
-      [attr.aria-busy]="isLoading() || null"
-      [attr.aria-disabled]="isDisabled() || null"
-      (click)="clicked.emit($event)"
-    >
-      @if (isLoading()) {
-        <span [class]="spinnerClasses()" aria-hidden="true"></span>
-        <span class="sr-only">Loading…</span>
-      }
-      <ng-content />
-    </button>
+    @if (isLoading()) {
+      <span [class]="spinnerClasses()" aria-hidden="true"></span>
+      <span class="sr-only">Loading…</span>
+    }
+    <ng-content />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class]': 'stateClasses()',
+    '[attr.type]': 'typeAttr()',
+    '[attr.disabled]': 'disabledAttr()',
+    '[attr.aria-busy]': 'isLoading() || null',
+    '[attr.aria-disabled]': 'disabledAttr()',
+    '[attr.tabindex]': 'tabIndexAttr()',
+    '(click)': 'onHostClick($event)',
+  },
 })
 export class Button {
+  private readonly host = inject<ElementRef<HTMLButtonElement | HTMLAnchorElement>>(ElementRef);
+
   public readonly variant = input<ButtonVariant>('plain');
   public readonly palette = input<ButtonPalette>('primary');
   public readonly size = input<ButtonSize>('md');
   public readonly type = input<'button' | 'submit' | 'reset'>('button');
   public readonly isDisabled = input(false);
   public readonly isLoading = input(false);
-  public readonly clicked = output<MouseEvent>({ alias: 'click' });
 
-  protected readonly buttonClasses = computed<string>(() =>
+  protected readonly isButtonHost = computed(() => this.host.nativeElement.tagName === 'BUTTON');
+
+  protected readonly stateClasses = computed<string>(() =>
     [
-      'relative inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border-2 border-transparent font-medium leading-none no-underline transition focus-visible:shadow-focus focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+      'relative inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border-2 border-transparent font-medium leading-none no-underline transition hover:no-underline focus-visible:shadow-focus focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
       this.size() === 'sm' ? 'rounded-sm px-3 py-2 text-sm' : 'px-5 py-3 text-base',
       this.variantClasses(),
       this.isLoading() ? 'text-transparent' : '',
+      !this.isButtonHost() && (this.isDisabled() || this.isLoading())
+        ? 'pointer-events-none opacity-50'
+        : '',
     ]
       .filter(Boolean)
       .join(' '),
@@ -58,6 +71,31 @@ export class Button {
       .filter(Boolean)
       .join(' '),
   );
+
+  protected typeAttr(): string | null {
+    return this.isButtonHost() ? this.type() : null;
+  }
+
+  protected disabledAttr(): boolean | null {
+    if (this.isButtonHost()) {
+      return this.isDisabled() || null;
+    }
+    return this.isDisabled() || this.isLoading() || null;
+  }
+
+  protected tabIndexAttr(): number | null {
+    if (!this.isButtonHost() && (this.isDisabled() || this.isLoading())) {
+      return -1;
+    }
+    return null;
+  }
+
+  protected onHostClick(event: Event): void {
+    if (!this.isButtonHost() && (this.isDisabled() || this.isLoading())) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }
 
   private variantClasses(): string {
     const variant = this.variant();

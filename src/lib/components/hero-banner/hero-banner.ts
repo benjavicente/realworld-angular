@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { images } from '../../assets';
 
 @Component({
   selector: 'rw-hero-banner',
@@ -21,7 +22,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         <div class="mx-auto max-w-[min(460px,100%)]">
           <img
             class="block h-auto w-full"
-            src="/images/realworld-angular-banner.png"
+            [src]="images.heroBanner"
             width="460"
             height="120"
             alt=""
@@ -39,5 +40,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroBanner {
+  protected readonly images = images;
   public readonly editionVariant = 'Starter';
 }

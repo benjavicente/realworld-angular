@@ -72,6 +72,7 @@
   --shadow-focus: 0 0 0 3px rgb(0 0 0 / 0.25);
 
   --container-app: 1280px;
+  --aspect-video: 16 / 9;
 
   --breakpoint-sm: 30rem;
   --breakpoint-md: 48rem;
@@ -130,6 +131,17 @@
     font: inherit;
   }
 
+  input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
   p,
   h1,
   h2,
@@ -185,6 +197,32 @@
     outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
+}
+
+.checkout-step__number {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-border);
+  color: var(--color-text);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.checkout-step--active {
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  background-color: var(--color-surface-alt);
+  font-weight: var(--font-weight-semibold);
+}
+
+.checkout-step--active .checkout-step__number {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
 }
 
 @keyframes pizza-slice-step {

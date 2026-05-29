@@ -43,7 +43,7 @@ describe('ConfirmDialog', () => {
   });
 
   it('should close with dismissed when cancel is clicked', () => {
-    const cancelBtn = Array.from(el.querySelectorAll('rw-button')).find((b) =>
+    const cancelBtn = Array.from(el.querySelectorAll('button[rw-button]')).find((b) =>
       b.textContent?.includes('Cancel'),
     );
     if (cancelBtn) {

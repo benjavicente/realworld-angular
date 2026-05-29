@@ -22,12 +22,12 @@ export type ConfirmDialogResult = 'confirmed' | 'dismissed';
         <p class="m-0 text-sm leading-relaxed text-text-muted">{{ data.message }}</p>
       }
       <rw-modal-footer class="flex flex-wrap items-center justify-end gap-4">
-        <rw-button type="button" variant="ghost" palette="secondary" (click)="dismiss()">
+        <button rw-button type="button" variant="ghost" palette="secondary" (click)="dismiss()">
           {{ data.cancelLabel ?? 'Cancel' }}
-        </rw-button>
-        <rw-button type="button" [palette]="'danger'" (click)="confirm()">
+        </button>
+        <button rw-button type="button" [palette]="'danger'" (click)="confirm()">
           {{ data.confirmLabel ?? 'Confirm' }}
-        </rw-button>
+        </button>
       </rw-modal-footer>
     </rw-modal>
   `,

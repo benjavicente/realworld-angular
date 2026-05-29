@@ -15,8 +15,12 @@ import { Route as shopCartRouteImport } from './routes/(shop)/cart'
 import { Route as legalUnauthorizedRouteImport } from './routes/(legal)/unauthorized'
 import { Route as legalTermsAndConditionsRouteImport } from './routes/(legal)/terms-and-conditions'
 import { Route as accountProfileRouteImport } from './routes/(account)/profile'
+import { Route as shopCheckoutIndexRouteImport } from './routes/(shop)/checkout.index'
 import { Route as pizzeriasPizzeriasIndexRouteImport } from './routes/(pizzerias)/pizzerias.index'
 import { Route as ordersOrdersIndexRouteImport } from './routes/(orders)/orders.index'
+import { Route as shopCheckoutScheduleRouteImport } from './routes/(shop)/checkout.schedule'
+import { Route as shopCheckoutReviewRouteImport } from './routes/(shop)/checkout.review'
+import { Route as shopCheckoutDeliveryRouteImport } from './routes/(shop)/checkout.delivery'
 import { Route as pizzeriasPizzeriasAdminRouteImport } from './routes/(pizzerias)/pizzerias.admin'
 import { Route as pizzeriasPizzeriasIdRouteImport } from './routes/(pizzerias)/pizzerias.$id'
 import { Route as ordersOrdersAdminRouteImport } from './routes/(orders)/orders.admin'
@@ -59,6 +63,11 @@ const accountProfileRoute = accountProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const shopCheckoutIndexRoute = shopCheckoutIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => shopCheckoutRoute,
+} as any)
 const pizzeriasPizzeriasIndexRoute = pizzeriasPizzeriasIndexRouteImport.update({
   id: '/(pizzerias)/pizzerias/',
   path: '/pizzerias/',
@@ -68,6 +77,21 @@ const ordersOrdersIndexRoute = ordersOrdersIndexRouteImport.update({
   id: '/(orders)/orders/',
   path: '/orders/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const shopCheckoutScheduleRoute = shopCheckoutScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
+  getParentRoute: () => shopCheckoutRoute,
+} as any)
+const shopCheckoutReviewRoute = shopCheckoutReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => shopCheckoutRoute,
+} as any)
+const shopCheckoutDeliveryRoute = shopCheckoutDeliveryRouteImport.update({
+  id: '/delivery',
+  path: '/delivery',
+  getParentRoute: () => shopCheckoutRoute,
 } as any)
 const pizzeriasPizzeriasAdminRoute = pizzeriasPizzeriasAdminRouteImport.update({
   id: '/(pizzerias)/pizzerias/admin',
@@ -136,7 +160,7 @@ export interface FileRoutesByFullPath {
   '/terms-and-conditions': typeof legalTermsAndConditionsRoute
   '/unauthorized': typeof legalUnauthorizedRoute
   '/cart': typeof shopCartRoute
-  '/checkout': typeof shopCheckoutRoute
+  '/checkout': typeof shopCheckoutRouteWithChildren
   '/auth/login': typeof authAuthLoginRoute
   '/auth/register': typeof authAuthRegisterRoute
   '/auth/register-pizzeria': typeof authAuthRegisterPizzeriaRoute
@@ -144,8 +168,12 @@ export interface FileRoutesByFullPath {
   '/orders/admin': typeof ordersOrdersAdminRoute
   '/pizzerias/$id': typeof pizzeriasPizzeriasIdRoute
   '/pizzerias/admin': typeof pizzeriasPizzeriasAdminRouteWithChildren
+  '/checkout/delivery': typeof shopCheckoutDeliveryRoute
+  '/checkout/review': typeof shopCheckoutReviewRoute
+  '/checkout/schedule': typeof shopCheckoutScheduleRoute
   '/orders/': typeof ordersOrdersIndexRoute
   '/pizzerias/': typeof pizzeriasPizzeriasIndexRoute
+  '/checkout/': typeof shopCheckoutIndexRoute
   '/pizzerias/admin/configuration': typeof pizzeriasPizzeriasAdminConfigurationRoute
   '/pizzerias/admin/new': typeof pizzeriasPizzeriasAdminNewRoute
   '/pizzerias/admin/pizzas': typeof pizzeriasPizzeriasAdminPizzasRoute
@@ -157,15 +185,18 @@ export interface FileRoutesByTo {
   '/terms-and-conditions': typeof legalTermsAndConditionsRoute
   '/unauthorized': typeof legalUnauthorizedRoute
   '/cart': typeof shopCartRoute
-  '/checkout': typeof shopCheckoutRoute
   '/auth/login': typeof authAuthLoginRoute
   '/auth/register': typeof authAuthRegisterRoute
   '/auth/register-pizzeria': typeof authAuthRegisterPizzeriaRoute
   '/orders/$id': typeof ordersOrdersIdRoute
   '/orders/admin': typeof ordersOrdersAdminRoute
   '/pizzerias/$id': typeof pizzeriasPizzeriasIdRoute
+  '/checkout/delivery': typeof shopCheckoutDeliveryRoute
+  '/checkout/review': typeof shopCheckoutReviewRoute
+  '/checkout/schedule': typeof shopCheckoutScheduleRoute
   '/orders': typeof ordersOrdersIndexRoute
   '/pizzerias': typeof pizzeriasPizzeriasIndexRoute
+  '/checkout': typeof shopCheckoutIndexRoute
   '/pizzerias/admin/configuration': typeof pizzeriasPizzeriasAdminConfigurationRoute
   '/pizzerias/admin/new': typeof pizzeriasPizzeriasAdminNewRoute
   '/pizzerias/admin/pizzas': typeof pizzeriasPizzeriasAdminPizzasRoute
@@ -178,7 +209,7 @@ export interface FileRoutesById {
   '/(legal)/terms-and-conditions': typeof legalTermsAndConditionsRoute
   '/(legal)/unauthorized': typeof legalUnauthorizedRoute
   '/(shop)/cart': typeof shopCartRoute
-  '/(shop)/checkout': typeof shopCheckoutRoute
+  '/(shop)/checkout': typeof shopCheckoutRouteWithChildren
   '/(auth)/auth/login': typeof authAuthLoginRoute
   '/(auth)/auth/register': typeof authAuthRegisterRoute
   '/(auth)/auth/register-pizzeria': typeof authAuthRegisterPizzeriaRoute
@@ -186,8 +217,12 @@ export interface FileRoutesById {
   '/(orders)/orders/admin': typeof ordersOrdersAdminRoute
   '/(pizzerias)/pizzerias/$id': typeof pizzeriasPizzeriasIdRoute
   '/(pizzerias)/pizzerias/admin': typeof pizzeriasPizzeriasAdminRouteWithChildren
+  '/(shop)/checkout/delivery': typeof shopCheckoutDeliveryRoute
+  '/(shop)/checkout/review': typeof shopCheckoutReviewRoute
+  '/(shop)/checkout/schedule': typeof shopCheckoutScheduleRoute
   '/(orders)/orders/': typeof ordersOrdersIndexRoute
   '/(pizzerias)/pizzerias/': typeof pizzeriasPizzeriasIndexRoute
+  '/(shop)/checkout/': typeof shopCheckoutIndexRoute
   '/(pizzerias)/pizzerias/admin/configuration': typeof pizzeriasPizzeriasAdminConfigurationRoute
   '/(pizzerias)/pizzerias/admin/new': typeof pizzeriasPizzeriasAdminNewRoute
   '/(pizzerias)/pizzerias/admin/pizzas': typeof pizzeriasPizzeriasAdminPizzasRoute
@@ -209,8 +244,12 @@ export interface FileRouteTypes {
     | '/orders/admin'
     | '/pizzerias/$id'
     | '/pizzerias/admin'
+    | '/checkout/delivery'
+    | '/checkout/review'
+    | '/checkout/schedule'
     | '/orders/'
     | '/pizzerias/'
+    | '/checkout/'
     | '/pizzerias/admin/configuration'
     | '/pizzerias/admin/new'
     | '/pizzerias/admin/pizzas'
@@ -222,15 +261,18 @@ export interface FileRouteTypes {
     | '/terms-and-conditions'
     | '/unauthorized'
     | '/cart'
-    | '/checkout'
     | '/auth/login'
     | '/auth/register'
     | '/auth/register-pizzeria'
     | '/orders/$id'
     | '/orders/admin'
     | '/pizzerias/$id'
+    | '/checkout/delivery'
+    | '/checkout/review'
+    | '/checkout/schedule'
     | '/orders'
     | '/pizzerias'
+    | '/checkout'
     | '/pizzerias/admin/configuration'
     | '/pizzerias/admin/new'
     | '/pizzerias/admin/pizzas'
@@ -250,8 +292,12 @@ export interface FileRouteTypes {
     | '/(orders)/orders/admin'
     | '/(pizzerias)/pizzerias/$id'
     | '/(pizzerias)/pizzerias/admin'
+    | '/(shop)/checkout/delivery'
+    | '/(shop)/checkout/review'
+    | '/(shop)/checkout/schedule'
     | '/(orders)/orders/'
     | '/(pizzerias)/pizzerias/'
+    | '/(shop)/checkout/'
     | '/(pizzerias)/pizzerias/admin/configuration'
     | '/(pizzerias)/pizzerias/admin/new'
     | '/(pizzerias)/pizzerias/admin/pizzas'
@@ -264,7 +310,7 @@ export interface RootRouteChildren {
   legalTermsAndConditionsRoute: typeof legalTermsAndConditionsRoute
   legalUnauthorizedRoute: typeof legalUnauthorizedRoute
   shopCartRoute: typeof shopCartRoute
-  shopCheckoutRoute: typeof shopCheckoutRoute
+  shopCheckoutRoute: typeof shopCheckoutRouteWithChildren
   authAuthLoginRoute: typeof authAuthLoginRoute
   authAuthRegisterRoute: typeof authAuthRegisterRoute
   authAuthRegisterPizzeriaRoute: typeof authAuthRegisterPizzeriaRoute
@@ -320,6 +366,13 @@ declare module '@benjavicente/angular-router-experimental' {
       preLoaderRoute: typeof accountProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(shop)/checkout/': {
+      id: '/(shop)/checkout/'
+      path: '/'
+      fullPath: '/checkout/'
+      preLoaderRoute: typeof shopCheckoutIndexRouteImport
+      parentRoute: typeof shopCheckoutRoute
+    }
     '/(pizzerias)/pizzerias/': {
       id: '/(pizzerias)/pizzerias/'
       path: '/pizzerias'
@@ -333,6 +386,27 @@ declare module '@benjavicente/angular-router-experimental' {
       fullPath: '/orders/'
       preLoaderRoute: typeof ordersOrdersIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(shop)/checkout/schedule': {
+      id: '/(shop)/checkout/schedule'
+      path: '/schedule'
+      fullPath: '/checkout/schedule'
+      preLoaderRoute: typeof shopCheckoutScheduleRouteImport
+      parentRoute: typeof shopCheckoutRoute
+    }
+    '/(shop)/checkout/review': {
+      id: '/(shop)/checkout/review'
+      path: '/review'
+      fullPath: '/checkout/review'
+      preLoaderRoute: typeof shopCheckoutReviewRouteImport
+      parentRoute: typeof shopCheckoutRoute
+    }
+    '/(shop)/checkout/delivery': {
+      id: '/(shop)/checkout/delivery'
+      path: '/delivery'
+      fullPath: '/checkout/delivery'
+      preLoaderRoute: typeof shopCheckoutDeliveryRouteImport
+      parentRoute: typeof shopCheckoutRoute
     }
     '/(pizzerias)/pizzerias/admin': {
       id: '/(pizzerias)/pizzerias/admin'
@@ -414,6 +488,24 @@ declare module '@benjavicente/angular-router-experimental' {
   }
 }
 
+interface shopCheckoutRouteChildren {
+  shopCheckoutDeliveryRoute: typeof shopCheckoutDeliveryRoute
+  shopCheckoutReviewRoute: typeof shopCheckoutReviewRoute
+  shopCheckoutScheduleRoute: typeof shopCheckoutScheduleRoute
+  shopCheckoutIndexRoute: typeof shopCheckoutIndexRoute
+}
+
+const shopCheckoutRouteChildren: shopCheckoutRouteChildren = {
+  shopCheckoutDeliveryRoute: shopCheckoutDeliveryRoute,
+  shopCheckoutReviewRoute: shopCheckoutReviewRoute,
+  shopCheckoutScheduleRoute: shopCheckoutScheduleRoute,
+  shopCheckoutIndexRoute: shopCheckoutIndexRoute,
+}
+
+const shopCheckoutRouteWithChildren = shopCheckoutRoute._addFileChildren(
+  shopCheckoutRouteChildren,
+)
+
 interface pizzeriasPizzeriasAdminRouteChildren {
   pizzeriasPizzeriasAdminConfigurationRoute: typeof pizzeriasPizzeriasAdminConfigurationRoute
   pizzeriasPizzeriasAdminNewRoute: typeof pizzeriasPizzeriasAdminNewRoute
@@ -441,7 +533,7 @@ const rootRouteChildren: RootRouteChildren = {
   legalTermsAndConditionsRoute: legalTermsAndConditionsRoute,
   legalUnauthorizedRoute: legalUnauthorizedRoute,
   shopCartRoute: shopCartRoute,
-  shopCheckoutRoute: shopCheckoutRoute,
+  shopCheckoutRoute: shopCheckoutRouteWithChildren,
   authAuthLoginRoute: authAuthLoginRoute,
   authAuthRegisterRoute: authAuthRegisterRoute,
   authAuthRegisterPizzeriaRoute: authAuthRegisterPizzeriaRoute,

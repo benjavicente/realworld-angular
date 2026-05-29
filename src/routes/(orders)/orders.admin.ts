@@ -13,7 +13,7 @@ import { injectQuery } from '@benjavicente/angular-query-experimental';
 
 export const Route = createFileRoute('/(orders)/orders/admin')({
   head: () => ({ meta: [{ title: 'Orders - Admin' }] }),
-  beforeLoad: ({ context }) => requireRole(context, ROLES.PIZZERIA_ADMIN),
+  beforeLoad: ({ context, location }) => requireRole(context, ROLES.PIZZERIA_ADMIN, location),
   loader: ({ context }) =>
     context.queryClient.ensureQueryData(adminOrdersQueryOptions(context.apiFetch, 1, 15)),
   component: () => AdminOrderListPage,

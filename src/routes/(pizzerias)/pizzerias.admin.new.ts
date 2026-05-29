@@ -17,7 +17,7 @@ import { requiredValue, validateSubmitFields } from '../../lib/forms/tanstack-fo
 
 export const Route = createFileRoute('/(pizzerias)/pizzerias/admin/new')({
   head: () => ({ meta: [{ title: 'Create Pizzeria' }] }),
-  beforeLoad: ({ context }) => requireNoPizzeria(context),
+  beforeLoad: ({ context, location }) => requireNoPizzeria(context, location),
   component: () => AdminPizzeriaFormPage,
 });
 
@@ -64,13 +64,13 @@ interface PizzeriaForm {
           </ng-container>
 
           <div class="flex justify-end">
-            <rw-button
+            <button rw-button
               type="button"
               [isLoading]="pizzeriaFormState().isSubmitting"
               (click)="handleSubmit($event)"
             >
               Create pizzeria
-            </rw-button>
+            </button>
           </div>
         </form>
       </div>

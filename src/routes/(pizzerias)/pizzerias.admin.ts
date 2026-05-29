@@ -6,16 +6,16 @@ import {
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
 import { Title } from '@angular/platform-browser';
-import { RoleDirective } from '../../lib/directives/role.directive';
 import { Spinner } from '../../lib/components/spinner/spinner';
 import { Callout } from '../../lib/components/callout/callout';
 import { ROLES } from '../(auth)/-models/role.model';
 import { requireRole } from '../-guards';
 import { adminPizzeriaQueryOptions } from '../../lib/api/api-queries';
 import { injectQuery } from '@benjavicente/angular-query-experimental';
+import { icons } from '../../lib/assets';
 
 export const Route = createFileRoute('/(pizzerias)/pizzerias/admin')({
-  beforeLoad: ({ context }) => requireRole(context, ROLES.PIZZERIA_ADMIN),
+  beforeLoad: ({ context, location }) => requireRole(context, ROLES.PIZZERIA_ADMIN, location),
   loader: ({ context }) =>
     context.queryClient.ensureQueryData(adminPizzeriaQueryOptions(context.apiFetch)),
   component: () => AdminPizzeriaDetailsPage,
@@ -23,7 +23,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/admin')({
 
 @Component({
   selector: 'rw-admin-pizzeria-page',
-  imports: [Link, Outlet, RoleDirective, Spinner, Callout],
+  imports: [Link, Outlet, Spinner, Callout],
   template: `
     <div class="py-10">
       <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">
@@ -45,7 +45,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/admin')({
             >
               View pizzeria page
               <img
-                src="/icons/external-link.svg"
+                [src]="icons['external-link']"
                 alt=""
                 width="20"
                 height="20"
@@ -56,29 +56,17 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/admin')({
 
           <nav class="mb-8" aria-label="Pizzeria admin">
             <ul class="flex list-none flex-wrap gap-2 border-b border-border">
-              <li class="m-0" *rwRole="'PIZZERIA_ADMIN'">
+              <li class="m-0">
                 <a
-                  class="inline-flex rounded-t-md border border-transparent px-4 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                  [link]="{
-                    to: '/pizzerias/admin/pizzas',
-                    activeProps: {
-                      class:
-                        'inline-flex rounded-t-md border border-transparent px-4 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary border-border bg-surface text-primary',
-                    },
-                  }"
+                  class="inline-flex rounded-t-md border border-transparent px-4 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[status=active]:border-border data-[status=active]:bg-surface data-[status=active]:text-primary"
+                  [link]="{ to: '/pizzerias/admin/pizzas' }"
                   >Pizzas</a
                 >
               </li>
-              <li class="m-0" *rwRole="'PIZZERIA_ADMIN'">
+              <li class="m-0">
                 <a
-                  class="inline-flex rounded-t-md border border-transparent px-4 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                  [link]="{
-                    to: '/pizzerias/admin/configuration',
-                    activeProps: {
-                      class:
-                        'inline-flex rounded-t-md border border-transparent px-4 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary border-border bg-surface text-primary',
-                    },
-                  }"
+                  class="inline-flex rounded-t-md border border-transparent px-4 py-2 text-sm font-medium text-text-muted no-underline transition hover:bg-surface-alt hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary data-[status=active]:border-border data-[status=active]:bg-surface data-[status=active]:text-primary"
+                  [link]="{ to: '/pizzerias/admin/configuration' }"
                   >Configuration</a
                 >
               </li>
@@ -97,6 +85,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/admin')({
 class AdminPizzeriaDetailsPage {
   private readonly apiFetch = injectRouter().options.context.apiFetch;
   private readonly title = inject(Title);
+  protected readonly icons = icons;
 
   protected readonly pizzeriaResource = injectQuery(() => adminPizzeriaQueryOptions(this.apiFetch));
 

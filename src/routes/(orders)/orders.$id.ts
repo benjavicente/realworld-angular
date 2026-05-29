@@ -4,7 +4,6 @@ import {
   computed,
   inject,
   signal,
-  input,
   effect,
 } from '@angular/core';
 import { Link, createFileRoute, injectRouter } from '@benjavicente/angular-router-experimental';
@@ -14,15 +13,15 @@ import { Spinner } from '../../lib/components/spinner/spinner';
 import { Button } from '../../lib/components/button/button';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
 import { Title } from '@angular/platform-browser';
-import { StatusBadge } from '../../lib/components/status-badge/status-badge';
 import { injectMutation, injectQuery } from '@benjavicente/angular-query-experimental';
 import { cancelOrderMutationOptions } from '../../lib/api/api-mutations';
 import { orderSubscriptionQueryOptions } from '../../lib/api/api-queries';
 import { requireAuth } from '../-guards';
+import type { OrderItemSelectedOption } from './-models/order.models';
 
 export const Route = createFileRoute('/(orders)/orders/$id')({
-  beforeLoad: ({ context }) => requireAuth(context),
-  component: () => OrderDetailRouteComponent,
+  beforeLoad: ({ context, location }) => requireAuth(context, location),
+  component: () => OrderDetailPage,
 });
 
 @Component({
@@ -36,7 +35,6 @@ export const Route = createFileRoute('/(orders)/orders/$id')({
     Button,
     Callout,
     EmptyState,
-    StatusBadge,
   ],
   template: `
 @if (orderResource.error()) {
@@ -56,20 +54,18 @@ export const Route = createFileRoute('/(orders)/orders/$id')({
       @if (cancelFeedback(); as fb) {
         <rw-callout [variant]="fb.variant" [message]="fb.message" />
       }
-      <div class="mb-8 flex items-start justify-between gap-4">
-        <div class="flex shrink-0 items-center gap-3">
-          <rw-status-badge [status]="order.status" />
+      <div class="mb-6 flex justify-end gap-3 items-center">
+        <span class="text-base text-text">{{ order.status | titlecase }}</span>
           @if (order.status === 'PENDING') {
-            <rw-button palette="danger" size="sm" [isLoading]="isCancelling()" (click)="cancel()">
+            <button rw-button palette="danger" size="sm" [isLoading]="isCancelling()" (click)="cancel()">
               Cancel order
-            </rw-button>
+            </button>
           }
-        </div>
       </div>
 
-      <div class="space-y-1">
-        <h1 class="text-lg font-semibold">
-          <a [link]="{ to: '/pizzerias/' + order.pizzeria.id }">
+      <div class="mb-8 space-y-1">
+        <h1 class="text-2xl font-bold mb-2">
+          <a [link]="{ to: '/pizzerias/' + order.pizzeria.id }" class="text-text no-underline hover:no-underline">
             {{ order.pizzeria.name }}
           </a>
         </h1>
@@ -92,30 +88,28 @@ export const Route = createFileRoute('/(orders)/orders/$id')({
 
       <!-- Order status / progress -->
       @if (order.status === 'CANCELLED') {
-        <div class="mb-8 rounded-lg border border-border bg-surface p-6 border-error/30 bg-error-bg" role="status" aria-live="polite">
-          <div class="relative mx-auto mb-4 size-12 rounded-full bg-error" aria-hidden="true"></div>
+        <div class="mb-10 rounded-lg border border-error/30 bg-error-bg p-6" role="status" aria-live="polite">
           <div>
             <h2 class="mb-2 text-lg font-semibold">Order cancelled</h2>
-            <p class="mb-6 text-sm text-text-muted">This order will not be prepared or delivered.</p>
+            <p class="text-sm text-text-muted">This order will not be prepared or delivered.</p>
           </div>
         </div>
       } @else {
-        <section class="mb-8 rounded-lg border border-border bg-surface p-6">
-          <h2 class="mb-2 text-lg font-semibold">Progress</h2>
-          <ol class="flex items-start justify-between gap-2" aria-label="Progress steps">
+        <section class="mb-10 rounded-lg border border-border bg-surface-alt px-5 py-5">
+          <h2 class="mb-5 text-sm font-semibold uppercase text-text-muted">Progress</h2>
+          <ol class="relative grid grid-cols-4" aria-label="Progress steps">
+            <span class="absolute left-[12.5%] right-[12.5%] top-[11px] h-px bg-border-strong" aria-hidden="true"></span>
             @for (step of statusOrder; track step) {
               @let stepDone = isStepDone()(step);
-              <li [class]="statusStepClasses()">
-                <div class="relative z-10 flex size-8 items-center justify-center">
-                  <span
-                    [class]="statusDotClasses(stepDone, order.status === step && !stepDone)"
-                    [attr.aria-hidden]="true"
-                  >
-                    @if (stepDone) {
-                      <span class="size-4" aria-hidden="true">✓</span>
-                    }
-                  </span>
-                </div>
+              <li class="relative flex flex-col items-center gap-3 text-center">
+                <span
+                  [class]="statusDotClasses(stepDone, order.status === step && !stepDone)"
+                  [attr.aria-hidden]="true"
+                >
+                  @if (stepDone) {
+                    <span aria-hidden="true">✓</span>
+                  }
+                </span>
                 <p [class]="statusLabelClasses(stepDone, order.status === step && !stepDone)">{{ step | titlecase }}</p>
               </li>
             }
@@ -126,25 +120,27 @@ export const Route = createFileRoute('/(orders)/orders/$id')({
       <!-- Pizzas -->
       <section>
         <h2 class="mb-5 text-lg font-semibold">Pizzas</h2>
-        <ul class="flex list-none flex-col gap-4" role="list">
+        <ul class="list-none border-b border-border" role="list">
           @for (item of order.items; track item.id) {
-            <li class="grid grid-cols-[72px_1fr_auto] items-center gap-4 rounded-lg border border-border bg-surface p-4">
-              <span class="font-medium text-text-muted">{{ item.quantity }}×</span>
-              <span class="font-semibold">{{ item.pizza.name }}</span>
+            <li class="grid grid-cols-[2rem_1fr_auto_auto] items-center gap-x-4 border-t border-border py-4 text-sm">
+              <span class="font-semibold tabular-nums text-text">{{ item.quantity }}×</span>
+              <span class="text-text">{{ item.pizza.name }}</span>
               @if (item.selectedOptions.length > 0) {
-                <span class="text-xs text-text-muted">{{
-                  item.selectedOptions.map((o) => o.label).join(', ')
+                <span class="text-sm text-text-muted">{{
+                  formatSelectedOptions(item.selectedOptions)
                 }}</span>
+              } @else {
+                <span></span>
               }
-              <span class="font-medium text-primary"
+              <span class="text-right font-semibold tabular-nums text-primary"
                 >€{{ item.quantity * item.unitPrice | number: '1.2-2' }}</span
               >
             </li>
           }
         </ul>
-        <div class="mt-6 flex justify-between border-t border-border pt-4 text-base [&_strong]:text-lg [&_strong]:text-primary">
+        <div class="flex justify-between pt-4 text-base [&_strong]:text-lg [&_strong]:text-primary">
           <span>Total</span>
-          <strong>€{{ order.total | number: '1.2-2' }}</strong>
+          <strong class="tabular-nums">€{{ order.total | number: '1.2-2' }}</strong>
         </div>
       </section>
     </div>
@@ -157,6 +153,7 @@ class OrderDetailPage {
   private readonly router = injectRouter();
   private readonly apiFetch = this.router.options.context.apiFetch;
   private readonly title = inject(Title);
+  private readonly params = Route.injectParams();
   private readonly cancelOrderMutation = injectMutation(() =>
     cancelOrderMutationOptions(this.apiFetch),
   );
@@ -188,17 +185,13 @@ class OrderDetailPage {
     };
   });
 
-  protected statusStepClasses(): string {
-    return 'relative flex flex-1 flex-col items-center gap-2 text-center';
-  }
-
   protected statusDotClasses(done: boolean, active: boolean): string {
-    const base = 'flex size-8 items-center justify-center rounded-full border-2 text-xs font-bold';
+    const base = 'relative z-10 flex size-[22px] items-center justify-center rounded-full border-2 text-xs font-bold leading-none';
     if (done) {
       return `${base} border-primary bg-primary text-text-on-primary`;
     }
     if (active) {
-      return `${base} border-primary bg-surface text-primary shadow-focus`;
+      return `${base} border-primary bg-surface text-primary`;
     }
     return `${base} border-border bg-surface text-text-muted`;
   }
@@ -208,7 +201,11 @@ class OrderDetailPage {
     return done || active ? `${base} text-text` : `${base} text-text-muted`;
   }
 
-  public readonly id = input.required<string>();
+  protected formatSelectedOptions(options: OrderItemSelectedOption[]): string {
+    return options.map((option) => option.label).join(', ');
+  }
+
+  protected readonly id = computed(() => this.params().id);
 
   public constructor() {
     effect(() => {
@@ -238,14 +235,4 @@ class OrderDetailPage {
       this.isCancelling.set(false);
     }
   }
-}
-
-@Component({
-  selector: 'rw-order-detail-route',
-  standalone: true,
-  imports: [OrderDetailPage],
-  template: '<rw-order-detail-page [id]="params().id" />',
-})
-class OrderDetailRouteComponent {
-  protected readonly params = Route.injectParams();
 }

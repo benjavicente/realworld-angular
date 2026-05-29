@@ -12,8 +12,8 @@ import { DecimalPipe } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { Pizza } from './-models/pizza.models';
 import { Spinner } from '../../lib/components/spinner/spinner';
-import { RoleDirective } from '../../lib/directives/role.directive';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
+import { injectAuthState } from '../../lib/services/auth';
 import { PizzaOrderFormDialog } from '../(orders)/-components/pizza-order-form-dialog/pizza-order-form-dialog';
 import { PizzaOrderFormDialogData } from '../(orders)/-models/order.models';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -29,6 +29,7 @@ import {
 } from '../../lib/api/api-queries';
 import { injectQuery } from '@benjavicente/angular-query-experimental';
 import { injectCartClient } from '../(shop)/-store/inject-cart';
+import { icons } from '../../lib/assets';
 
 export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
   loader: ({ context, params }) =>
@@ -43,7 +44,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
 
 @Component({
   selector: 'rw-pizzeria-detail-page',
-  imports: [Link, DecimalPipe, Spinner, RoleDirective, EmptyState, CatalogImageUrlPipe, Button],
+  imports: [Link, DecimalPipe, Spinner, EmptyState, CatalogImageUrlPipe, Button],
   template: `
     @if (pizzeriaResource.isPending() || pizzasResource.isPending()) {
       <div class="flex justify-center p-16" aria-label="Loading pizzeria">
@@ -61,25 +62,23 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
       @let pizzeria = pizzeriaResource.data()!;
       @let pizzas = filteredPizzas();
       <!-- Pizzeria hero -->
-      <section
-        class="relative mx-auto h-[300px] w-full max-w-app overflow-hidden bg-primary md:h-[360px]"
-      >
+      <section class="relative mx-auto h-[300px] w-full max-w-app overflow-hidden bg-primary">
         <div class="absolute inset-0">
           <img
             [src]="'banner-' + pizzeria.image | catalogImageUrl: 'pizzeria'"
             alt=""
-            class="size-full object-cover opacity-70"
+            class="size-full object-cover"
             width="1200"
             height="600"
             priority
           />
         </div>
         <div
-          class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent py-8 text-white"
+          class="absolute inset-0 flex items-end bg-gradient-to-t from-black/75 to-black/20 pb-8 text-white"
         >
           <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold !text-white">{{ pizzeria.name }}</h1>
-            <p class="mt-2 text-lg text-white/85">{{ pizzeria.city }}, {{ pizzeria.country }}</p>
+            <h1 class="mb-2 text-3xl font-bold !text-white">{{ pizzeria.name }}</h1>
+            <p class="text-sm text-white/90">{{ pizzeria.city }}, {{ pizzeria.country }}</p>
           </div>
         </div>
       </section>
@@ -91,7 +90,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
             <div class="relative min-w-0 flex-1">
               <label for="pizza-name-search" class="sr-only">Search pizzas by name</label>
               <img
-                src="/icons/search.svg"
+                [src]="icons.search"
                 alt=""
                 class="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2"
                 width="20"
@@ -122,7 +121,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
                   [value]="maxPrice()"
                   (input)="onMaxPriceInput($event)"
                 />
-                <span class="min-w-10 text-right font-semibold text-text">€{{ maxPrice() }}</span>
+                <span class="min-w-10 text-right font-semibold tabular-nums text-text">€{{ maxPrice() }}</span>
               </div>
             </div>
           </div>
@@ -158,17 +157,18 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
                       }}</span>
                       <div class="mt-auto flex items-center justify-between gap-3">
                         <span class="text-sm text-text-muted">
-                          from <strong>€{{ pizza.basePrice | number: '1.2-2' }}</strong>
+                          from <strong class="tabular-nums">€{{ pizza.basePrice | number: '1.2-2' }}</strong>
                         </span>
 
-                        <rw-button
-                          *rwRole="['CUSTOMER', 'GUEST']"
-                          type="button"
-                          size="sm"
-                          (click)="openOrderModal(pizza)"
-                        >
-                          Add to cart
-                        </rw-button>
+                        @if (!auth.isAdmin()) {
+                          <button rw-button
+                            type="button"
+                            size="sm"
+                            (click)="openOrderModal(pizza)"
+                          >
+                            Add to cart
+                          </button>
+                        }
                       </div>
                     </div>
                   </div>
@@ -209,6 +209,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class PizzeriaDetailsPage {
+  protected readonly auth = injectAuthState();
   private readonly apiFetch = injectRouter().options.context.apiFetch;
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(Dialog);
@@ -216,6 +217,7 @@ class PizzeriaDetailsPage {
   private readonly cart = injectCartClient();
   private readonly params = Route.injectParams();
   protected readonly id = computed(() => this.params().id);
+  protected readonly icons = icons;
 
   private readonly showBanner$ = new Subject<void>();
   private readonly dismissBanner$ = new Subject<void>();
@@ -289,7 +291,7 @@ class PizzeriaDetailsPage {
           displayPizzeriaName: this.pizzeriaResource.data()?.name ?? '',
           cart: this.cart,
         },
-        hasBackdrop: false,
+        disableClose: false,
       },
     );
 

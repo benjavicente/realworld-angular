@@ -1,74 +1,51 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import {
   Link,
+  Outlet,
   createFileRoute,
   injectNavigate,
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
-import { map, Observable } from 'rxjs';
 import { DecimalPipe } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import { injectCartClient, injectCartClientState, injectCartPreview } from './-store/inject-cart';
-import { Callout } from '../../lib/components/callout/callout';
-import { Input } from '../../lib/components/input/input';
-import { Textarea } from '../../lib/components/textarea/textarea';
-import { Button } from '../../lib/components/button/button';
-import { PhotonLocationField } from '../../lib/components/photon-location-field/photon-location-field';
-import type { LocationValue } from '../../lib/components/photon-location-field/photon-location-field';
-import { EmptyState } from '../../lib/components/empty-state/empty-state';
+import { map, Observable } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
+import { TanStackWithForm } from '@tanstack/angular-form';
+import { injectCartClientState, injectCartPreview } from './-store/inject-cart';
+import { Callout } from '../../lib/components/callout/callout';
+import { EmptyState } from '../../lib/components/empty-state/empty-state';
+import { Spinner } from '../../lib/components/spinner/spinner';
 import {
   ConfirmDialog,
   ConfirmDialogData,
   ConfirmDialogResult,
 } from '../../lib/components/confirm-dialog/confirm-dialog';
-import type { Address } from '../../lib/models/address.model';
-import { injectMutation } from '@benjavicente/angular-query-experimental';
-import { createOrderMutationOptions } from '../../lib/api/api-mutations';
 import { requireAuth, requireCart } from '../-guards';
-import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form';
-import {
-  composeValidators,
-  maxTextLength,
-  requiredText,
-  requiredValue,
-  validateSubmitFields,
-} from '../../lib/forms/tanstack-form';
+import { CheckoutProgressStepper } from './-components/checkout-progress-stepper/checkout-progress-stepper';
+import { blockedCheckoutStep, parseCheckoutStep } from './-models/checkout-context';
+import { CHECKOUT_SCOPE, createCheckoutScope } from './-models/checkout-scope';
 
 export const Route = createFileRoute('/(shop)/checkout')({
-  beforeLoad: ({ context }) => {
-    requireAuth(context);
+  beforeLoad: async ({ context, location }) => {
+    await requireAuth(context, location);
     requireCart(context);
   },
-  component: () => CheckoutPage,
+  component: () => CheckoutLayoutPage,
 });
 
-interface CheckoutForm {
-  delivery: {
-    location: LocationValue | null;
-    street: string;
-  };
-  notes: string;
-  useSameAsBilling: boolean;
-  billing: {
-    location: LocationValue | null;
-    street: string;
-  };
-}
-
 @Component({
-  selector: 'rw-checkout-page',
+  selector: 'rw-checkout-layout',
   imports: [
     Link,
+    Outlet,
     DecimalPipe,
-    TanStackField,
-    Input,
-    Textarea,
-    Button,
     Callout,
-    PhotonLocationField,
     EmptyState,
+    Spinner,
+    CheckoutProgressStepper,
+    TanStackWithForm,
   ],
+  providers: [{ provide: CHECKOUT_SCOPE, useFactory: createCheckoutScope }],
   template: `
     <div class="py-10">
       <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">
@@ -82,134 +59,49 @@ interface CheckoutForm {
           >
             <a [link]="{ to: '/' }">Browse pizzerias</a>
           </rw-empty-state>
-        } @else {
-          @let data = cartPreview.cart()!;
+        } @else if (cartPreview.isLoading() && !cartPreview.cart()) {
+          <div class="flex justify-center p-16" aria-label="Loading cart"><rw-spinner /></div>
+        } @else if (cartPreview.isError() && !cartPreview.cart()) {
+          <rw-callout
+            variant="error"
+            heading="Could not load cart details"
+            message="Your items are saved locally, but we could not reach the server."
+          />
+        } @else if (cartPreview.cart(); as data) {
+          <nav
+            class="mb-8 flex flex-wrap items-center gap-2 text-sm"
+            aria-label="Checkout progress"
+          >
+            <rw-checkout-progress-stepper
+              [order]="1"
+              label="Delivery & Billing"
+              [active]="isCurrentStep('delivery')"
+              [status]="checkout.stepStatus().delivery"
+            />
+            <span class="text-lg text-border select-none" aria-hidden="true">›</span>
+            <rw-checkout-progress-stepper
+              [order]="2"
+              label="Schedule & Notes"
+              [active]="isCurrentStep('schedule')"
+              [status]="checkout.stepStatus().schedule"
+            />
+            <span class="text-lg text-border select-none" aria-hidden="true">›</span>
+            <rw-checkout-progress-stepper
+              [order]="3"
+              label="Review & Pay"
+              [active]="isCurrentStep('review')"
+              [status]="checkout.stepStatus().review"
+            />
+          </nav>
+
           <div class="grid grid-cols-1 items-start gap-8 md:grid-cols-[1fr_320px]">
             <section>
-              <h2 class="mb-5 text-lg font-semibold">Delivery details</h2>
-
-              <form class="flex flex-col gap-4" (submit)="handleSubmit($event)">
-                @if (submitError()) {
-                  <rw-callout variant="error" [message]="submitError()" />
-                }
-
-                <fieldset
-                  class="m-0 flex flex-col gap-4 rounded-md border border-border px-5 pb-5 pt-4"
-                >
-                  <legend class="px-2 text-sm font-semibold text-text">Delivery address</legend>
-                  <ng-container
-                    [tanstackField]="checkoutForm"
-                    name="delivery.location"
-                    [validators]="{ onChange: requiredLocation, onSubmit: requiredLocation }"
-                    #deliveryLocation="field"
-                  >
-                    <rw-photon-location-field
-                      label="City and country"
-                      [required]="true"
-                      [field]="deliveryLocation.api"
-                    />
-                  </ng-container>
-                  <ng-container
-                    [tanstackField]="checkoutForm"
-                    name="delivery.street"
-                    [validators]="{ onChange: streetValidator, onSubmit: streetValidator }"
-                    #deliveryStreet="field"
-                  >
-                    <rw-input
-                      label="Street address"
-                      [isRequired]="true"
-                      [field]="deliveryStreet.api"
-                      placeholder="Street, number, building, floor…"
-                    />
-                  </ng-container>
-                </fieldset>
-
-                <fieldset
-                  class="m-0 flex flex-col gap-4 rounded-md border border-border px-5 pb-5 pt-4"
-                >
-                  <legend class="px-2 text-sm font-semibold text-text">Billing address</legend>
-                  <ng-container
-                    [tanstackField]="checkoutForm"
-                    name="useSameAsBilling"
-                    #same="field"
-                  >
-                    <label class="flex cursor-pointer items-start gap-3">
-                      <input
-                        type="checkbox"
-                        class="mt-[0.2rem] size-4 cursor-pointer accent-primary"
-                        [checked]="same.api.state.value"
-                        (blur)="same.api.handleBlur()"
-                        (change)="same.api.handleChange($any($event.target).checked)"
-                      />
-                      <span class="flex flex-col gap-1 text-sm text-text">
-                        Same as delivery address
-                        <span class="text-xs text-text-muted">
-                          Uncheck to bill to a different address for this order.
-                        </span>
-                      </span>
-                    </label>
-                  </ng-container>
-
-                  @if (!checkoutFormState().values.useSameAsBilling) {
-                    <div class="flex flex-col gap-4 border-t border-dashed border-border pt-2">
-                      <ng-container
-                        [tanstackField]="checkoutForm"
-                        name="billing.location"
-                        [validators]="{
-                          onChange: requiredBillingLocation,
-                          onSubmit: requiredBillingLocation,
-                        }"
-                        #billingLocation="field"
-                      >
-                        <rw-photon-location-field
-                          label="City and country"
-                          [required]="true"
-                          [field]="billingLocation.api"
-                        />
-                      </ng-container>
-                      <ng-container
-                        [tanstackField]="checkoutForm"
-                        name="billing.street"
-                        [validators]="{
-                          onChange: billingStreetValidator,
-                          onSubmit: billingStreetValidator,
-                        }"
-                        #billingStreet="field"
-                      >
-                        <rw-input
-                          label="Street address"
-                          [isRequired]="true"
-                          [field]="billingStreet.api"
-                          placeholder="Street, number, building, floor…"
-                        />
-                      </ng-container>
-                    </div>
-                  }
-                </fieldset>
-
-                <ng-container
-                  [tanstackField]="checkoutForm"
-                  name="notes"
-                  [validators]="{ onChange: maxNotes }"
-                  #notes="field"
-                >
-                  <rw-textarea
-                    label="Order notes"
-                    [field]="notes.api"
-                    placeholder="Any special instructions?"
-                    [maxLength]="300"
-                  />
-                </ng-container>
-
-                <rw-button
-                  class="self-end"
-                  type="button"
-                  [isLoading]="checkoutFormState().isSubmitting"
-                  (click)="handleSubmit($event)"
-                >
-                  Place order
-                </rw-button>
-              </form>
+              @if (checkout.submitError()) {
+                <rw-callout variant="error" [message]="checkout.submitError()" class="mb-4" />
+              }
+              <div [tanstackWithForm]="checkout.checkoutForm">
+                <outlet />
+              </div>
             </section>
 
             <aside class="sticky top-20 rounded-lg border border-border bg-surface p-6">
@@ -217,9 +109,11 @@ interface CheckoutForm {
               <p class="mb-4 text-sm text-text-muted">{{ data.pizzeria.name }}</p>
               <ul class="mb-4 flex list-none flex-col gap-2">
                 @for (item of data.items; track item.id) {
-                  <li class="flex justify-between text-sm">
-                    <span>{{ item.quantity }}× {{ item.pizza.name }}</span>
-                    <span>€{{ item.totalPrice | number: '1.2-2' }}</span>
+                  <li class="flex justify-between gap-3 text-sm">
+                    <span class="min-w-0 tabular-nums"
+                      >{{ item.quantity }}× {{ item.pizza.name }}</span
+                    >
+                    <span class="tabular-nums">€{{ item.totalPrice | number: '1.2-2' }}</span>
                   </li>
                 }
               </ul>
@@ -227,7 +121,7 @@ interface CheckoutForm {
                 class="flex justify-between border-t border-border pt-3 text-base [&_strong]:text-lg [&_strong]:text-primary"
               >
                 <span>Total</span>
-                <strong>€{{ data.total | number: '1.2-2' }}</strong>
+                <strong class="tabular-nums">€{{ checkout.totalWithTip() | number: '1.2-2' }}</strong>
               </div>
             </aside>
           </div>
@@ -237,86 +131,14 @@ interface CheckoutForm {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class CheckoutPage {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly title = inject(Title);
-  protected readonly cart = injectCartClient();
+class CheckoutLayoutPage {
   protected readonly cartClient = injectCartClientState();
   protected readonly cartPreview = injectCartPreview();
+  protected readonly checkout = inject(CHECKOUT_SCOPE);
+  private readonly router = injectRouter();
   private readonly navigate = injectNavigate();
+  private readonly title = inject(Title);
   private readonly dialog = inject(Dialog);
-  private readonly createOrderMutation = injectMutation(() =>
-    createOrderMutationOptions(this.apiFetch),
-  );
-
-  /** Set before navigating away after a successful order so {@link canDeactivate} does not prompt. */
-  private readonly submitted = signal(false);
-
-  protected readonly submitError = signal('');
-
-  protected readonly checkoutForm = injectForm({
-    defaultValues: {
-      delivery: { location: null, street: '' },
-      billing: { location: null, street: '' },
-      useSameAsBilling: true,
-      notes: '',
-    } satisfies CheckoutForm,
-    onSubmit: async ({ value: formValue }) => {
-      this.submitError.set('');
-      const delivery: Address = {
-        street: formValue.delivery.street.trim(),
-        city: formValue.delivery.location!.city.trim(),
-        country: formValue.delivery.location!.country.trim(),
-      };
-      const billing: Address | undefined = !formValue.useSameAsBilling
-        ? {
-            street: formValue.billing.street.trim(),
-            city: formValue.billing.location!.city.trim(),
-            country: formValue.billing.location!.country.trim(),
-          }
-        : undefined;
-
-      const payload = {
-        pizzeriaId: this.cartClient.pizzeria()!.id,
-        deliveryAddress: delivery,
-        ...(billing ? { billingAddress: billing } : {}),
-        notes: formValue.notes?.trim() || undefined,
-        items: this.cartClient.items().map((item) => ({
-          pizzaId: item.pizzaId,
-          quantity: item.quantity,
-          selectedSizeId: item.selectedSizeId ?? undefined,
-          selectedOptionIds: item.selectedOptionIds,
-        })),
-      };
-
-      try {
-        const order = await this.createOrderMutation.mutateAsync(payload);
-        this.cart.clear();
-        this.submitted.set(true);
-        void this.navigate({ to: '/orders/' + order.id });
-      } catch {
-        this.submitError.set('Order failed. Please try again.');
-      }
-    },
-  });
-  protected readonly checkoutFormState = injectStore(this.checkoutForm);
-  protected readonly requiredLocation = requiredValue('Choose a location from the list');
-  protected readonly requiredStreet = requiredText('Street address is required');
-  protected readonly maxStreet = maxTextLength(250, 'Max 250 characters');
-  protected readonly streetValidator = composeValidators(this.requiredStreet, this.maxStreet);
-  protected readonly maxNotes = maxTextLength(300, 'Max 300 characters');
-  protected readonly requiredBillingLocation = ({ value }: { value: LocationValue | null }) =>
-    this.checkoutForm.state.values.useSameAsBilling
-      ? undefined
-      : requiredValue('Choose a location from the list')({ value });
-  protected readonly requiredBillingStreet = ({ value }: { value: string }) =>
-    this.checkoutForm.state.values.useSameAsBilling
-      ? undefined
-      : requiredText('Street address is required')({ value });
-  protected readonly billingStreetValidator = composeValidators(
-    this.requiredBillingStreet,
-    this.maxStreet,
-  );
 
   public constructor() {
     effect(() => {
@@ -325,18 +147,24 @@ class CheckoutPage {
     });
 
     effect(() => {
-      const useSameAsBilling = this.checkoutFormState().values.useSameAsBilling;
-      if (useSameAsBilling) {
-        const current = this.checkoutForm.state.values;
-        if (current.billing.location !== null || current.billing.street !== '') {
-          this.checkoutForm.setFieldValue('billing', { location: null, street: '' });
-        }
+      const pathname = this.router.state.location.pathname;
+      const step = parseCheckoutStep(pathname);
+      if (!step) {
+        return;
+      }
+      const blocked = blockedCheckoutStep(this.checkout.checkoutFormState().values, step);
+      if (blocked) {
+        void this.navigate({ to: '/checkout/' + blocked });
       }
     });
   }
 
+  protected isCurrentStep(step: string): boolean {
+    return this.router.state.location.pathname.endsWith('/' + step);
+  }
+
   public canDeactivate(): boolean | Observable<boolean> {
-    if (this.submitted() || !this.checkoutFormState().isDirty) {
+    if (this.checkout.submitted() || !this.checkout.checkoutFormState().isDirty) {
       return true;
     }
     const ref = this.dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
@@ -349,21 +177,5 @@ class CheckoutPage {
       },
     });
     return ref.closed.pipe(map((result) => result === 'confirmed'));
-  }
-
-  protected async handleSubmit(event: Event): Promise<void> {
-    event.preventDefault();
-    event.stopPropagation();
-    if (
-      await validateSubmitFields(this.checkoutForm, [
-        'delivery.location',
-        'delivery.street',
-        'billing.location',
-        'billing.street',
-        'notes',
-      ])
-    ) {
-      await this.checkoutForm.handleSubmit();
-    }
   }
 }

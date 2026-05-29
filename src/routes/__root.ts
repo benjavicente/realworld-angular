@@ -8,6 +8,7 @@ import { Header } from './-components/header/header';
 import { Footer } from './-components/footer/footer';
 import { NotFound } from './-components/not-found/not-found';
 import { authUserQueryOptions } from '../lib/services/auth';
+import { images } from '../lib/assets';
 import stylesUrl from '../styles.css?url';
 
 export const Route = createRootRouteWithContext<{
@@ -23,7 +24,10 @@ export const Route = createRootRouteWithContext<{
       { title: 'Realworld Angular' },
       { name: 'description', content: 'Realworld Angular running on Angular Start.' },
     ],
-    links: [{ rel: 'stylesheet', href: stylesUrl }],
+    links: [
+      { rel: 'icon', href: images.faviconSvg, type: 'image/svg+xml' },
+      { rel: 'stylesheet', href: stylesUrl },
+    ],
   }),
   component: () => RootComponent,
   notFoundComponent: () => NotFound,

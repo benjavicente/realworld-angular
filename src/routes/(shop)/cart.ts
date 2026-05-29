@@ -14,6 +14,8 @@ import { Callout } from '../../lib/components/callout/callout';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
 import { Spinner } from '../../lib/components/spinner/spinner';
 import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image-url.pipe';
+import { icons } from '../../lib/assets';
+import type { CartOption } from './-store/cart.types';
 
 export const Route = createFileRoute('/(shop)/cart')({
   component: () => CartPage,
@@ -53,9 +55,9 @@ export const Route = createFileRoute('/(shop)/cart')({
                 </a>
               </strong>
             </p>
-            <rw-button variant="outlined" size="sm" type="button" (click)="cart.clear()">
+            <button rw-button variant="outlined" size="sm" type="button" (click)="cart.clear()">
               Clear cart
-            </rw-button>
+            </button>
           </div>
 
           <ul class="flex list-none flex-col gap-4" role="list">
@@ -80,42 +82,37 @@ export const Route = createFileRoute('/(shop)/cart')({
                       @if (item.size && item.extraToppings.length > 0) {
                         ,
                       }
-                      {{ item.extraToppings.map((t) => t.label).join(', ') }}
+                      {{ formatExtraToppings(item.extraToppings) }}
                     </p>
                   }
-                  <p class="font-medium text-primary">€{{ item.totalPrice | number: '1.2-2' }}</p>
+                  <p class="font-medium tabular-nums text-primary">€{{ item.totalPrice | number: '1.2-2' }}</p>
                 </div>
                 <div class="flex flex-row flex-wrap items-center justify-end gap-2">
                   <div class="flex items-center gap-2" role="group">
                     <button
                       type="button"
-                      class="flex size-7 items-center justify-center rounded-full border-[1.5px] border-border text-base hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
+                      class="flex size-7 items-center justify-center rounded-full border-[1.5px] border-border text-text hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:[&_svg]:opacity-40"
                       [disabled]="item.quantity <= 1"
                       aria-label="Decrease quantity"
                       (click)="cart.updateQuantity(item.id, item.quantity - 1)"
                     >
-                      <img
-                        src="/icons/remove.svg"
-                        alt=""
-                        width="24"
-                        height="24"
-                        aria-hidden="true"
-                      />
+                      <svg class="size-6" viewBox="0 -960 960 960" aria-hidden="true">
+                        <path fill="currentColor" d="M200-440v-80h560v80H200Z" />
+                      </svg>
                     </button>
                     <span class="min-w-6 text-center font-semibold">{{ item.quantity }}</span>
                     <button
                       type="button"
-                      class="flex size-7 items-center justify-center rounded-full border-[1.5px] border-border text-base hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
+                      class="flex size-7 items-center justify-center rounded-full border-[1.5px] border-border text-text hover:border-primary hover:text-primary"
                       aria-label="Increase quantity"
                       (click)="cart.updateQuantity(item.id, item.quantity + 1)"
                     >
-                      <img
-                        src="/icons/add.svg"
-                        alt=""
-                        width="24"
-                        height="24"
-                        aria-hidden="true"
-                      />
+                      <svg class="size-6" viewBox="0 -960 960 960" aria-hidden="true">
+                        <path
+                          fill="currentColor"
+                          d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"
+                        />
+                      </svg>
                     </button>
                   </div>
                   <button
@@ -125,7 +122,7 @@ export const Route = createFileRoute('/(shop)/cart')({
                     (click)="cart.removeItem(item.id)"
                   >
                     <img
-                      src="/icons/delete.svg"
+                      [src]="icons.delete"
                       alt=""
                       width="20"
                       height="20"
@@ -143,8 +140,8 @@ export const Route = createFileRoute('/(shop)/cart')({
           @if (!auth.isAuthenticated()) {
             <div class="flex flex-col gap-3 rounded-md border border-info bg-info-bg p-4">
               <p class="m-0 text-sm text-text">Please log in to place your order.</p>
-              <rw-button class="flex w-full flex-col" [link]="{ to: '/auth/login' }"> Log in to checkout </rw-button>
-              <a [link]="{ to: '/auth/register' }" class="text-center text-sm font-medium text-primary underline hover:text-primary-light">
+              <a rw-button class="block w-full" [link]="{ to: '/auth/login', search: { redirect: '/cart' } }"> Log in to checkout </a>
+              <a [link]="{ to: '/auth/register', search: { redirect: '/cart' } }" class="text-center text-sm font-medium text-primary underline hover:text-primary-light">
                 No account? Join for free
               </a>
             </div>
@@ -158,16 +155,18 @@ export const Route = createFileRoute('/(shop)/cart')({
                     <span class="whitespace-nowrap font-medium"> ×{{ item.quantity }}</span>
                   }
                 </span>
-                <span>€{{ item.totalPrice | number: '1.2-2' }}</span>
+                <span class="tabular-nums">€{{ item.totalPrice | number: '1.2-2' }}</span>
               </li>
             }
           </ul>
           <div class="flex justify-between border-t border-border pt-3 text-base [&_strong]:text-lg [&_strong]:text-primary">
             <span>Total</span>
-            <strong>€{{ data.total | number: '1.2-2' }}</strong>
+            <strong class="tabular-nums">€{{ data.total | number: '1.2-2' }}</strong>
           </div>
           @if (auth.isAuthenticated()) {
-            <rw-button class="flex w-full flex-col" [link]="{ to: '/checkout' }"> Proceed to checkout </rw-button>
+            <a rw-button class="block w-full" [link]="{ to: '/checkout/delivery' }">
+              Proceed to checkout
+            </a>
           }
         </aside>
       </div>
@@ -188,6 +187,7 @@ class CartPage {
   protected readonly cartClient = injectCartClientState();
   protected readonly cartPreview = injectCartPreview();
   protected readonly auth = injectAuthState();
+  protected readonly icons = icons;
   private readonly itemCount = injectCartClientItemCount();
 
   public constructor() {
@@ -195,5 +195,9 @@ class CartPage {
       const name = this.cartPreview.cart()?.pizzeria.name;
       this.title.setTitle(name ? `Cart - ${name}` : 'Cart');
     });
+  }
+
+  protected formatExtraToppings(toppings: CartOption[]): string {
+    return toppings.map((topping) => topping.label).join(', ');
   }
 }

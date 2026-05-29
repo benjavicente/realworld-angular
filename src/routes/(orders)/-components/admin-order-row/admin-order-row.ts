@@ -14,6 +14,7 @@ import {
   cancelOrderMutationOptions,
   deliverOrderMutationOptions,
 } from '../../../../lib/api/api-mutations';
+import { icons } from '../../../../lib/assets';
 
 @Component({
   selector: 'tr[rw-admin-order-row]',
@@ -22,8 +23,8 @@ import {
     <td class="max-w-56 truncate font-medium text-text">
       {{ order().createdAt | date: 'dd MMM, HH:mm' }}
     </td>
-    <td class="whitespace-nowrap text-text-muted">{{ order().items.length }} pizza(s)</td>
-    <td class="whitespace-nowrap text-text-muted">€{{ order().total | number: '1.2-2' }}</td>
+    <td class="whitespace-nowrap tabular-nums text-text-muted">{{ order().items.length }} pizza(s)</td>
+    <td class="whitespace-nowrap tabular-nums text-text-muted">€{{ order().total | number: '1.2-2' }}</td>
     <td><rw-status-badge [status]="order().status" /></td>
     <td class="w-px whitespace-nowrap ps-4 text-end align-middle">
       <span class="inline-flex items-center justify-end gap-2">
@@ -34,7 +35,7 @@ import {
             aria-label="Mark order as delivered"
             (click)="promptDeliverOrder()"
           >
-            <img src="/icons/delivery.svg" alt="" width="20" height="20" aria-hidden="true" />
+            <img [src]="icons.delivery" alt="" width="20" height="20" aria-hidden="true" />
           </button>
         }
         @if (order().status === 'PENDING') {
@@ -44,7 +45,7 @@ import {
             aria-label="Cancel pending order"
             (click)="promptCancelOrder()"
           >
-            <img src="/icons/cancel.svg" alt="" width="20" height="20" aria-hidden="true" />
+            <img [src]="icons.cancel" alt="" width="20" height="20" aria-hidden="true" />
           </button>
         }
       </span>
@@ -63,6 +64,7 @@ export class AdminOrderRow {
   );
 
   public readonly order = input.required<AdminOrderListItem>();
+  protected readonly icons = icons;
 
   public readonly updateOrder = output<AdminOrderListItem>();
   public readonly showFeedback = output<{ variant: 'error' | 'success'; message: string }>();

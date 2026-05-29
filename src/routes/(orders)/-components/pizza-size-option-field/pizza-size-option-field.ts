@@ -25,7 +25,7 @@ import { fieldErrorMessage, type FieldLike } from '../../../../lib/forms/tanstac
             />
             <span class="min-w-0 flex-1">{{ option.label }}</span>
             @if (option.price > 0) {
-              <span class="text-xs text-text-muted">+€{{ option.price | number: '1.2-2' }}</span>
+              <span class="text-xs tabular-nums text-text-muted">+€{{ option.price | number: '1.2-2' }}</span>
             }
           </label>
         }

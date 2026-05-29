@@ -7,4 +7,4 @@ import { RouterProvider } from '@benjavicente/angular-router-experimental';
   template: '<router-provider />',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {}
+export class App { }

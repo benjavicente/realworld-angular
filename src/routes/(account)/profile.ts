@@ -13,7 +13,7 @@ import { requireAuth } from '../-guards';
 
 export const Route = createFileRoute('/(account)/profile')({
   head: () => ({ meta: [{ title: 'My Profile' }] }),
-  beforeLoad: ({ context }) => requireAuth(context),
+  beforeLoad: ({ context, location }) => requireAuth(context, location),
   component: () => ProfilePage,
 });
 
@@ -34,14 +34,14 @@ export const Route = createFileRoute('/(account)/profile')({
             </header>
 
             <div class="flex shrink-0">
-              <rw-button
+              <button rw-button
                 variant="outlined"
                 palette="danger"
                 [isLoading]="this.logoutMutation.isPending()"
                 (click)="logout()"
               >
                 Log out
-              </rw-button>
+              </button>
             </div>
           </div>
         </div>

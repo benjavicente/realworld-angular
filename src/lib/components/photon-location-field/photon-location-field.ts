@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   computed,
   DestroyRef,
@@ -96,6 +97,7 @@ let nextFieldId = 0;
 export class PhotonLocationField {
   private readonly destroyRef = inject(DestroyRef);
   private readonly searchPlaces = inject(PHOTON_SEARCH_PLACES);
+  private readonly cdr = inject(ChangeDetectorRef);
   private readonly fieldId = `rw-photon-location-${++nextFieldId}`;
 
   public readonly value = model<LocationValue | null>(null);
@@ -111,6 +113,7 @@ export class PhotonLocationField {
   protected readonly listboxId = `${this.fieldId}-listbox`;
 
   protected readonly displayText = signal('');
+  private readonly committedValue = signal<LocationValue | null>(null);
   protected readonly suggestions = signal<PhotonLocationSuggestion[]>([]);
   protected readonly panelOpen = signal(false);
   protected readonly isLoading = signal(false);
@@ -119,7 +122,7 @@ export class PhotonLocationField {
   protected readonly showPanel = computed(
     () => this.panelOpen() && (this.isLoading() || this.suggestions().length > 0),
   );
-  protected readonly currentValue = computed(() => this.field()?.state.value ?? this.value());
+  protected readonly currentValue = computed(() => this.field() ? this.committedValue() : this.value());
   protected readonly isTouched = computed(
     () => this.field()?.state.meta.isTouched ?? this.touched(),
   );
@@ -147,6 +150,15 @@ export class PhotonLocationField {
       });
 
     effect(() => {
+      const field = this.field();
+      if (field) {
+        this.committedValue.set(field.state.value);
+        return;
+      }
+      this.committedValue.set(this.value());
+    });
+
+    effect(() => {
       const location = this.currentValue();
       if (location?.city && location?.country) {
         const label = formatLocationLabel(location);
@@ -155,7 +167,7 @@ export class PhotonLocationField {
         this.closePanel();
         return;
       }
-      if (location === null && this.pickedLabel() !== null) {
+      if (!location && this.pickedLabel() !== null) {
         this.pickedLabel.set(null);
         this.displayText.set('');
         this.suggestions.set([]);
@@ -249,8 +261,10 @@ export class PhotonLocationField {
 
   private setValue(value: LocationValue | null): void {
     const field = this.field();
+    this.committedValue.set(value);
     if (field) {
       field.handleChange(value);
+      this.cdr.markForCheck();
     } else {
       this.value.set(value);
     }

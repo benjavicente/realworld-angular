@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Link } from '@benjavicente/angular-router-experimental';
-import { RoleDirective } from '../../../lib/directives/role.directive';
+import { injectAuthState } from '../../../lib/services/auth';
 
 @Component({
   selector: 'rw-footer',
-  imports: [Link, RoleDirective],
+  imports: [Link],
   template: `
     <footer class="mt-16 border-t border-border py-6" role="contentinfo">
       <div
@@ -39,16 +39,19 @@ import { RoleDirective } from '../../../lib/directives/role.directive';
             class="text-sm text-text-muted no-underline hover:text-text hover:underline"
             >Terms and conditions</a
           >
-          <a
-            *rwRole="'GUEST'"
-            [link]="{ to: '/auth/register-pizzeria' }"
-            class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-text-on-primary no-underline transition hover:bg-primary-dark hover:no-underline whitespace-nowrap"
-            >Create your pizzeria</a
-          >
+          @if (!auth.isAuthenticated()) {
+            <a
+              [link]="{ to: '/auth/register-pizzeria' }"
+              class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-text-on-primary no-underline transition hover:bg-primary-dark hover:no-underline whitespace-nowrap"
+              >Create your pizzeria</a
+            >
+          }
         </nav>
       </div>
     </footer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Footer {}
+export class Footer {
+  protected readonly auth = injectAuthState();
+}

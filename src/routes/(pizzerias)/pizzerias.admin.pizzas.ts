@@ -27,7 +27,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/admin/pizzas')({
     }
 
     <div class="mb-8 flex justify-end">
-      <rw-button (click)="openCreate()">+ Create pizza</rw-button>
+      <button rw-button (click)="openCreate()">+ Create pizza</button>
     </div>
 
     @if (pizzasResource.isPending()) {
@@ -42,7 +42,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/admin/pizzas')({
           title="No pizzas yet"
           text="Create pizzas to build the menu customers see when they order."
         >
-          <rw-button (click)="openCreate()">Create your first pizza</rw-button>
+          <button rw-button (click)="openCreate()">Create your first pizza</button>
         </rw-empty-state>
       } @else {
         <section class="flex flex-col gap-3">

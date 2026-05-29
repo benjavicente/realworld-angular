@@ -13,7 +13,7 @@ import {
   registerMutationOptions,
   registerPizzeriaOwnerMutationOptions,
 } from '../../lib/api/api-mutations';
-import { requireGuest } from '../-guards';
+import { requireGuest, sanitizeRedirectPath, validateRedirectSearch } from '../-guards';
 import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form';
 import {
   composeValidators,
@@ -22,10 +22,12 @@ import {
   requiredText,
   validateSubmitFields,
 } from '../../lib/forms/tanstack-form';
+import { icons } from '../../lib/assets';
 
 export const Route = createFileRoute('/(auth)/auth/register-pizzeria')({
   head: () => ({ meta: [{ title: 'Create your pizzeria account' }] }),
-  beforeLoad: ({ context }) => requireGuest(context),
+  validateSearch: validateRedirectSearch,
+  beforeLoad: ({ context, search }) => requireGuest(context, search.redirect),
   component: () => RegisterPizzeriaRouteComponent,
 });
 
@@ -84,9 +86,7 @@ export const Route = createFileRoute('/(auth)/auth/register-pizzeria')({
               >
                 <input #showPassword type="checkbox" class="sr-only" (change)="(void 0)" />
                 <img
-                  [src]="
-                    showPassword.checked ? '/icons/visibility-off.svg' : '/icons/visibility.svg'
-                  "
+                  [src]="showPassword.checked ? icons['visibility-off'] : icons.visibility"
                   width="24"
                   height="24"
                   alt=""
@@ -120,11 +120,7 @@ export const Route = createFileRoute('/(auth)/auth/register-pizzeria')({
               >
                 <input #showConfirmPassword type="checkbox" class="sr-only" (change)="(void 0)" />
                 <img
-                  [src]="
-                    showConfirmPassword.checked
-                      ? '/icons/visibility-off.svg'
-                      : '/icons/visibility.svg'
-                  "
+                  [src]="showConfirmPassword.checked ? icons['visibility-off'] : icons.visibility"
                   width="24"
                   height="24"
                   alt=""
@@ -133,19 +129,18 @@ export const Route = createFileRoute('/(auth)/auth/register-pizzeria')({
               </label>
             </rw-input>
           </ng-container>
-          <rw-button
-            type="button"
+          <button rw-button
+            type="submit"
             [isLoading]="registerFormState().isSubmitting"
             class="flex w-full flex-col"
-            (click)="handleSubmit($event)"
           >
             {{ registerAsPizzeriaOwner() ? 'Create pizzeria account' : 'Create account' }}
-          </rw-button>
+          </button>
         </form>
 
         <p class="mt-4 text-center text-sm text-text-muted">
           Already have an account?
-          <a [link]="{ to: '/auth/login' }">Log in</a>
+          <a [link]="{ to: '/auth/login', search: { redirect: redirectTarget() } }">Log in</a>
         </p>
       </div>
     </div>
@@ -154,6 +149,7 @@ export const Route = createFileRoute('/(auth)/auth/register-pizzeria')({
 })
 class RegisterPage {
   private readonly routerContext = injectRouter().options.context;
+  private readonly search = Route.injectSearch();
   private readonly navigate = injectNavigate();
   private readonly registerMutation = injectMutation(() =>
     registerMutationOptions(this.routerContext.apiFetch),
@@ -165,6 +161,9 @@ class RegisterPage {
   public readonly registerAsPizzeriaOwner = input<boolean>(false);
 
   protected readonly submitError = signal('');
+  protected readonly icons = icons;
+  protected readonly redirectTarget = () =>
+    sanitizeRedirectPath(this.search().redirect, '/pizzerias/admin/new');
 
   protected readonly registerForm = injectForm({
     defaultValues: { email: '', password: '', confirmPassword: '' },
@@ -179,7 +178,9 @@ class RegisterPage {
           ? this.registerPizzeriaOwnerMutation
           : this.registerMutation;
         await mutation.mutateAsync({ email: value.email, password: value.password });
-        void this.navigate({ to: this.registerAsPizzeriaOwner() ? '/pizzerias/admin/new' : '/' });
+        void this.navigate({
+          href: this.registerAsPizzeriaOwner() ? this.redirectTarget() : '/',
+        });
       } catch {
         this.submitError.set('Registration failed');
       }

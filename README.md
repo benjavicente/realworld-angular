@@ -1,4 +1,4 @@
-![RealWorld Angular banner](public/images/realworld-angular-banner.png)
+![RealWorld Angular banner](src/assets/images/realworld-angular-banner.png)
 
 # Realworld Angular playground
 

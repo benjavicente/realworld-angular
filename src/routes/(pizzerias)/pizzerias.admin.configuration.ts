@@ -95,13 +95,13 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/admin/configuration
           </ng-container>
 
           <div class="flex justify-end">
-            <rw-button
+            <button rw-button
               type="button"
               [isLoading]="pizzeriaFormState().isSubmitting"
               (click)="handleSubmit($event)"
             >
               Save changes
-            </rw-button>
+            </button>
           </div>
 
           <div class="rounded-lg border border-error/30 bg-error-bg p-5" aria-label="Danger zone">
@@ -109,14 +109,14 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/admin/configuration
               variant="error"
               message="Danger zone: deleting this pizzeria permanently removes it and cannot be undone."
             >
-              <rw-button
+              <button rw-button
                 type="button"
                 palette="danger"
                 [isLoading]="isDeleting()"
                 (click)="deletePizzeria()"
               >
                 Delete pizzeria
-              </rw-button>
+              </button>
             </rw-callout>
           </div>
         </form>

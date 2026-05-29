@@ -14,28 +14,79 @@ export interface RouteContext {
   inject: AngularInjectFn;
 }
 
+export interface RedirectSearch {
+  redirect?: string;
+}
+
+interface RouteLocationLike {
+  href?: string;
+  pathname?: string;
+  searchStr?: string;
+}
+
+export function validateRedirectSearch(search: Record<string, unknown>): RedirectSearch {
+  return {
+    redirect: sanitizeRedirectPath(
+      typeof search['redirect'] === 'string' ? search['redirect'] : undefined,
+    ),
+  };
+}
+
+export function sanitizeRedirectPath(path: string | undefined, fallback = '/'): string {
+  if (!path || !path.startsWith('/') || path.startsWith('//')) {
+    return fallback;
+  }
+  return path;
+}
+
+function currentPath(location: RouteLocationLike | undefined): string {
+  if (!location) {
+    return '/';
+  }
+  if (location.href?.startsWith('/')) {
+    return location.href;
+  }
+  return `${location.pathname ?? '/'}${location.searchStr ?? ''}`;
+}
+
 async function resolveUser(context: RouteContext) {
   return context.queryClient.ensureQueryData(authUserQueryOptions(context.apiFetch));
 }
 
-export async function requireAuth(context: RouteContext): Promise<void> {
+export async function requireAuth(
+  context: RouteContext,
+  location?: RouteLocationLike,
+): Promise<void> {
   const user = await resolveUser(context);
   if (!user) {
-    throw redirect({ to: '/auth/login' });
+    throw redirect({
+      to: '/auth/login',
+      search: { redirect: sanitizeRedirectPath(currentPath(location)) },
+    });
   }
 }
 
-export async function requireGuest(context: RouteContext): Promise<void> {
+export async function requireGuest(
+  context: RouteContext,
+  redirectPath: string | undefined = '/',
+): Promise<void> {
   const user = await resolveUser(context);
   if (user) {
-    throw redirect({ to: '/' });
+    throw redirect({ href: sanitizeRedirectPath(redirectPath) });
   }
 }
 
-export async function requireRole(context: RouteContext, role: string): Promise<void> {
+export async function requireRole(
+  context: RouteContext,
+  role: string,
+  location?: RouteLocationLike,
+): Promise<void> {
   const user = await resolveUser(context);
   if (!user) {
-    throw redirect({ to: '/auth/login' });
+    throw redirect({
+      to: '/auth/login',
+      search: { redirect: sanitizeRedirectPath(currentPath(location)) },
+    });
   }
   if (user.role !== role) {
     throw redirect({ to: '/unauthorized' });
@@ -48,8 +99,11 @@ export function requireCart(context: RouteContext): void {
   }
 }
 
-export async function requireNoPizzeria(context: RouteContext): Promise<void> {
-  await requireRole(context, ROLES.PIZZERIA_ADMIN);
+export async function requireNoPizzeria(
+  context: RouteContext,
+  location?: RouteLocationLike,
+): Promise<void> {
+  await requireRole(context, ROLES.PIZZERIA_ADMIN, location);
 
   try {
     await context.queryClient.ensureQueryData(adminPizzeriaQueryOptions(context.apiFetch));

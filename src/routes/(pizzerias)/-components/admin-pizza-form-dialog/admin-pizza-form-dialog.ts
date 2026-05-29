@@ -99,7 +99,7 @@ interface AdminPizzaFormModel {
                 (change)="setExtraTopping(i, $any($event.target).checked)"
               />
               <span class="font-medium">{{ topping.label }}</span>
-              <span class="text-sm text-text-muted" aria-label="Extra price"
+              <span class="text-sm tabular-nums text-text-muted" aria-label="Extra price"
                 >+€{{ topping.price | number: '1.2-2' }}</span
               >
             </label>
@@ -111,18 +111,18 @@ interface AdminPizzaFormModel {
         <div class="flex flex-col gap-1">
           <p class="flex gap-2 text-sm">
             <span class="text-text-muted">Total price</span>
-            <strong class="font-semibold text-primary">
+            <strong class="font-semibold tabular-nums text-primary">
               €{{ pizzaTotalPrice() | number: '1.2-2' }}
             </strong>
           </p>
         </div>
         <div class="flex justify-end gap-3">
-          <rw-button variant="ghost" palette="secondary" type="button" (click)="dismiss()"
-            >Cancel</rw-button
-          >
-          <rw-button type="button" [isLoading]="pizzaFormState().isSubmitting" (click)="save()">
+          <button rw-button variant="ghost" palette="secondary" type="button" (click)="dismiss()">
+            Cancel
+          </button>
+          <button rw-button type="button" [isLoading]="pizzaFormState().isSubmitting" (click)="save()">
             {{ isEditMode ? 'Save changes' : 'Create pizza' }}
-          </rw-button>
+          </button>
         </div>
       </rw-modal-footer>
     </rw-modal>

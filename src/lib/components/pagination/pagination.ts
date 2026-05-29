@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
+import { icons } from '../../assets';
 
 @Component({
   selector: 'rw-pagination',
@@ -14,7 +15,7 @@ import { ChangeDetectionStrategy, Component, input, output, computed } from '@an
           (click)="pageChange.emit(currentPage() - 1)"
         >
           <img
-            src="/icons/chevron-left.svg"
+            [src]="icons['chevron-left']"
             alt=""
             width="24"
             height="24"
@@ -47,7 +48,7 @@ import { ChangeDetectionStrategy, Component, input, output, computed } from '@an
           (click)="pageChange.emit(currentPage() + 1)"
         >
           <img
-            src="/icons/chevron-right.svg"
+            [src]="icons['chevron-right']"
             alt=""
             width="24"
             height="24"
@@ -61,6 +62,8 @@ import { ChangeDetectionStrategy, Component, input, output, computed } from '@an
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Pagination {
+  protected readonly icons = icons;
+
   public readonly currentPage = input.required<number>();
   public readonly totalPages = input.required<number>();
   public readonly pageChange = output<number>();
@@ -86,7 +89,7 @@ export class Pagination {
 
   protected pageButtonClasses(page: number): string {
     const base =
-      'flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border-[1.5px] px-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+      'flex h-9 min-w-9 cursor-pointer items-center justify-center rounded-md border-[1.5px] px-2 text-sm font-medium tabular-nums transition disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
     if (page === this.currentPage()) {
       return `${base} border-primary bg-primary text-text-on-primary hover:border-primary-dark hover:bg-primary-dark hover:text-text-on-primary`;
     }
