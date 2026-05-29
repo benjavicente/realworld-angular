@@ -73,14 +73,14 @@ The application will be available at **http://localhost:4200** and automatically
 
 ## Available Scripts
 
-| Script                    | Description                                                |
-| ------------------------- | ---------------------------------------------------------- |
-| `pnpm start`              | Start the dev server at `http://localhost:4200`            |
-| `pnpm run build`          | Build for production into `dist/`                          |
-| `pnpm run preview:client` | Serve `dist/client` locally (SPA fallback → `_shell.html`) |
-| `pnpm run watch`          | Build in watch mode (development)                          |
-| `pnpm run test`           | Run unit tests with Vitest                                 |
-| `pnpm run lint`           | Lint the codebase with ESLint                              |
+| Script                    | Description                                               |
+| ------------------------- | --------------------------------------------------------- |
+| `pnpm start`              | Start the dev server at `http://localhost:4200`           |
+| `pnpm run build`          | Build for production into `dist/`                         |
+| `pnpm run preview:client` | Serve `dist/client` locally (SPA fallback → `index.html`) |
+| `pnpm run watch`          | Build in watch mode (development)                         |
+| `pnpm run test`           | Run unit tests with Vitest                                |
+| `pnpm run lint`           | Lint the codebase with ESLint                             |
 
 ## Application Structure
 

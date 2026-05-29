@@ -23,6 +23,10 @@ export default defineConfig(({ mode }) => ({
       srcDirectory: 'src',
       spa: {
         enabled: true,
+        prerender: {
+          // Cloudflare Workers SPA mode serves /index.html for unmatched routes.
+          outputPath: '/index.html',
+        },
       },
     }),
     angular({ tsconfig: 'tsconfig.app.json' }),
