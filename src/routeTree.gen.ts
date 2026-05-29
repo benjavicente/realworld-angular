@@ -38,97 +38,150 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const shopCheckoutRoute = shopCheckoutRouteImport.update({
-  id: '/(shop)/checkout',
-  path: '/checkout',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const shopCartRoute = shopCartRouteImport.update({
-  id: '/(shop)/cart',
-  path: '/cart',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const legalUnauthorizedRoute = legalUnauthorizedRouteImport.update({
-  id: '/(legal)/unauthorized',
-  path: '/unauthorized',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const legalTermsAndConditionsRoute = legalTermsAndConditionsRouteImport.update({
-  id: '/(legal)/terms-and-conditions',
-  path: '/terms-and-conditions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const accountProfileRoute = accountProfileRouteImport.update({
-  id: '/(account)/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const shopCheckoutRoute = shopCheckoutRouteImport
+  .update({
+    id: '/(shop)/checkout',
+    path: '/checkout',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() => import('./routes/(shop)/checkout.lazy').then((d) => d.Route))
+const shopCartRoute = shopCartRouteImport
+  .update({
+    id: '/(shop)/cart',
+    path: '/cart',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() => import('./routes/(shop)/cart.lazy').then((d) => d.Route))
+const legalUnauthorizedRoute = legalUnauthorizedRouteImport
+  .update({
+    id: '/(legal)/unauthorized',
+    path: '/unauthorized',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() => import('./routes/(legal)/unauthorized.lazy').then((d) => d.Route))
+const legalTermsAndConditionsRoute = legalTermsAndConditionsRouteImport
+  .update({
+    id: '/(legal)/terms-and-conditions',
+    path: '/terms-and-conditions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() =>
+    import('./routes/(legal)/terms-and-conditions.lazy').then((d) => d.Route),
+  )
+const accountProfileRoute = accountProfileRouteImport
+  .update({
+    id: '/(account)/profile',
+    path: '/profile',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() => import('./routes/(account)/profile.lazy').then((d) => d.Route))
 const shopCheckoutIndexRoute = shopCheckoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => shopCheckoutRoute,
 } as any)
-const pizzeriasPizzeriasIndexRoute = pizzeriasPizzeriasIndexRouteImport.update({
-  id: '/(pizzerias)/pizzerias/',
-  path: '/pizzerias/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ordersOrdersIndexRoute = ordersOrdersIndexRouteImport.update({
-  id: '/(orders)/orders/',
-  path: '/orders/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const shopCheckoutScheduleRoute = shopCheckoutScheduleRouteImport.update({
-  id: '/schedule',
-  path: '/schedule',
-  getParentRoute: () => shopCheckoutRoute,
-} as any)
-const shopCheckoutReviewRoute = shopCheckoutReviewRouteImport.update({
-  id: '/review',
-  path: '/review',
-  getParentRoute: () => shopCheckoutRoute,
-} as any)
-const shopCheckoutDeliveryRoute = shopCheckoutDeliveryRouteImport.update({
-  id: '/delivery',
-  path: '/delivery',
-  getParentRoute: () => shopCheckoutRoute,
-} as any)
-const pizzeriasPizzeriasAdminRoute = pizzeriasPizzeriasAdminRouteImport.update({
-  id: '/(pizzerias)/pizzerias/admin',
-  path: '/pizzerias/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const pizzeriasPizzeriasIdRoute = pizzeriasPizzeriasIdRouteImport.update({
-  id: '/(pizzerias)/pizzerias/$id',
-  path: '/pizzerias/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ordersOrdersAdminRoute = ordersOrdersAdminRouteImport.update({
-  id: '/(orders)/orders/admin',
-  path: '/orders/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ordersOrdersIdRoute = ordersOrdersIdRouteImport.update({
-  id: '/(orders)/orders/$id',
-  path: '/orders/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const authAuthRegisterPizzeriaRoute =
-  authAuthRegisterPizzeriaRouteImport.update({
+const pizzeriasPizzeriasIndexRoute = pizzeriasPizzeriasIndexRouteImport
+  .update({
+    id: '/(pizzerias)/pizzerias/',
+    path: '/pizzerias/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() =>
+    import('./routes/(pizzerias)/pizzerias.index.lazy').then((d) => d.Route),
+  )
+const ordersOrdersIndexRoute = ordersOrdersIndexRouteImport
+  .update({
+    id: '/(orders)/orders/',
+    path: '/orders/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() =>
+    import('./routes/(orders)/orders.index.lazy').then((d) => d.Route),
+  )
+const shopCheckoutScheduleRoute = shopCheckoutScheduleRouteImport
+  .update({
+    id: '/schedule',
+    path: '/schedule',
+    getParentRoute: () => shopCheckoutRoute,
+  } as any)
+  .lazy(() =>
+    import('./routes/(shop)/checkout.schedule.lazy').then((d) => d.Route),
+  )
+const shopCheckoutReviewRoute = shopCheckoutReviewRouteImport
+  .update({
+    id: '/review',
+    path: '/review',
+    getParentRoute: () => shopCheckoutRoute,
+  } as any)
+  .lazy(() =>
+    import('./routes/(shop)/checkout.review.lazy').then((d) => d.Route),
+  )
+const shopCheckoutDeliveryRoute = shopCheckoutDeliveryRouteImport
+  .update({
+    id: '/delivery',
+    path: '/delivery',
+    getParentRoute: () => shopCheckoutRoute,
+  } as any)
+  .lazy(() =>
+    import('./routes/(shop)/checkout.delivery.lazy').then((d) => d.Route),
+  )
+const pizzeriasPizzeriasAdminRoute = pizzeriasPizzeriasAdminRouteImport
+  .update({
+    id: '/(pizzerias)/pizzerias/admin',
+    path: '/pizzerias/admin',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() =>
+    import('./routes/(pizzerias)/pizzerias.admin.lazy').then((d) => d.Route),
+  )
+const pizzeriasPizzeriasIdRoute = pizzeriasPizzeriasIdRouteImport
+  .update({
+    id: '/(pizzerias)/pizzerias/$id',
+    path: '/pizzerias/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() =>
+    import('./routes/(pizzerias)/pizzerias.$id.lazy').then((d) => d.Route),
+  )
+const ordersOrdersAdminRoute = ordersOrdersAdminRouteImport
+  .update({
+    id: '/(orders)/orders/admin',
+    path: '/orders/admin',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() =>
+    import('./routes/(orders)/orders.admin.lazy').then((d) => d.Route),
+  )
+const ordersOrdersIdRoute = ordersOrdersIdRouteImport
+  .update({
+    id: '/(orders)/orders/$id',
+    path: '/orders/$id',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() => import('./routes/(orders)/orders.$id.lazy').then((d) => d.Route))
+const authAuthRegisterPizzeriaRoute = authAuthRegisterPizzeriaRouteImport
+  .update({
     id: '/(auth)/auth/register-pizzeria',
     path: '/auth/register-pizzeria',
     getParentRoute: () => rootRouteImport,
   } as any)
-const authAuthRegisterRoute = authAuthRegisterRouteImport.update({
-  id: '/(auth)/auth/register',
-  path: '/auth/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const authAuthLoginRoute = authAuthLoginRouteImport.update({
-  id: '/(auth)/auth/login',
-  path: '/auth/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
+  .lazy(() =>
+    import('./routes/(auth)/auth.register-pizzeria.lazy').then((d) => d.Route),
+  )
+const authAuthRegisterRoute = authAuthRegisterRouteImport
+  .update({
+    id: '/(auth)/auth/register',
+    path: '/auth/register',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() => import('./routes/(auth)/auth.register.lazy').then((d) => d.Route))
+const authAuthLoginRoute = authAuthLoginRouteImport
+  .update({
+    id: '/(auth)/auth/login',
+    path: '/auth/login',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+  .lazy(() => import('./routes/(auth)/auth.login.lazy').then((d) => d.Route))
 const pizzeriasPizzeriasAdminIndexRoute =
   pizzeriasPizzeriasAdminIndexRouteImport.update({
     id: '/',
@@ -136,23 +189,40 @@ const pizzeriasPizzeriasAdminIndexRoute =
     getParentRoute: () => pizzeriasPizzeriasAdminRoute,
   } as any)
 const pizzeriasPizzeriasAdminPizzasRoute =
-  pizzeriasPizzeriasAdminPizzasRouteImport.update({
-    id: '/pizzas',
-    path: '/pizzas',
-    getParentRoute: () => pizzeriasPizzeriasAdminRoute,
-  } as any)
-const pizzeriasPizzeriasAdminNewRoute =
-  pizzeriasPizzeriasAdminNewRouteImport.update({
+  pizzeriasPizzeriasAdminPizzasRouteImport
+    .update({
+      id: '/pizzas',
+      path: '/pizzas',
+      getParentRoute: () => pizzeriasPizzeriasAdminRoute,
+    } as any)
+    .lazy(() =>
+      import('./routes/(pizzerias)/pizzerias.admin.pizzas.lazy').then(
+        (d) => d.Route,
+      ),
+    )
+const pizzeriasPizzeriasAdminNewRoute = pizzeriasPizzeriasAdminNewRouteImport
+  .update({
     id: '/new',
     path: '/new',
     getParentRoute: () => pizzeriasPizzeriasAdminRoute,
   } as any)
+  .lazy(() =>
+    import('./routes/(pizzerias)/pizzerias.admin.new.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 const pizzeriasPizzeriasAdminConfigurationRoute =
-  pizzeriasPizzeriasAdminConfigurationRouteImport.update({
-    id: '/configuration',
-    path: '/configuration',
-    getParentRoute: () => pizzeriasPizzeriasAdminRoute,
-  } as any)
+  pizzeriasPizzeriasAdminConfigurationRouteImport
+    .update({
+      id: '/configuration',
+      path: '/configuration',
+      getParentRoute: () => pizzeriasPizzeriasAdminRoute,
+    } as any)
+    .lazy(() =>
+      import('./routes/(pizzerias)/pizzerias.admin.configuration.lazy').then(
+        (d) => d.Route,
+      ),
+    )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute

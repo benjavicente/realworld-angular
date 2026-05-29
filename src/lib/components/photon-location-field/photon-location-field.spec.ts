@@ -1,8 +1,8 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { PHOTON_SEARCH_PLACES, PhotonLocationField } from './photon-location-field';
+import { render, screen, fireEvent } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 import type { PhotonLocationSuggestion } from '../../api/photon';
+import { PHOTON_SEARCH_PLACES, PhotonLocationField } from './photon-location-field';
 
 const mockSuggestions: PhotonLocationSuggestion[] = [
   { label: 'Rome, Italy', city: 'Rome', country: 'Italy' },
@@ -12,77 +12,78 @@ const mockSuggestions: PhotonLocationSuggestion[] = [
 const searchPlacesFn = vi.fn();
 
 describe('PhotonLocationField', () => {
-  let fixture: ComponentFixture<PhotonLocationField>;
-  let el: HTMLElement;
-
-  beforeEach(() => {
+  async function renderField() {
     searchPlacesFn.mockReset();
     searchPlacesFn.mockResolvedValue([]);
-    TestBed.configureTestingModule({
+    return render(PhotonLocationField, {
       providers: [{ provide: PHOTON_SEARCH_PLACES, useValue: searchPlacesFn }],
-    }).overrideComponent(PhotonLocationField, { set: { schemas: [NO_ERRORS_SCHEMA] } });
-    fixture = TestBed.createComponent(PhotonLocationField);
-    el = fixture.nativeElement;
-    TestBed.flushEffects();
+    });
+  }
+
+  function openWithSuggestions(
+    component: PhotonLocationField,
+    fixture: { detectChanges: () => void },
+  ) {
+    (component as any).panelOpen.set(true);
+    (component as any).suggestions.set(mockSuggestions);
+    fixture.detectChanges();
+  }
+
+  it('should render the label', async () => {
+    await renderField();
+
+    expect(screen.getByText('Location (city and country)')).toBeTruthy();
   });
 
-  it('should render the label', () => {
-    expect(el.textContent).toContain('Location');
-  });
+  it('should show combobox input', async () => {
+    await renderField();
 
-  it('should show combobox input', () => {
-    const input = el.querySelector('input[role="combobox"]');
-    expect(input).not.toBeNull();
+    expect(screen.getByRole('combobox')).toBeTruthy();
   });
 
   it('should open suggestions panel when search results arrive', async () => {
-    (fixture.componentInstance as any).panelOpen.set(true);
-    (fixture.componentInstance as any).suggestions.set(mockSuggestions);
-    fixture.detectChanges();
+    const { fixture } = await renderField();
 
-    expect(el.querySelector('[aria-label="Location suggestions"]')).not.toBeNull();
+    openWithSuggestions(fixture.componentInstance, fixture);
+
+    expect(screen.getByLabelText('Location suggestions')).toBeTruthy();
   });
 
   it('should display suggestion labels', async () => {
-    (fixture.componentInstance as any).panelOpen.set(true);
-    (fixture.componentInstance as any).suggestions.set(mockSuggestions);
-    fixture.detectChanges();
+    const { fixture } = await renderField();
 
-    expect(el.textContent).toContain('Rome, Italy');
-    expect(el.textContent).toContain('Rotherham, United Kingdom');
+    openWithSuggestions(fixture.componentInstance, fixture);
+
+    expect(screen.getByText('Rome, Italy')).toBeTruthy();
+    expect(screen.getByText('Rotherham, United Kingdom')).toBeTruthy();
   });
 
   it('should commit value when suggestion is selected', async () => {
-    (fixture.componentInstance as any).panelOpen.set(true);
-    (fixture.componentInstance as any).suggestions.set(mockSuggestions);
-    fixture.detectChanges();
+    const user = userEvent.setup();
+    const { fixture } = await renderField();
+    openWithSuggestions(fixture.componentInstance, fixture);
 
-    const firstOption = Array.from(el.querySelectorAll<HTMLElement>('li')).find((option) =>
-      option.textContent?.includes('Rome, Italy'),
-    )!;
-    firstOption.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-    await fixture.whenStable();
+    await user.pointer({ keys: '[MouseLeft]', target: screen.getByText('Rome, Italy') });
 
     expect(fixture.componentInstance.value()).toEqual({ city: 'Rome', country: 'Italy' });
   });
 
-  it('should show loading hint while searching', () => {
+  it('should show loading hint while searching', async () => {
+    const { fixture } = await renderField();
     (fixture.componentInstance as any).panelOpen.set(true);
     (fixture.componentInstance as any).isLoading.set(true);
     fixture.detectChanges();
 
-    expect(el.textContent).toContain('Searching');
+    expect(screen.getByText('Searching…')).toBeTruthy();
   });
 
   it('should close panel on Escape key', async () => {
-    (fixture.componentInstance as any).panelOpen.set(true);
-    (fixture.componentInstance as any).suggestions.set(mockSuggestions);
-    fixture.detectChanges();
+    const { fixture } = await renderField();
+    openWithSuggestions(fixture.componentInstance, fixture);
 
-    const input = el.querySelector<HTMLInputElement>('input')!;
-    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Escape' });
     await fixture.whenStable();
 
-    expect(el.querySelector('[aria-label="Location suggestions"]')).toBeNull();
+    expect(screen.queryByLabelText('Location suggestions')).toBeNull();
   });
 });

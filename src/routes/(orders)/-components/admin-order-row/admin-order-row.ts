@@ -9,7 +9,7 @@ import {
 } from '../../../../lib/components/confirm-dialog/confirm-dialog';
 import { StatusBadge } from '../../../../lib/components/status-badge/status-badge';
 import { injectRouter } from '@benjavicente/angular-router-experimental';
-import { injectMutation } from '@benjavicente/angular-query-experimental';
+import { injectMutation } from '@benjavicente/angular-query';
 import {
   cancelOrderMutationOptions,
   deliverOrderMutationOptions,

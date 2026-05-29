@@ -1,66 +1,56 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
 import { Callout } from './callout';
 
 describe('Callout', () => {
-  let fixture: ComponentFixture<Callout>;
-  let el: HTMLElement;
-
-  beforeEach(async () => {
-    TestBed.configureTestingModule({}).overrideComponent(Callout, {
-      set: { schemas: [NO_ERRORS_SCHEMA] },
-    });
-    fixture = TestBed.createComponent(Callout);
-    el = fixture.nativeElement;
-    await fixture.whenStable();
-  });
-
   it('should render the message text', async () => {
-    fixture.componentRef.setInput('message', 'Something went wrong.');
-    await fixture.whenStable();
-    expect(el.textContent).toContain('Something went wrong.');
+    await render(Callout, { inputs: { message: 'Something went wrong.' } });
+
+    expect(screen.getByText('Something went wrong.')).toBeTruthy();
   });
 
   it('should render the heading when provided', async () => {
-    fixture.componentRef.setInput('heading', 'Error');
-    fixture.componentRef.setInput('message', 'Details.');
-    await fixture.whenStable();
-    expect(el.textContent).toContain('Error');
+    await render(Callout, { inputs: { heading: 'Error', message: 'Details.' } });
+
+    expect(screen.getByText('Error')).toBeTruthy();
   });
 
-  it('should have error variant styling by default', () => {
-    expect(el.classList.contains('border-error/35')).toBe(true);
+  it('should have error variant styling by default', async () => {
+    const { fixture } = await render(Callout);
+
+    expect(fixture.nativeElement.classList.contains('border-error/35')).toBe(true);
   });
 
-  it('should have role alert for error variant', () => {
-    expect(el.getAttribute('role')).toBe('alert');
-    expect(el.getAttribute('aria-live')).toBe('assertive');
+  it('should have role alert for error variant', async () => {
+    await render(Callout);
+
+    const alert = screen.getByRole('alert');
+    expect(alert.getAttribute('aria-live')).toBe('assertive');
   });
 
   it('should have role status for success variant', async () => {
-    fixture.componentRef.setInput('variant', 'success');
-    await fixture.whenStable();
-    expect(el.getAttribute('role')).toBe('status');
-    expect(el.getAttribute('aria-live')).toBe('polite');
+    await render(Callout, { inputs: { variant: 'success' } });
+
+    const status = screen.getByRole('status');
+    expect(status.getAttribute('aria-live')).toBe('polite');
   });
 
   it('should have no role for neutral variant', async () => {
-    fixture.componentRef.setInput('variant', 'neutral');
-    await fixture.whenStable();
-    expect(el.getAttribute('role')).toBeNull();
-    expect(el.getAttribute('aria-live')).toBeNull();
+    const { fixture } = await render(Callout, { inputs: { variant: 'neutral' } });
+
+    expect(fixture.nativeElement.getAttribute('role')).toBeNull();
+    expect(fixture.nativeElement.getAttribute('aria-live')).toBeNull();
   });
 
   it('should apply success styling', async () => {
-    fixture.componentRef.setInput('variant', 'success');
-    await fixture.whenStable();
-    expect(el.classList.contains('text-success-bright')).toBe(true);
+    const { fixture } = await render(Callout, { inputs: { variant: 'success' } });
+
+    expect(fixture.nativeElement.classList.contains('text-success-bright')).toBe(true);
   });
 
   it('should have has-heading class when heading is set', async () => {
-    fixture.componentRef.setInput('heading', 'Note');
-    await fixture.whenStable();
-    expect(el.classList.contains('items-start')).toBe(true);
+    const { fixture } = await render(Callout, { inputs: { heading: 'Note' } });
+
+    expect(fixture.nativeElement.classList.contains('items-start')).toBe(true);
   });
 });

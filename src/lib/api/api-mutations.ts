@@ -1,4 +1,4 @@
-import { mutationOptions } from '@benjavicente/angular-query-experimental';
+import { mutationOptions } from '@benjavicente/angular-query';
 import type { ApiFetch } from '../http/api-client';
 import { authUserQueryOptions } from '../services/auth';
 import type { User } from '../models/user.model';

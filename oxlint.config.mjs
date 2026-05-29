@@ -24,7 +24,6 @@ export default defineConfig({
     '@benjavicente/lint-angular/public-component-interface': 'off',
     '@benjavicente/lint-angular/rules-of-inject': 'off',
     '@angular-eslint/component-selector': 'off',
-    '@angular-eslint/component-selector': 'off',
     'unused-imports/no-unused-imports': 'error',
     'unused-imports/no-unused-vars': [
       'warn',

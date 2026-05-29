@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Outlet, createRootRouteWithContext } from '@benjavicente/angular-router-experimental';
 import type { AngularInjectFn } from '@benjavicente/angular-router-experimental';
-import type { QueryClient } from '@benjavicente/angular-query-experimental';
+import type { QueryClient } from '@benjavicente/angular-query';
 import type { ApiFetch } from '../lib/http/api-client';
 import type { CartClientStore } from './(shop)/-store/cart-client.store';
 import { Header } from './-components/header/header';
@@ -16,6 +16,7 @@ export const Route = createRootRouteWithContext<{
   apiFetch: ApiFetch;
   cart: CartClientStore;
 }>()({
+  ssr: false,
   head: () => ({
     meta: [
       { title: 'Realworld Angular' },
@@ -24,7 +25,7 @@ export const Route = createRootRouteWithContext<{
     links: [
       { rel: 'icon', href: images.faviconSvg, type: 'image/svg+xml' },
       { rel: 'stylesheet', href: stylesUrl },
-    ],
+    ]
   }),
   component: () => RootComponent,
   notFoundComponent: () => NotFound,
@@ -36,7 +37,7 @@ export const Route = createRootRouteWithContext<{
   imports: [Outlet, Header, Footer],
   template: `
     <a
-      class="absolute -top-full left-4 z-[var(--z-modal)] rounded-md bg-primary px-4 py-2 font-semibold text-text-on-primary no-underline transition-[top] focus:top-4"
+      class="absolute -top-full left-4 z-(--z-modal) rounded-md bg-primary px-4 py-2 font-semibold text-text-on-primary no-underline transition-[top] focus:top-4"
       href="#main-content"
       >Skip to main content</a
     >
@@ -51,4 +52,4 @@ export const Route = createRootRouteWithContext<{
     <rw-footer />
   `,
 })
-class RootComponent {}
+class RootComponent { }

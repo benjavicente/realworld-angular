@@ -1,32 +1,23 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
 import { Spinner } from './spinner';
 
 describe('Spinner', () => {
-  let fixture: ComponentFixture<Spinner>;
-  let el: HTMLElement;
+  it('should render the animated pizza logo', async () => {
+    const { container } = await render(Spinner);
 
-  beforeEach(async () => {
-    TestBed.configureTestingModule({}).overrideComponent(Spinner, {
-      set: { schemas: [NO_ERRORS_SCHEMA] },
-    });
-    fixture = TestBed.createComponent(Spinner);
-    el = fixture.nativeElement;
-    await fixture.whenStable();
+    expect(container.querySelector('rw-pizza-logo')).toBeTruthy();
   });
 
-  it('should render the animated pizza logo', () => {
-    expect(el.querySelector('rw-pizza-logo')).not.toBeNull();
+  it('should have a status role', async () => {
+    await render(Spinner);
+
+    expect(screen.getByRole('status')).toBeTruthy();
   });
 
-  it('should have a status role', () => {
-    expect(el.querySelector('[role="status"]')).not.toBeNull();
-  });
+  it('should have sr-only loading text', async () => {
+    await render(Spinner);
 
-  it('should have sr-only loading text', () => {
-    const srOnly = el.querySelector('.sr-only');
-    expect(srOnly).not.toBeNull();
-    expect(srOnly!.textContent).toContain('Loading');
+    expect(screen.getByText('Loading…')).toBeTruthy();
   });
 });

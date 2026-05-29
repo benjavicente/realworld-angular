@@ -1,6 +1,6 @@
 import { InjectionToken, computed, effect, signal } from '@angular/core';
 import { injectForm, injectStore } from '@tanstack/angular-form';
-import { injectMutation } from '@benjavicente/angular-query-experimental';
+import { injectMutation } from '@benjavicente/angular-query';
 import {
   injectNavigate,
   injectRouter,

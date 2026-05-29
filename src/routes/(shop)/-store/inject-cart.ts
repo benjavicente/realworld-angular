@@ -1,5 +1,5 @@
 import { DestroyRef, computed, inject, signal } from '@angular/core';
-import { injectQuery } from '@benjavicente/angular-query-experimental';
+import { injectQuery } from '@benjavicente/angular-query';
 import { injectRouter } from '@benjavicente/angular-router-experimental';
 import { cartPreviewQueryOptions } from '../../../lib/api/api-queries';
 import type { CartClientStore } from './cart-client.store';

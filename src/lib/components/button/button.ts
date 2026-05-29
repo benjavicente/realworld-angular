@@ -78,7 +78,7 @@ export class Button {
 
   protected disabledAttr(): boolean | null {
     if (this.isButtonHost()) {
-      return this.isDisabled() || null;
+      return this.isDisabled() || this.isLoading() || null;
     }
     return this.isDisabled() || this.isLoading() || null;
   }

@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   computed,
   DestroyRef,
@@ -97,7 +96,6 @@ let nextFieldId = 0;
 export class PhotonLocationField {
   private readonly destroyRef = inject(DestroyRef);
   private readonly searchPlaces = inject(PHOTON_SEARCH_PLACES);
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly fieldId = `rw-photon-location-${++nextFieldId}`;
 
   public readonly value = model<LocationValue | null>(null);
@@ -264,7 +262,6 @@ export class PhotonLocationField {
     this.committedValue.set(value);
     if (field) {
       field.handleChange(value);
-      this.cdr.markForCheck();
     } else {
       this.value.set(value);
     }

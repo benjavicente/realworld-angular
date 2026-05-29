@@ -29,7 +29,21 @@ export default defineConfig(({ mode }) => ({
         },
       },
     }),
-    angular({ tsconfig: 'tsconfig.app.json' }),
+    angular({
+      tsconfig: 'tsconfig.app.json',
+      liveReload: mode !== 'test',
+      sourceMap: mode !== 'test',
+      zoneless: true,
+    }),
     tailwindcss(),
   ],
+  test: {
+    globals: true,
+    setupFiles: ['src/test-setup.ts'],
+    environment: 'jsdom',
+    include: ['src/**/*.spec.ts'],
+    pool: 'threads',
+    maxWorkers: 4,
+    reporters: ['default'],
+  },
 }));

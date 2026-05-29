@@ -1,43 +1,31 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
 import { Avatar } from './avatar';
 
 describe('Avatar', () => {
-  let fixture: ComponentFixture<Avatar>;
-  let el: HTMLElement;
-
-  beforeEach(async () => {
-    TestBed.configureTestingModule({}).overrideComponent(Avatar, {
-      set: { schemas: [NO_ERRORS_SCHEMA] },
-    });
-    fixture = TestBed.createComponent(Avatar);
-    el = fixture.nativeElement;
-    fixture.componentRef.setInput('name', '');
-    await fixture.whenStable();
-  });
-
   it('should render initials for a two-part name', async () => {
-    fixture.componentRef.setInput('name', 'Foo Bar');
-    await fixture.whenStable();
-    expect(el.textContent).toContain('FB');
+    await render(Avatar, { inputs: { name: 'Foo Bar' } });
+
+    expect(screen.getByText('FB')).toBeTruthy();
   });
 
   it('should render first two chars for a single-part name', async () => {
-    fixture.componentRef.setInput('name', 'gerome');
-    await fixture.whenStable();
-    expect(el.textContent).toContain('GE');
+    await render(Avatar, { inputs: { name: 'gerome' } });
+
+    expect(screen.getByText('GE')).toBeTruthy();
   });
 
   it('should have aria-label with the name', async () => {
-    fixture.componentRef.setInput('name', 'Jane Doe');
-    await fixture.whenStable();
-    expect(el.querySelector('[aria-label="Avatar for Jane Doe"]')).not.toBeNull();
+    await render(Avatar, { inputs: { name: 'Jane Doe' } });
+
+    expect(screen.getByRole('img', { name: 'Avatar for Jane Doe' })).toBeTruthy();
   });
 
   it('should apply size class', async () => {
-    fixture.componentRef.setInput('size', 'sm');
-    await fixture.whenStable();
-    expect(el.querySelector('[role="img"]')?.classList.contains('size-8')).toBe(true);
+    await render(Avatar, { inputs: { name: 'Jane Doe', size: 'sm' } });
+
+    expect(
+      screen.getByRole('img', { name: 'Avatar for Jane Doe' }).classList.contains('size-8'),
+    ).toBe(true);
   });
 });

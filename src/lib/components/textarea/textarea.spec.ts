@@ -1,6 +1,5 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it, vi } from 'vitest';
 import type { FieldLike } from '../../forms/tanstack-form';
 import { Textarea } from './textarea';
 
@@ -25,66 +24,60 @@ function createFieldStub(): FieldLike<string> {
 }
 
 describe('Textarea', () => {
-  let fixture: ComponentFixture<Textarea>;
-  let el: HTMLElement;
-
-  beforeEach(async () => {
-    TestBed.configureTestingModule({}).overrideComponent(Textarea, {
-      set: { imports: [], schemas: [NO_ERRORS_SCHEMA] },
+  async function renderTextarea(inputs: Partial<Textarea> = {}) {
+    return render(Textarea, {
+      inputs: {
+        field: createFieldStub(),
+        ...inputs,
+      },
     });
-    fixture = TestBed.createComponent(Textarea);
-    el = fixture.nativeElement;
-    fixture.componentRef.setInput('field', createFieldStub());
-    await fixture.whenStable();
-  });
+  }
 
   it('should render the label', async () => {
-    fixture.componentRef.setInput('label', 'Description');
-    await fixture.whenStable();
-    expect(el.textContent).toContain('Description');
+    await renderTextarea({ label: 'Description' });
+
+    expect(screen.getByText('Description')).toBeTruthy();
   });
 
   it('should show required asterisk when isRequired is true', async () => {
-    fixture.componentRef.setInput('isRequired', true);
-    fixture.componentRef.setInput('label', 'Bio');
-    await fixture.whenStable();
-    expect(el.querySelector('[aria-hidden="true"]')?.textContent).toContain('*');
+    const { container } = await renderTextarea({ isRequired: true, label: 'Bio' });
+
+    expect(container.querySelector('[aria-hidden="true"]')?.textContent).toContain('*');
   });
 
   it('should set placeholder', async () => {
-    fixture.componentRef.setInput('placeholder', 'Write something');
-    await fixture.whenStable();
-    const textarea = el.querySelector('textarea');
-    expect(textarea?.getAttribute('placeholder')).toBe('Write something');
+    await renderTextarea({ placeholder: 'Write something' });
+
+    expect(screen.getByPlaceholderText('Write something')).toBeTruthy();
   });
 
   it('should set rows', async () => {
-    fixture.componentRef.setInput('rows', 6);
-    await fixture.whenStable();
-    const textarea = el.querySelector('textarea');
-    expect(textarea?.getAttribute('rows')).toBe('6');
+    await renderTextarea({ rows: 6 });
+
+    expect(screen.getByRole('textbox').getAttribute('rows')).toBe('6');
   });
 
   it('should show char count when maxLength is set', async () => {
     const field = createFieldStub();
     field.state.value = 'hello';
-    fixture.componentRef.setInput('field', field);
-    fixture.componentRef.setInput('maxLength', 500);
-    await fixture.whenStable();
-    expect(el.textContent).toContain('5/500');
+
+    await renderTextarea({ field, maxLength: 500 });
+
+    expect(screen.getByText('5/500')).toBeTruthy();
   });
 
   it('should show hint text', async () => {
-    fixture.componentRef.setInput('hint', 'Optional description');
-    await fixture.whenStable();
-    expect(el.textContent).toContain('Optional description');
+    await renderTextarea({ hint: 'Optional description' });
+
+    expect(screen.getByText('Optional description')).toBeTruthy();
   });
 
   it('should show validation error when errors exist', async () => {
     const field = createFieldStub();
     field.state.meta.errors = [{ message: 'Too short' }];
-    fixture.componentRef.setInput('field', field);
-    await fixture.whenStable();
-    expect(el.textContent).toContain('Too short');
+
+    await renderTextarea({ field });
+
+    expect(screen.getByRole('alert').textContent).toContain('Too short');
   });
 });

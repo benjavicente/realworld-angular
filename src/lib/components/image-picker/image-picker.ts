@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { CatalogImageKind, CatalogImageUrlPipe } from '../../pipes/catalog-image-url.pipe';
 import { Spinner } from '../spinner/spinner';
-import { injectQuery } from '@benjavicente/angular-query-experimental';
+import { injectQuery } from '@benjavicente/angular-query';
 import { injectRouter } from '@benjavicente/angular-router-experimental';
 import { catalogImagesQueryOptions } from '../../api/api-queries';
 import { fieldErrorMessage, type FieldLike } from '../../forms/tanstack-form';

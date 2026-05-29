@@ -1,5 +1,7 @@
-import { queryOptions } from '@benjavicente/angular-query-experimental';
-import { experimental_streamedQuery as streamedQuery } from '@tanstack/query-core';
+import {
+  experimental_streamedQuery as streamedQuery,
+  queryOptions,
+} from '@benjavicente/angular-query';
 import type { ApiFetch } from '../http/api-client';
 import type { Page } from '../models/pagination.model';
 import type { CartData, CartItem, CartPizzeria } from '../../routes/(shop)/-store/cart.types';
@@ -31,6 +33,7 @@ export function pizzeriaQueryOptions(apiFetch: ApiFetch, id: string) {
 export function pizzeriaPizzasQueryOptions(apiFetch: ApiFetch, id: string, name?: string) {
   return queryOptions({
     queryKey: ['pizzerias', id, 'pizzas', { name }],
+    placeholderData: (previousData) => previousData,
     queryFn: () =>
       apiFetch<Pizza[]>(`/api/pizzerias/${id}/pizzas`, {
         query: name ? { name } : undefined,

@@ -1,42 +1,45 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { DialogRef } from '@angular/cdk/dialog';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { render, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 import { Modal } from './modal';
 
 describe('Modal', () => {
-  let fixture: ComponentFixture<Modal>;
-  let el: HTMLElement;
-  let closeFn: ReturnType<typeof vi.fn>;
-
-  beforeEach(async () => {
-    closeFn = vi.fn();
-    TestBed.configureTestingModule({
+  async function renderModal() {
+    const closeFn = vi.fn();
+    const view = await render(Modal, {
       providers: [{ provide: DialogRef, useValue: { close: closeFn } }],
-    }).overrideComponent(Modal, { set: { schemas: [NO_ERRORS_SCHEMA] } });
-    fixture = TestBed.createComponent(Modal);
-    el = fixture.nativeElement;
-    await fixture.whenStable();
-  });
+    });
+    return { ...view, closeFn };
+  }
 
   it('should render the title', async () => {
-    fixture.componentRef.setInput('title', 'Confirm action');
-    await fixture.whenStable();
-    expect(el.textContent).toContain('Confirm action');
+    await render(Modal, {
+      inputs: { title: 'Confirm action' },
+      providers: [{ provide: DialogRef, useValue: { close: vi.fn() } }],
+    });
+
+    expect(screen.getByText('Confirm action')).toBeTruthy();
   });
 
-  it('should have a close button', () => {
-    const closeBtn = el.querySelector('[aria-label="Close dialog"]');
-    expect(closeBtn).not.toBeNull();
+  it('should have a close button', async () => {
+    await renderModal();
+
+    expect(screen.getByRole('button', { name: 'Close dialog' })).toBeTruthy();
   });
 
-  it('should close dialog when close button is clicked', () => {
-    const closeBtn = el.querySelector<HTMLButtonElement>('[aria-label="Close dialog"]')!;
-    closeBtn.click();
+  it('should close dialog when close button is clicked', async () => {
+    const user = userEvent.setup();
+    const { closeFn } = await renderModal();
+
+    await user.click(screen.getByRole('button', { name: 'Close dialog' }));
+
     expect(closeFn).toHaveBeenCalled();
   });
 
-  it('should have role document on the panel', () => {
-    expect(el.querySelector('[role="document"]')).not.toBeNull();
+  it('should have role document on the panel', async () => {
+    await renderModal();
+
+    expect(screen.getByRole('document')).toBeTruthy();
   });
 });

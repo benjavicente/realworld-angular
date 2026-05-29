@@ -16,7 +16,7 @@ import { Modal } from '../../../../lib/components/modal/modal';
 import { CatalogImageUrlPipe } from '../../../../lib/pipes/catalog-image-url.pipe';
 import { SizeOptionField } from '../pizza-size-option-field/pizza-size-option-field';
 import { Spinner } from '../../../../lib/components/spinner/spinner';
-import { injectQuery } from '@benjavicente/angular-query-experimental';
+import { injectQuery } from '@benjavicente/angular-query';
 import { injectRouter } from '@benjavicente/angular-router-experimental';
 import { pizzaOptionsQueryOptions } from '../../../../lib/api/api-queries';
 import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form';

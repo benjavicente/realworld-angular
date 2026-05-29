@@ -1,6 +1,5 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it, vi } from 'vitest';
 import type { FieldLike } from '../../forms/tanstack-form';
 import { Input } from './input';
 
@@ -25,65 +24,60 @@ function createFieldStub(): FieldLike<string | number | null> {
 }
 
 describe('Input', () => {
-  let fixture: ComponentFixture<Input>;
-  let el: HTMLElement;
-
-  beforeEach(async () => {
-    TestBed.configureTestingModule({}).overrideComponent(Input, {
-      set: { imports: [], schemas: [NO_ERRORS_SCHEMA] },
+  async function renderInput(inputs: Partial<Input> = {}) {
+    return render(Input, {
+      inputs: {
+        field: createFieldStub(),
+        ...inputs,
+      },
     });
-    fixture = TestBed.createComponent(Input);
-    el = fixture.nativeElement;
-    fixture.componentRef.setInput('field', createFieldStub());
-    await fixture.whenStable();
-  });
+  }
 
   it('should render the label', async () => {
-    fixture.componentRef.setInput('label', 'Email');
-    await fixture.whenStable();
-    expect(el.textContent).toContain('Email');
+    await renderInput({ label: 'Email' });
+
+    expect(screen.getByText('Email')).toBeTruthy();
   });
 
   it('should set input type', async () => {
-    fixture.componentRef.setInput('type', 'email');
-    await fixture.whenStable();
-    const input = el.querySelector('input');
-    expect(input?.getAttribute('type')).toBe('email');
+    await renderInput({ type: 'email' });
+
+    expect(screen.getByRole('textbox').getAttribute('type')).toBe('email');
   });
 
   it('should set placeholder', async () => {
-    fixture.componentRef.setInput('placeholder', 'Enter text');
-    await fixture.whenStable();
-    const input = el.querySelector('input');
-    expect(input?.getAttribute('placeholder')).toBe('Enter text');
+    await renderInput({ placeholder: 'Enter text' });
+
+    expect(screen.getByPlaceholderText('Enter text')).toBeTruthy();
   });
 
   it('should show hint text', async () => {
-    fixture.componentRef.setInput('hint', 'Must be at least 8 characters');
-    await fixture.whenStable();
-    expect(el.textContent).toContain('Must be at least 8 characters');
+    await renderInput({ hint: 'Must be at least 8 characters' });
+
+    expect(screen.getByText('Must be at least 8 characters')).toBeTruthy();
   });
 
   it('should show required asterisk when isRequired is true', async () => {
-    fixture.componentRef.setInput('isRequired', true);
-    fixture.componentRef.setInput('label', 'Name');
-    await fixture.whenStable();
-    expect(el.querySelector('[aria-hidden="true"]')?.textContent).toContain('*');
+    const { container } = await renderInput({ isRequired: true, label: 'Name' });
+
+    expect(container.querySelector('[aria-hidden="true"]')?.textContent).toContain('*');
   });
 
   it('should show validation error when errors exist', async () => {
     const field = createFieldStub();
     field.state.meta.errors = [{ message: 'This field is required' }];
-    fixture.componentRef.setInput('field', field);
-    await fixture.whenStable();
-    expect(el.textContent).toContain('This field is required');
+
+    await renderInput({ field });
+
+    expect(screen.getByRole('alert').textContent).toContain('This field is required');
   });
 
   it('should apply error styling when errors exist', async () => {
     const field = createFieldStub();
     field.state.meta.errors = [{ message: 'Error' }];
-    fixture.componentRef.setInput('field', field);
-    await fixture.whenStable();
-    expect(el.querySelector('input')?.classList.contains('border-error')).toBe(true);
+
+    await renderInput({ field });
+
+    expect(screen.getByRole('textbox').classList.contains('border-error')).toBe(true);
   });
 });

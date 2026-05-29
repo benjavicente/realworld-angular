@@ -1,5 +1,5 @@
 import { InjectionToken, computed, inject } from '@angular/core';
-import { injectQuery, queryOptions } from '@benjavicente/angular-query-experimental';
+import { injectQuery, queryOptions } from '@benjavicente/angular-query';
 import { injectRouter } from '@benjavicente/angular-router-experimental';
 import type { ApiFetch } from '../http/api-client';
 import type { User } from '../models/user.model';

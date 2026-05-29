@@ -1,17 +1,17 @@
-import { QueryClient } from '@benjavicente/angular-query-experimental';
+import { QueryClient } from '@benjavicente/angular-query';
 import { createRouter } from '@benjavicente/angular-router-experimental';
 import { ofetch } from 'ofetch';
 import { environment } from './environments/environment';
 import { routeTree } from './routeTree.gen';
 import { createCartClientStore } from './routes/(shop)/-store/cart-client.store';
+import { RoutePending } from './routes/-components/route-pending/route-pending';
 
 export function getRouter() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        enabled: import.meta.env.SSR ? false : true,
-        staleTime: 1000,
-        gcTime: 1000 * 60,
+        staleTime: 1000 * 5,
+        gcTime: import.meta.env.SSR ? Infinity : 1000 * 60,
         retry: import.meta.env.SSR ? false : true,
       },
     },
@@ -29,6 +29,9 @@ export function getRouter() {
     context: { queryClient, apiFetch, cart },
     routeTree,
     defaultPreload: 'intent',
+    defaultPreloadStaleTime: 0,
+    defaultPendingMinMs: 0,
+    defaultPendingComponent: () => RoutePending,
     scrollRestoration: true,
   });
 }

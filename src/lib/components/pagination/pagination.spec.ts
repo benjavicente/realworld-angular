@@ -1,108 +1,86 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/angular';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it } from 'vitest';
 import { Pagination } from './pagination';
 
 describe('Pagination', () => {
-  let fixture: ComponentFixture<Pagination>;
-  let el: HTMLElement;
+  async function renderPagination(inputs = { currentPage: 1, totalPages: 1 }) {
+    return render(Pagination, { inputs });
+  }
 
-  beforeEach(async () => {
-    TestBed.configureTestingModule({}).overrideComponent(Pagination, {
-      set: { schemas: [NO_ERRORS_SCHEMA] },
-    });
-    fixture = TestBed.createComponent(Pagination);
-    el = fixture.nativeElement;
-    fixture.componentRef.setInput('currentPage', 1);
-    fixture.componentRef.setInput('totalPages', 1);
-    await fixture.whenStable();
-  });
+  it('should not render when totalPages is 1', async () => {
+    await renderPagination();
 
-  it('should not render when totalPages is 1', () => {
-    expect(el.querySelector('nav')).toBeNull();
+    expect(screen.queryByRole('navigation', { name: 'Pagination' })).toBeNull();
   });
 
   it('should render navigation when totalPages > 1', async () => {
-    fixture.componentRef.setInput('totalPages', 5);
-    fixture.componentRef.setInput('currentPage', 3);
-    await fixture.whenStable();
-    expect(el.querySelector('nav[aria-label="Pagination"]')).not.toBeNull();
+    await renderPagination({ currentPage: 3, totalPages: 5 });
+
+    expect(screen.getByRole('navigation', { name: 'Pagination' })).toBeTruthy();
   });
 
   it('should render page number buttons', async () => {
-    fixture.componentRef.setInput('totalPages', 3);
-    fixture.componentRef.setInput('currentPage', 2);
-    await fixture.whenStable();
-    const buttons = [
-      el.querySelector('[aria-label="Page 1"]'),
-      el.querySelector('[aria-label="Page 2"]'),
-      el.querySelector('[aria-label="Page 3"]'),
-    ] as const;
-    expect(buttons.every(Boolean)).toBe(true);
-    expect(buttons.length).toBe(3);
-    expect(buttons[0]!.textContent).toContain('1');
-    expect(buttons[1]!.textContent).toContain('2');
-    expect(buttons[2]!.textContent).toContain('3');
+    await renderPagination({ currentPage: 2, totalPages: 3 });
+
+    expect(screen.getByRole('button', { name: 'Page 1' }).textContent).toContain('1');
+    expect(screen.getByRole('button', { name: 'Page 2' }).textContent).toContain('2');
+    expect(screen.getByRole('button', { name: 'Page 3' }).textContent).toContain('3');
   });
 
   it('should highlight current page', async () => {
-    fixture.componentRef.setInput('totalPages', 5);
-    fixture.componentRef.setInput('currentPage', 4);
-    await fixture.whenStable();
-    const activeBtn = el.querySelector('[aria-current="page"]');
-    expect(activeBtn).not.toBeNull();
-    expect(activeBtn?.textContent).toContain('4');
+    await renderPagination({ currentPage: 4, totalPages: 5 });
+
+    const activeBtn = screen.getByRole('button', { name: 'Page 4' });
+    expect(activeBtn.getAttribute('aria-current')).toBe('page');
   });
 
   it('should disable prev button on first page', async () => {
-    fixture.componentRef.setInput('totalPages', 5);
-    fixture.componentRef.setInput('currentPage', 1);
-    await fixture.whenStable();
-    const prevBtn = el.querySelector('[aria-label="Previous page"]') as HTMLButtonElement;
-    expect(prevBtn.disabled).toBe(true);
+    await renderPagination({ currentPage: 1, totalPages: 5 });
+
+    expect(
+      (screen.getByRole('button', { name: 'Previous page' }) as HTMLButtonElement).disabled,
+    ).toBe(true);
   });
 
   it('should disable next button on last page', async () => {
-    fixture.componentRef.setInput('totalPages', 5);
-    fixture.componentRef.setInput('currentPage', 5);
-    await fixture.whenStable();
-    const nextBtn = el.querySelector('[aria-label="Next page"]') as HTMLButtonElement;
-    expect(nextBtn.disabled).toBe(true);
+    await renderPagination({ currentPage: 5, totalPages: 5 });
+
+    expect((screen.getByRole('button', { name: 'Next page' }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
   });
 
   it('should emit pageChange on page click', async () => {
-    fixture.componentRef.setInput('totalPages', 5);
-    fixture.componentRef.setInput('currentPage', 1);
-    await fixture.whenStable();
+    const user = userEvent.setup();
+    const { fixture } = await renderPagination({ currentPage: 1, totalPages: 5 });
     const emitted: number[] = [];
-    fixture.componentRef.instance.pageChange.subscribe((p) => emitted.push(p));
+    fixture.componentRef.instance.pageChange.subscribe((page) => emitted.push(page));
 
-    const page2 = el.querySelector('[aria-label="Page 2"]') as HTMLButtonElement;
-    page2.click();
+    await user.click(screen.getByRole('button', { name: 'Page 2' }));
+
     expect(emitted).toContain(2);
   });
 
   it('should emit pageChange - 1 on prev click', async () => {
-    fixture.componentRef.setInput('totalPages', 5);
-    fixture.componentRef.setInput('currentPage', 3);
-    await fixture.whenStable();
+    const user = userEvent.setup();
+    const { fixture } = await renderPagination({ currentPage: 3, totalPages: 5 });
     const emitted: number[] = [];
-    fixture.componentRef.instance.pageChange.subscribe((p) => emitted.push(p));
+    fixture.componentRef.instance.pageChange.subscribe((page) => emitted.push(page));
 
-    const prevBtn = el.querySelector('[aria-label="Previous page"]') as HTMLButtonElement;
-    prevBtn.click();
+    await user.click(screen.getByRole('button', { name: 'Previous page' }));
+
     expect(emitted).toContain(2);
   });
 
   it('should emit pageChange + 1 on next click', async () => {
-    fixture.componentRef.setInput('totalPages', 5);
-    fixture.componentRef.setInput('currentPage', 3);
-    await fixture.whenStable();
+    const user = userEvent.setup();
+    const { fixture } = await renderPagination({ currentPage: 3, totalPages: 5 });
     const emitted: number[] = [];
-    fixture.componentRef.instance.pageChange.subscribe((p) => emitted.push(p));
+    fixture.componentRef.instance.pageChange.subscribe((page) => emitted.push(page));
 
-    const nextBtn = el.querySelector('[aria-label="Next page"]') as HTMLButtonElement;
-    nextBtn.click();
+    await user.click(screen.getByRole('button', { name: 'Next page' }));
+
     expect(emitted).toContain(4);
   });
 });

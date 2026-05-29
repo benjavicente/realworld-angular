@@ -51,7 +51,7 @@ The app connects to a deployed backend. Browse the [API documentation](https://a
 ## Prerequisites
 
 - **Node.js** >= 20
-- **pnpm** >= 9 — install with `npm install -g pnpm`
+- **pnpm** >= 11
 
 ## Getting Started
 

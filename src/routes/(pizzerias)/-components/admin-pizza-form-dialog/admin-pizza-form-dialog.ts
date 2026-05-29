@@ -15,7 +15,7 @@ import { Button } from '../../../../lib/components/button/button';
 import { ImagePicker } from '../../../../lib/components/image-picker/image-picker';
 import { Modal } from '../../../../lib/components/modal/modal';
 import { ModalFooter } from '../../../../lib/components/modal/modal-footer';
-import { injectMutation, injectQuery } from '@benjavicente/angular-query-experimental';
+import { injectMutation, injectQuery } from '@benjavicente/angular-query';
 import { injectRouter } from '@benjavicente/angular-router-experimental';
 import { pizzaOptionsQueryOptions } from '../../../../lib/api/api-queries';
 import {

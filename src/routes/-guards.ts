@@ -3,7 +3,7 @@ import { authUserQueryOptions } from '../lib/services/auth';
 import { ROLES } from './(auth)/-models/role.model';
 import { adminPizzeriaQueryOptions } from '../lib/api/api-queries';
 import type { ApiFetch } from '../lib/http/api-client';
-import type { QueryClient } from '@benjavicente/angular-query-experimental';
+import type { QueryClient } from '@benjavicente/angular-query';
 import type { AngularInjectFn } from '@benjavicente/angular-router-experimental';
 import type { CartClientStore } from './(shop)/-store/cart-client.store';
 
@@ -57,6 +57,10 @@ export async function requireAuth(
   context: RouteContext,
   location?: RouteLocationLike,
 ): Promise<void> {
+  if (import.meta.env.SSR) {
+    return;
+  }
+
   const user = await resolveUser(context);
   if (!user) {
     throw redirect({
@@ -70,6 +74,10 @@ export async function requireGuest(
   context: RouteContext,
   redirectPath: string | undefined = '/',
 ): Promise<void> {
+  if (import.meta.env.SSR) {
+    return;
+  }
+
   const user = await resolveUser(context);
   if (user) {
     throw redirect({ href: sanitizeRedirectPath(redirectPath) });
@@ -81,6 +89,10 @@ export async function requireRole(
   role: string,
   location?: RouteLocationLike,
 ): Promise<void> {
+  if (import.meta.env.SSR) {
+    return;
+  }
+
   const user = await resolveUser(context);
   if (!user) {
     throw redirect({
@@ -94,6 +106,10 @@ export async function requireRole(
 }
 
 export function requireCart(context: RouteContext): void {
+  if (import.meta.env.SSR) {
+    return;
+  }
+
   if (context.cart.isEmpty()) {
     throw redirect({ to: '/cart' });
   }
@@ -103,6 +119,10 @@ export async function requireNoPizzeria(
   context: RouteContext,
   location?: RouteLocationLike,
 ): Promise<void> {
+  if (import.meta.env.SSR) {
+    return;
+  }
+
   await requireRole(context, ROLES.PIZZERIA_ADMIN, location);
 
   try {

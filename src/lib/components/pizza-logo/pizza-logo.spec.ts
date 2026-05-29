@@ -1,58 +1,48 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
 import { PizzaLogo } from './pizza-logo';
 
 describe('PizzaLogo', () => {
-  let fixture: ComponentFixture<PizzaLogo>;
-  let el: HTMLElement;
-  let svg: SVGElement;
+  it('should render an SVG element', async () => {
+    const { container } = await render(PizzaLogo);
 
-  beforeEach(async () => {
-    TestBed.configureTestingModule({}).overrideComponent(PizzaLogo, {
-      set: { schemas: [NO_ERRORS_SCHEMA] },
-    });
-    fixture = TestBed.createComponent(PizzaLogo);
-    el = fixture.nativeElement;
-    svg = el.querySelector('svg')!;
-    await fixture.whenStable();
-  });
-
-  it('should render an SVG element', () => {
-    expect(svg).not.toBeNull();
+    expect(container.querySelector('svg')).toBeTruthy();
   });
 
   it('should set width and height from size input', async () => {
-    fixture.componentRef.setInput('size', 48);
-    await fixture.whenStable();
-    expect(svg.getAttribute('width')).toBe('48');
-    expect(svg.getAttribute('height')).toBe('48');
+    const { container } = await render(PizzaLogo, { inputs: { size: 48 } });
+
+    const svg = container.querySelector('svg');
+    expect(svg?.getAttribute('width')).toBe('48');
+    expect(svg?.getAttribute('height')).toBe('48');
   });
 
-  it('should be aria-hidden when no label', () => {
-    expect(svg.getAttribute('aria-hidden')).toBe('true');
+  it('should be aria-hidden when no label', async () => {
+    const { container } = await render(PizzaLogo);
+
+    expect(container.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('should have role img and aria-label when label is set', async () => {
-    fixture.componentRef.setInput('label', 'Pizza logo');
-    await fixture.whenStable();
-    expect(svg.getAttribute('role')).toBe('img');
-    expect(svg.getAttribute('aria-label')).toBe('Pizza logo');
+    await render(PizzaLogo, { inputs: { label: 'Pizza logo' } });
+
+    const svg = screen.getByRole('img', { name: 'Pizza logo' });
     expect(svg.getAttribute('aria-hidden')).toBeNull();
   });
 
   it('should apply animated slice class when animated is true', async () => {
-    fixture.componentRef.setInput('animated', true);
-    await fixture.whenStable();
+    const { container } = await render(PizzaLogo, { inputs: { animated: true } });
+
     expect(
-      svg
-        .querySelector('g')
+      container
+        .querySelector('svg g')
         ?.classList.contains('animate-[pizza-slice-step_1.2s_steps(6,end)_infinite]'),
     ).toBe(true);
   });
 
-  it('should render 6 slice paths', () => {
-    const paths = svg.querySelectorAll('path');
-    expect(paths.length).toBe(6);
+  it('should render 6 slice paths', async () => {
+    const { container } = await render(PizzaLogo);
+
+    expect(container.querySelectorAll('path').length).toBe(6);
   });
 });
