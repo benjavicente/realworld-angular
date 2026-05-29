@@ -7,7 +7,6 @@ import type { CartClientStore } from './(shop)/-store/cart-client.store';
 import { Header } from './-components/header/header';
 import { Footer } from './-components/footer/footer';
 import { NotFound } from './-components/not-found/not-found';
-import { authUserQueryOptions } from '../lib/services/auth';
 import { images } from '../lib/assets';
 import stylesUrl from '../styles.css?url';
 
@@ -17,8 +16,6 @@ export const Route = createRootRouteWithContext<{
   apiFetch: ApiFetch;
   cart: CartClientStore;
 }>()({
-  beforeLoad: ({ context }) =>
-    context.queryClient.ensureQueryData(authUserQueryOptions(context.apiFetch)),
   head: () => ({
     meta: [
       { title: 'Realworld Angular' },

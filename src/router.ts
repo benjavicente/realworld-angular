@@ -9,6 +9,9 @@ export function getRouter() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
+        enabled: import.meta.env.SSR ? false : true,
+        staleTime: 1000,
+        gcTime: 1000 * 60,
         retry: false,
       },
     },

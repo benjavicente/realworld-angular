@@ -7,7 +7,12 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Link, createFileRoute, injectRouter } from '@benjavicente/angular-router-experimental';
+import {
+  Link,
+  createFileRoute,
+  injectNavigate,
+  injectRouter,
+} from '@benjavicente/angular-router-experimental';
 import { DecimalPipe } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 import { Pizza } from './-models/pizza.models';
@@ -31,7 +36,17 @@ import { injectQuery } from '@benjavicente/angular-query-experimental';
 import { injectCartClient } from '../(shop)/-store/inject-cart';
 import { icons } from '../../lib/assets';
 
+interface PizzeriaDetailSearch {
+  maxPrice?: number;
+}
+
+function validatePizzeriaDetailSearch(search: Record<string, unknown>): PizzeriaDetailSearch {
+  const maxPrice = Number(search['maxPrice']);
+  return Number.isFinite(maxPrice) && maxPrice >= 0 && maxPrice <= 50 ? { maxPrice } : {};
+}
+
 export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
+  validateSearch: validatePizzeriaDetailSearch,
   loader: ({ context, params }) =>
     Promise.all([
       context.queryClient.ensureQueryData(pizzeriaQueryOptions(context.apiFetch, params.id)),
@@ -120,8 +135,11 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
                   class="w-full accent-primary"
                   [value]="maxPrice()"
                   (input)="onMaxPriceInput($event)"
+                  (change)="onMaxPriceChange($event)"
                 />
-                <span class="min-w-10 text-right font-semibold tabular-nums text-text">€{{ maxPrice() }}</span>
+                <span class="min-w-10 text-right font-semibold tabular-nums text-text"
+                  >€{{ maxPrice() }}</span
+                >
               </div>
             </div>
           </div>
@@ -157,15 +175,14 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
                       }}</span>
                       <div class="mt-auto flex items-center justify-between gap-3">
                         <span class="text-sm text-text-muted">
-                          from <strong class="tabular-nums">€{{ pizza.basePrice | number: '1.2-2' }}</strong>
+                          from
+                          <strong class="tabular-nums"
+                            >€{{ pizza.basePrice | number: '1.2-2' }}</strong
+                          >
                         </span>
 
                         @if (!auth.isAdmin()) {
-                          <button rw-button
-                            type="button"
-                            size="sm"
-                            (click)="openOrderModal(pizza)"
-                          >
+                          <button rw-button type="button" size="sm" (click)="openOrderModal(pizza)">
                             Add to cart
                           </button>
                         }
@@ -215,7 +232,9 @@ class PizzeriaDetailsPage {
   private readonly dialog = inject(Dialog);
   private readonly title = inject(Title);
   private readonly cart = injectCartClient();
+  private readonly navigate = injectNavigate();
   private readonly params = Route.injectParams();
+  private readonly search = Route.injectSearch();
   protected readonly id = computed(() => this.params().id);
   protected readonly icons = icons;
 
@@ -228,7 +247,7 @@ class PizzeriaDetailsPage {
 
   // Pizza name search
   protected readonly pizzaNameSearch = signal('');
-  protected readonly maxPrice = signal(50);
+  protected readonly maxPrice = signal(this.search().maxPrice ?? 50);
   private readonly debouncedSearch = toSignal(
     toObservable(this.pizzaNameSearch).pipe(
       debounceTime(300),
@@ -279,6 +298,17 @@ class PizzeriaDetailsPage {
 
   protected onMaxPriceInput(event: Event): void {
     this.maxPrice.set((event.target as HTMLInputElement).valueAsNumber);
+  }
+
+  protected onMaxPriceChange(event: Event): void {
+    const maxPrice = (event.target as HTMLInputElement).valueAsNumber;
+    this.maxPrice.set(maxPrice);
+    void this.navigate({
+      to: '.',
+      search: maxPrice === 50 ? {} : { maxPrice },
+      replace: true,
+      resetScroll: false,
+    });
   }
 
   protected openOrderModal(pizza: Pizza): void {

@@ -28,12 +28,7 @@ export interface AuthState {
 
 export const AUTH_STATE = new InjectionToken<AuthState>('AuthState');
 
-export function injectAuthState() {
-  const testAuthState = inject(AUTH_STATE, { optional: true });
-  if (testAuthState) {
-    return testAuthState;
-  }
-
+export function createAuthState(): AuthState {
   const { apiFetch } = injectRouter().options.context;
   const userQuery = injectQuery(() => authUserQueryOptions(apiFetch));
 
@@ -45,4 +40,13 @@ export function injectAuthState() {
     isCustomer: computed<boolean>(() => user()?.role === 'CUSTOMER'),
     isAdmin: computed<boolean>(() => user()?.role === 'PIZZERIA_ADMIN'),
   };
+}
+
+export function injectAuthState() {
+  const testAuthState = inject(AUTH_STATE, { optional: true });
+  if (testAuthState) {
+    return testAuthState;
+  }
+
+  return createAuthState();
 }

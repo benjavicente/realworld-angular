@@ -9,11 +9,11 @@ export const Route = createFileRoute('/(legal)/terms-and-conditions')({
 @Component({
   selector: 'rw-terms-and-conditions-page',
   template: `
-    <article class="py-12">
-      <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8 mx-auto max-w-[780px]">
+    <article class="py-12 pb-16">
+      <div class="mx-auto w-full max-w-[672px] px-8">
         <header class="mb-8">
           <h1 class="mb-4 text-3xl font-bold">Terms and conditions</h1>
-          <p class="text-lg leading-relaxed text-text-muted [&_a]:font-semibold [&_a]:underline">
+          <p class="text-lg leading-[1.55] text-text-muted [&_a]:font-semibold [&_a]:underline">
             This page describes how we intend the <strong>Sliced</strong> demo application to be
             used. It is part of the broader
             <a
@@ -26,8 +26,10 @@ export const Route = createFileRoute('/(legal)/terms-and-conditions')({
           </p>
         </header>
 
-        <section class="mb-8">
-          <h2 class="mb-3 text-xl font-semibold">About this app</h2>
+        <section
+          class="mb-8 text-text-muted [&_a]:font-medium [&_a]:underline [&_code]:text-text [&_dd]:mb-4 [&_dd]:leading-[1.6] [&_dd]:text-text-muted [&_dt]:mb-2 [&_dt]:font-semibold [&_p]:mb-4 [&_p]:leading-[1.6]"
+        >
+          <h2 class="mb-4 text-xl font-bold text-text">About this app</h2>
           <p>
             Sliced is a sample pizza marketplace front end built with Angular. It exists to
             demonstrate patterns you might use in a real product—routing, forms, state,
@@ -40,15 +42,20 @@ export const Route = createFileRoute('/(legal)/terms-and-conditions')({
           </p>
         </section>
 
-        <section class="mb-8">
-          <h2 class="mb-3 text-xl font-semibold">Terms of use</h2>
+        <section
+          class="mb-8 text-text-muted [&_a]:font-medium [&_a]:underline [&_code]:text-text [&_dd]:mb-4 [&_dd]:leading-[1.6] [&_dd]:text-text-muted [&_dt]:mb-2 [&_dt]:font-semibold [&_p]:mb-4 [&_p]:leading-[1.6]"
+        >
+          <h2 class="mb-4 text-xl font-bold text-text">Terms of use</h2>
           <p>
             By using this demo, you agree that you are interacting with software provided for
             demonstration purposes only. Nothing on this site constitutes legal, financial, or
             professional advice.
           </p>
-          <aside class="mb-8 rounded-lg border border-error/30 bg-error-bg p-5" role="note">
-            <h3 class="mb-2 text-lg font-semibold text-error">Personal information</h3>
+          <aside
+            class="my-6 rounded-[8px] border border-border bg-warning-bg px-5 py-4"
+            role="note"
+          >
+            <h3 class="mb-2 font-semibold text-text">Personal information</h3>
             <p>
               <strong
                 >Real names, addresses, phone numbers, and other identifying details are not
@@ -80,9 +87,11 @@ export const Route = createFileRoute('/(legal)/terms-and-conditions')({
           </p>
         </section>
 
-        <section class="mb-8">
-          <h2 class="mb-3 text-xl font-semibold">Frequently asked questions</h2>
-          <dl class="space-y-0">
+        <section
+          class="mb-8 text-text-muted [&_a]:font-medium [&_a]:underline [&_code]:text-text [&_dd]:mb-4 [&_dd]:leading-[1.6] [&_dd]:text-text-muted [&_dt]:mb-2 [&_dt]:font-semibold [&_p]:mb-4 [&_p]:leading-[1.6]"
+        >
+          <h2 class="mb-4 text-xl font-bold text-text">Frequently asked questions</h2>
+          <dl>
             <dt>Is Sliced a real marketplace?</dt>
             <dd>
               No. Sliced is a <strong>playground application</strong> for developers learning
