@@ -1,0 +1,5 @@
+# Static assets must be served as files (Cloudflare applies redirects before lookup).
+/assets/*  /assets/:splat  200
+
+# TanStack Start SPA shell for all other routes.
+/*  /_shell.html  200
