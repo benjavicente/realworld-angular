@@ -1,0 +1,6 @@
+name = "fakeworld-angular"
+compatibility_date = "2026-05-28"
+
+[assets]
+directory = "./dist/client"
+not_found_handling = "single-page-application"

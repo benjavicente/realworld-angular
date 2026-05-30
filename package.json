@@ -16,7 +16,8 @@
     "lint:eslint": "eslint ./src",
     "prepare": "husky install",
     "format:write": "oxfmt --write .",
-    "format:check": "oxfmt --check ."
+    "format:check": "oxfmt --check .",
+    "knip": "knip"
   },
   "dependencies": {
     "@angular/cdk": "^21.2.10",
@@ -41,10 +42,10 @@
   },
   "devDependencies": {
     "@analogjs/vitest-angular": "^2.5.2",
+    "@angular-eslint/eslint-plugin": "21.3.1",
     "@angular/compiler-cli": "^21.2.0",
     "@benjavicente/lint-angular": "0.0.6",
     "@benjavicente/router-cli": "1.166.25",
-    "@eslint/js": "^10.0.1",
     "@oxc-angular/vite": "0.0.22",
     "@tailwindcss/vite": "4.2.2",
     "@testing-library/angular": "^19.3.0",
@@ -57,10 +58,10 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "husky": "^9.1.7",
     "jsdom": "^28.0.0",
-    "nitro": "3.0.260311-beta",
+    "knip": "^6.14.2",
+    "lint-staged": "^15.5.0",
     "oxfmt": "0.51.0",
     "oxlint": "^1.59.0",
-    "prettier": "^3.8.1",
     "serve": "^14.2.4",
     "typescript": "~5.9.2",
     "typescript-eslint": "8.56.1",

@@ -14,3 +14,7 @@ auditConfig:
     - GHSA-4hxc-9384-m385
     - GHSA-q5pr-72pq-83v3
     - GHSA-2j6q-whv2-gh6w
+
+minimumReleaseAgeExclude:
+  - '@benjavicente/angular-query-devtools@5.100.14'
+  - '@benjavicente/angular-query@5.100.14'

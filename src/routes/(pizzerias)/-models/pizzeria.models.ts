@@ -1,6 +1,6 @@
 import type { StaffMember } from './staff.models';
 
-export interface PizzeriaOwner {
+interface PizzeriaOwner {
   id: string;
   name: string;
 }

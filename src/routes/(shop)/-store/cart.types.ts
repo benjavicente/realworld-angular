@@ -10,7 +10,7 @@ export interface CartItem {
   selectedOptionIds: string[];
 }
 
-export interface CartPizza {
+interface CartPizza {
   id: string;
   name: string;
   image: string;
@@ -23,7 +23,7 @@ export interface CartOption {
   price: number;
 }
 
-export interface CartItemDetail {
+interface CartItemDetail {
   id: string;
   pizza: CartPizza;
   quantity: number;

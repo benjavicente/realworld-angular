@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+// @ts-expect-error package ships empty .d.ts; export exists in the FESM bundle
+import { TanStackRouterDevtools } from '@benjavicente/angular-router-devtools';
 import { Outlet, createRootRouteWithContext } from '@benjavicente/angular-router-experimental';
 import type { AngularInjectFn } from '@benjavicente/angular-router-experimental';
 import type { QueryClient } from '@benjavicente/angular-query';
@@ -10,7 +12,7 @@ import { NotFound } from './-components/not-found/not-found';
 import { images } from '../lib/assets';
 import { environment } from '../environments/environment';
 import stylesUrl from '../styles.css?url';
-import fontUrl from '@fontsource/geist/files/geist-latin-400.woff2?url';
+import fontUrl from '@fontsource/geist/files/geist-latin-400-normal.woff2?url';
 
 export const Route = createRootRouteWithContext<{
   inject: AngularInjectFn;
@@ -45,7 +47,7 @@ export const Route = createRootRouteWithContext<{
 @Component({
   selector: 'rw-start-root',
   standalone: true,
-  imports: [Outlet, Header, Footer],
+  imports: [Outlet, Header, Footer, TanStackRouterDevtools],
   template: `
     <a
       class="absolute -top-full left-4 z-(--z-modal) rounded-md bg-primary px-4 py-2 font-semibold text-text-on-primary no-underline transition-[top] focus:top-4"
@@ -61,6 +63,7 @@ export const Route = createRootRouteWithContext<{
       <outlet />
     </main>
     <rw-footer />
+    <router-devtools />
   `,
 })
 class RootComponent {}

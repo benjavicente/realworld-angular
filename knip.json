@@ -1,0 +1,7 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["src/client.ts", "src/server.ts", "src/routeTree.gen.ts"],
+  "project": ["src/**/*.{ts,css}", "!src/**/*.spec.ts"],
+  "ignoreFiles": ["src/main.ts"],
+  "ignoreDependencies": ["@angular/platform-server", "@angular/compiler-cli"]
+}

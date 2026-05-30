@@ -53,7 +53,7 @@ export function parseCheckoutStep(pathname: string): WizardStep | null {
   return null;
 }
 
-export function isCheckoutStepValid(values: CheckoutFormModel, step: ValidatableStep): boolean {
+function isCheckoutStepValid(values: CheckoutFormModel, step: ValidatableStep): boolean {
   if (step === 'delivery') {
     if (!values.delivery.location || !values.delivery.street.trim()) {
       return false;

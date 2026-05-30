@@ -1,10 +1,5 @@
 import { ofetch } from 'ofetch';
 
-/** used to skip global credentials on those requests. */
-export function isPhotonApiUrl(url: string): boolean {
-  return url.includes('photon.komoot.io');
-}
-
 export interface PhotonLocationSuggestion {
   label: string;
   city: string;

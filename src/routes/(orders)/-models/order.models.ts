@@ -16,7 +16,7 @@ export type OrderItemSelectedOption =
   | { id: string; type: 'SIZE'; label: string; price: number }
   | { id: string; type: 'TOPPING'; label: string; price: number };
 
-export interface OrderItem {
+interface OrderItem {
   id: string;
   quantity: number;
   unitPrice: number;

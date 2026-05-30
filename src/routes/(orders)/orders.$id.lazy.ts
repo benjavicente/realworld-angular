@@ -16,7 +16,6 @@ import { Title } from '@angular/platform-browser';
 import { injectMutation, injectQuery } from '@benjavicente/angular-query';
 import { cancelOrderMutationOptions } from '../../lib/api/api-mutations';
 import { orderSubscriptionQueryOptions } from '../../lib/api/api-queries';
-import { requireAuth } from '../-guards';
 import type { OrderItemSelectedOption } from './-models/order.models';
 
 export const Route = createLazyFileRoute('/(orders)/orders/$id')({
@@ -25,126 +24,139 @@ export const Route = createLazyFileRoute('/(orders)/orders/$id')({
 
 @Component({
   selector: 'rw-order-detail-page',
-  imports: [
-    Link,
-    DecimalPipe,
-    DatePipe,
-    TitleCasePipe,
-    Spinner,
-    Button,
-    Callout,
-    EmptyState,
-  ],
+  imports: [Link, DecimalPipe, DatePipe, TitleCasePipe, Spinner, Button, Callout, EmptyState],
   template: `
-@if (orderResource.error()) {
-  <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">
-    <rw-empty-state
-      icon="folder-off"
-      title="Order not found"
-      text="We could not find an order with this id, or you may not have access to it."
-    />
-  </div>
-} @else if (orderResource.isPending() || !orderResource.data()) {
-  <div class="flex justify-center p-16" aria-label="Loading order"><rw-spinner /></div>
-} @else {
-  @let order = orderResource.data()!;
-  <div class="py-10">
-    <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">
-      @if (cancelFeedback(); as fb) {
-        <rw-callout [variant]="fb.variant" [message]="fb.message" />
-      }
-      <div class="mb-6 flex justify-end gap-3 items-center">
-        <span class="text-base text-text">{{ order.status | titlecase }}</span>
-          @if (order.status === 'PENDING') {
-            <button rw-button palette="danger" size="sm" [isLoading]="isCancelling()" (click)="cancel()">
-              Cancel order
-            </button>
+    @if (orderResource.error()) {
+      <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">
+        <rw-empty-state
+          icon="folder-off"
+          title="Order not found"
+          text="We could not find an order with this id, or you may not have access to it."
+        />
+      </div>
+    } @else if (orderResource.isPending() || !orderResource.data()) {
+      <div class="flex justify-center p-16" aria-label="Loading order"><rw-spinner /></div>
+    } @else {
+      @let order = orderResource.data()!;
+      <div class="py-10">
+        <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">
+          @if (cancelFeedback(); as fb) {
+            <rw-callout [variant]="fb.variant" [message]="fb.message" />
           }
-      </div>
-
-      <div class="mb-8 space-y-1">
-        <h1 class="text-2xl font-bold mb-2">
-          <a [link]="{ to: '/pizzerias/' + order.pizzeria.id }" class="text-text no-underline hover:no-underline">
-            {{ order.pizzeria.name }}
-          </a>
-        </h1>
-        <p class="text-sm text-text-muted">
-          Placed on {{ order.createdAt | date: 'dd MMM yyyy, HH:mm' }}
-        </p>
-        <p class="text-sm text-text-muted">
-          Deliver to: {{ order.deliveryAddress.street }}, {{ order.deliveryAddress.city }},
-          {{ order.deliveryAddress.country }}
-        </p>
-        @if (order.billingAddress; as address) {
-          <p class="text-sm text-text-muted">
-            Bill to: {{ address.street }}, {{ address.city }}, {{ address.country }}
-          </p>
-        }
-        @if (order.notes) {
-          <p class="text-sm text-text-muted">Notes: {{ order.notes }}</p>
-        }
-      </div>
-
-      <!-- Order status / progress -->
-      @if (order.status === 'CANCELLED') {
-        <div class="mb-10 rounded-lg border border-error/30 bg-error-bg p-6" role="status" aria-live="polite">
-          <div>
-            <h2 class="mb-2 text-lg font-semibold">Order cancelled</h2>
-            <p class="text-sm text-text-muted">This order will not be prepared or delivered.</p>
-          </div>
-        </div>
-      } @else {
-        <section class="mb-10 rounded-lg border border-border bg-surface-alt px-5 py-5">
-          <h2 class="mb-5 text-sm font-semibold uppercase text-text-muted">Progress</h2>
-          <ol class="relative grid grid-cols-4" aria-label="Progress steps">
-            <span class="absolute left-[12.5%] right-[12.5%] top-[11px] h-px bg-border-strong" aria-hidden="true"></span>
-            @for (step of statusOrder; track step) {
-              @let stepDone = isStepDone()(step);
-              <li class="relative flex flex-col items-center gap-3 text-center">
-                <span
-                  [class]="statusDotClasses(stepDone, order.status === step && !stepDone)"
-                  [attr.aria-hidden]="true"
-                >
-                  @if (stepDone) {
-                    <span aria-hidden="true">✓</span>
-                  }
-                </span>
-                <p [class]="statusLabelClasses(stepDone, order.status === step && !stepDone)">{{ step | titlecase }}</p>
-              </li>
-            }
-          </ol>
-        </section>
-      }
-
-      <!-- Pizzas -->
-      <section>
-        <h2 class="mb-5 text-lg font-semibold">Pizzas</h2>
-        <ul class="list-none border-b border-border" role="list">
-          @for (item of order.items; track item.id) {
-            <li class="grid grid-cols-[2rem_1fr_auto_auto] items-center gap-x-4 border-t border-border py-4 text-sm">
-              <span class="font-semibold tabular-nums text-text">{{ item.quantity }}×</span>
-              <span class="text-text">{{ item.pizza.name }}</span>
-              @if (item.selectedOptions.length > 0) {
-                <span class="text-sm text-text-muted">{{
-                  formatSelectedOptions(item.selectedOptions)
-                }}</span>
-              } @else {
-                <span></span>
-              }
-              <span class="text-right font-semibold tabular-nums text-primary"
-                >€{{ item.quantity * item.unitPrice | number: '1.2-2' }}</span
+          <div class="mb-6 flex justify-end gap-3 items-center">
+            <span class="text-base text-text">{{ order.status | titlecase }}</span>
+            @if (order.status === 'PENDING') {
+              <button
+                rw-button
+                palette="danger"
+                size="sm"
+                [isLoading]="isCancelling()"
+                (click)="cancel()"
               >
-            </li>
+                Cancel order
+              </button>
+            }
+          </div>
+
+          <div class="mb-8 space-y-1">
+            <h1 class="text-2xl font-bold mb-2">
+              <a
+                [link]="{ to: '/pizzerias/' + order.pizzeria.id }"
+                class="text-text no-underline hover:no-underline"
+              >
+                {{ order.pizzeria.name }}
+              </a>
+            </h1>
+            <p class="text-sm text-text-muted">
+              Placed on {{ order.createdAt | date: 'dd MMM yyyy, HH:mm' }}
+            </p>
+            <p class="text-sm text-text-muted">
+              Deliver to: {{ order.deliveryAddress.street }}, {{ order.deliveryAddress.city }},
+              {{ order.deliveryAddress.country }}
+            </p>
+            @if (order.billingAddress; as address) {
+              <p class="text-sm text-text-muted">
+                Bill to: {{ address.street }}, {{ address.city }}, {{ address.country }}
+              </p>
+            }
+            @if (order.notes) {
+              <p class="text-sm text-text-muted">Notes: {{ order.notes }}</p>
+            }
+          </div>
+
+          <!-- Order status / progress -->
+          @if (order.status === 'CANCELLED') {
+            <div
+              class="mb-10 rounded-lg border border-error/30 bg-error-bg p-6"
+              role="status"
+              aria-live="polite"
+            >
+              <div>
+                <h2 class="mb-2 text-lg font-semibold">Order cancelled</h2>
+                <p class="text-sm text-text-muted">This order will not be prepared or delivered.</p>
+              </div>
+            </div>
+          } @else {
+            <section class="mb-10 rounded-lg border border-border bg-surface-alt px-5 py-5">
+              <h2 class="mb-5 text-sm font-semibold uppercase text-text-muted">Progress</h2>
+              <ol class="relative grid grid-cols-4" aria-label="Progress steps">
+                <span
+                  class="absolute left-[12.5%] right-[12.5%] top-[11px] h-px bg-border-strong"
+                  aria-hidden="true"
+                ></span>
+                @for (step of statusOrder; track step) {
+                  @let stepDone = isStepDone()(step);
+                  <li class="relative flex flex-col items-center gap-3 text-center">
+                    <span
+                      [class]="statusDotClasses(stepDone, order.status === step && !stepDone)"
+                      [attr.aria-hidden]="true"
+                    >
+                      @if (stepDone) {
+                        <span aria-hidden="true">✓</span>
+                      }
+                    </span>
+                    <p [class]="statusLabelClasses(stepDone, order.status === step && !stepDone)">
+                      {{ step | titlecase }}
+                    </p>
+                  </li>
+                }
+              </ol>
+            </section>
           }
-        </ul>
-        <div class="flex justify-between pt-4 text-base [&_strong]:text-lg [&_strong]:text-primary">
-          <span>Total</span>
-          <strong class="tabular-nums">€{{ order.total | number: '1.2-2' }}</strong>
+
+          <!-- Pizzas -->
+          <section>
+            <h2 class="mb-5 text-lg font-semibold">Pizzas</h2>
+            <ul class="list-none border-b border-border" role="list">
+              @for (item of order.items; track item.id) {
+                <li
+                  class="grid grid-cols-[2rem_1fr_auto_auto] items-center gap-x-4 border-t border-border py-4 text-sm"
+                >
+                  <span class="font-semibold tabular-nums text-text">{{ item.quantity }}×</span>
+                  <span class="text-text">{{ item.pizza.name }}</span>
+                  @if (item.selectedOptions.length > 0) {
+                    <span class="text-sm text-text-muted">{{
+                      formatSelectedOptions(item.selectedOptions)
+                    }}</span>
+                  } @else {
+                    <span></span>
+                  }
+                  <span class="text-right font-semibold tabular-nums text-primary"
+                    >€{{ item.quantity * item.unitPrice | number: '1.2-2' }}</span
+                  >
+                </li>
+              }
+            </ul>
+            <div
+              class="flex justify-between pt-4 text-base [&_strong]:text-lg [&_strong]:text-primary"
+            >
+              <span>Total</span>
+              <strong class="tabular-nums">€{{ order.total | number: '1.2-2' }}</strong>
+            </div>
+          </section>
         </div>
-      </section>
-    </div>
-  </div>
-}
+      </div>
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -185,7 +197,8 @@ class OrderDetailPage {
   });
 
   protected statusDotClasses(done: boolean, active: boolean): string {
-    const base = 'relative z-10 flex size-[22px] items-center justify-center rounded-full border-2 text-xs font-bold leading-none';
+    const base =
+      'relative z-10 flex size-[22px] items-center justify-center rounded-full border-2 text-xs font-bold leading-none';
     if (done) {
       return `${base} border-primary bg-primary text-text-on-primary`;
     }
