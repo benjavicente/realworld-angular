@@ -33,9 +33,7 @@ const navLinkClass =
 
         <nav class="flex flex-1 items-center gap-2 max-md:hidden" aria-label="Main navigation">
           @if (!auth.isAdmin()) {
-            <a
-              [link]="{ to: '/', activeOptions: { exact: true } }"
-              [class]="navLinkClass"
+            <a [link]="{ to: '/', activeOptions: { exact: true } }" [class]="navLinkClass"
               >Pizzerias</a
             >
           }
@@ -120,6 +118,7 @@ const navLinkClass =
           class="fixed inset-y-0 right-0 z-[calc(var(--z-overlay)+1)] hidden w-[min(24rem,100vw)] bg-surface shadow-xl max-md:block"
           role="navigation"
           aria-label="Mobile navigation"
+          (click)="onMobileMenuNavigate($event)"
         >
           <div
             class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8 flex h-nav items-center justify-between border-b border-border"
@@ -257,5 +256,12 @@ export class Header {
 
   protected closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
+  }
+
+  protected onMobileMenuNavigate(event: Event): void {
+    const target = event.target;
+    if (target instanceof Element && target.closest('a')) {
+      this.closeMobileMenu();
+    }
   }
 }

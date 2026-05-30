@@ -19,13 +19,20 @@ export const Route = createRootRouteWithContext<{
   ssr: false,
   head: () => ({
     meta: [
+      {
+        charset: 'utf-8',
+      },
+      {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1.0',
+      },
       { title: 'Realworld Angular' },
       { name: 'description', content: 'Realworld Angular running on Angular Start.' },
     ],
     links: [
       { rel: 'icon', href: images.faviconSvg, type: 'image/svg+xml' },
       { rel: 'stylesheet', href: stylesUrl },
-    ]
+    ],
   }),
   component: () => RootComponent,
   notFoundComponent: () => NotFound,
@@ -52,4 +59,4 @@ export const Route = createRootRouteWithContext<{
     <rw-footer />
   `,
 })
-class RootComponent { }
+class RootComponent {}
