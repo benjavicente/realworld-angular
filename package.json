@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@angular/cdk": "^21.2.10",
+    "@angular/common": "^21.2.15",
     "@angular/compiler": "^21.2.0",
     "@angular/core": "^21.2.0",
     "@benjavicente/angular-query": "5.100.14",
