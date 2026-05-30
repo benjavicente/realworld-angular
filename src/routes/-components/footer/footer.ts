@@ -21,7 +21,15 @@ import { injectAuthState } from '../../../lib/services/auth';
               rel="noopener noreferrer"
               >Realworld Angular</a
             >
+            <span class="text-sm text-text-muted select-none"> - </span>
+            <a
+              href="https://github.com/benjavicente/realworld-angular"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Fakeworld Angular</a
+            >
           </p>
+
           <a
             href="https://github.com/sponsors/geromegrignon"
             target="_blank"
