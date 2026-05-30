@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
-import { CatalogImageKind, CatalogImageUrlPipe } from '../../pipes/catalog-image-url.pipe';
+import {
+  CatalogImageKind,
+  CatalogImageUrlPipe,
+} from '../../pipes/catalog-image/catalog-image-url.pipe';
 import { Spinner } from '../spinner/spinner';
 import { injectQuery } from '@benjavicente/angular-query';
 import { injectRouter } from '@benjavicente/angular-router-experimental';

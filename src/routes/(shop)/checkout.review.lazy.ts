@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { NumberFormatPipe } from '../../lib/pipes/number/number.pipe';
 import { createLazyFileRoute, injectRouter } from '@benjavicente/angular-router-experimental';
 import { injectQuery } from '@benjavicente/angular-query';
 import { TanStackField } from '@tanstack/angular-form';
@@ -15,7 +15,7 @@ export const Route = createLazyFileRoute('/(shop)/checkout/review')({
 
 @Component({
   selector: 'rw-checkout-review-step',
-  imports: [DecimalPipe, TanStackField, Input, Button],
+  imports: [NumberFormatPipe, TanStackField, Input, Button],
   template: `
     <h2 class="mb-5 text-lg font-semibold">Review your order</h2>
 

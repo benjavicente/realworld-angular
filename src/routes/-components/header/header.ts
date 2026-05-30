@@ -1,12 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { Link, injectRouter } from '@benjavicente/angular-router-experimental';
 import { injectQuery } from '@benjavicente/angular-query';
 import { authUserQueryOptions } from '../../../lib/services/auth';
@@ -242,7 +234,6 @@ export class Header {
   protected readonly cartItemCount = injectCartClientItemCount();
   protected readonly navLinkClass = navLinkClass;
   protected readonly icons = icons;
-  private readonly document = inject(DOCUMENT);
   private readonly router = injectRouter();
 
   protected readonly isMobileMenuOpen = signal(false);
@@ -260,7 +251,7 @@ export class Header {
 
     effect(() => {
       const open = this.isMobileMenuOpen();
-      this.document.body.style.overflow = open ? 'hidden' : '';
+      document.body.style.overflow = open ? 'hidden' : '';
     });
   }
 

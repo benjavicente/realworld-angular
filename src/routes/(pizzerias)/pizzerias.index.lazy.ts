@@ -11,7 +11,7 @@ import { Spinner } from '../../lib/components/spinner/spinner';
 import { Pagination } from '../../lib/components/pagination/pagination';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
 import { HeroBanner } from '../../lib/components/hero-banner/hero-banner';
-import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image-url.pipe';
+import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image/catalog-image-url.pipe';
 import { Callout } from '../../lib/components/callout/callout';
 import { pizzeriasQueryOptions } from '../../lib/api/api-queries';
 import { injectQuery } from '@benjavicente/angular-query';

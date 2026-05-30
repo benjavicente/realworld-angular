@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { NumberFormatPipe } from '../../../../lib/pipes/number/number.pipe';
 import { PizzaOption, SelectedPizzaOption } from '../../../(pizzerias)/-models/pizza.models';
 import { fieldErrorMessage, type FieldLike } from '../../../../lib/forms/tanstack-form';
 
 @Component({
   selector: 'rw-size-option-field',
-  imports: [DecimalPipe],
+  imports: [NumberFormatPipe],
   template: `
     <fieldset class="m-0 border-0 p-0">
       <legend class="mb-2 block text-sm font-semibold uppercase tracking-[0.05em] text-text-muted">
@@ -25,7 +25,9 @@ import { fieldErrorMessage, type FieldLike } from '../../../../lib/forms/tanstac
             />
             <span class="min-w-0 flex-1">{{ option.label }}</span>
             @if (option.price > 0) {
-              <span class="text-xs tabular-nums text-text-muted">+€{{ option.price | number: '1.2-2' }}</span>
+              <span class="text-xs tabular-nums text-text-muted"
+                >+€{{ option.price | number: '1.2-2' }}</span
+              >
             }
           </label>
         }

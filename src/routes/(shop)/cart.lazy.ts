@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { Link, createLazyFileRoute, injectRouter } from '@benjavicente/angular-router-experimental';
-import { DecimalPipe } from '@angular/common';
+import { NumberFormatPipe } from '../../lib/pipes/number/number.pipe';
 import { injectQuery } from '@benjavicente/angular-query';
 import { cartPreviewQueryOptions } from '../../lib/api/api-queries';
 import { authUserQueryOptions } from '../../lib/services/auth';
@@ -9,7 +9,7 @@ import { Button } from '../../lib/components/button/button';
 import { Callout } from '../../lib/components/callout/callout';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
 import { Spinner } from '../../lib/components/spinner/spinner';
-import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image-url.pipe';
+import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image/catalog-image-url.pipe';
 import { icons } from '../../lib/assets';
 import type { CartOption } from './-store/cart.types';
 
@@ -19,7 +19,7 @@ export const Route = createLazyFileRoute('/(shop)/cart')({
 
 @Component({
   selector: 'rw-cart-page',
-  imports: [Link, DecimalPipe, Button, Callout, EmptyState, Spinner, CatalogImageUrlPipe],
+  imports: [Link, NumberFormatPipe, Button, Callout, EmptyState, Spinner, CatalogImageUrlPipe],
   template: `
     <div class="py-10">
       <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">

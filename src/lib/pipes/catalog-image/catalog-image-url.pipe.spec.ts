@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CatalogImageUrlPipe } from './catalog-image-url.pipe';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 describe('CatalogImageUrlPipe', () => {
   const pipe = new CatalogImageUrlPipe();

@@ -12,7 +12,7 @@ import {
   injectNavigate,
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
-import { DecimalPipe } from '@angular/common';
+import { NumberFormatPipe } from '../../lib/pipes/number/number.pipe';
 import { Pizza } from './-models/pizza.models';
 import { Spinner } from '../../lib/components/spinner/spinner';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
@@ -24,7 +24,7 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { merge, of, Subject, timer } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
-import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image-url.pipe';
+import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image/catalog-image-url.pipe';
 import { Button } from '../../lib/components/button/button';
 import { pizzeriaPizzasQueryOptions, pizzeriaQueryOptions } from '../../lib/api/api-queries';
 import { injectCartClient } from '../(shop)/-store/inject-cart';
@@ -36,7 +36,7 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/$id')({
 
 @Component({
   selector: 'rw-pizzeria-detail-page',
-  imports: [Link, DecimalPipe, Spinner, EmptyState, CatalogImageUrlPipe, Button],
+  imports: [Link, NumberFormatPipe, Spinner, EmptyState, CatalogImageUrlPipe, Button],
   template: `
     @if (pizzeriaResource.isPending() || pizzasResource.isPending()) {
       <div class="flex justify-center p-16" aria-label="Loading pizzeria">

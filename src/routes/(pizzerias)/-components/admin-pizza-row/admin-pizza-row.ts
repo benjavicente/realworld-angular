@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { NumberFormatPipe } from '../../../../lib/pipes/number/number.pipe';
 import { Dialog } from '@angular/cdk/dialog';
 import { Pizza } from '../../-models/pizza.models';
 import {
@@ -14,13 +14,17 @@ import { icons } from '../../../../lib/assets';
 
 @Component({
   selector: '[rw-admin-pizza-row]',
-  imports: [DecimalPipe],
+  imports: [NumberFormatPipe],
   template: `
     <td class="max-w-56 truncate font-medium text-text" [attr.title]="pizza().name">
       {{ pizza().name }}
     </td>
-    <td class="whitespace-nowrap tabular-nums text-text-muted">€{{ pizza().basePrice | number: '1.2-2' }}</td>
-    <td class="whitespace-nowrap tabular-nums text-text-muted">€{{ menuListTotalPrice() | number: '1.2-2' }}</td>
+    <td class="whitespace-nowrap tabular-nums text-text-muted">
+      €{{ pizza().basePrice | number: '1.2-2' }}
+    </td>
+    <td class="whitespace-nowrap tabular-nums text-text-muted">
+      €{{ menuListTotalPrice() | number: '1.2-2' }}
+    </td>
     <td class="max-w-[22rem] text-sm leading-[1.45] text-text-muted">
       {{ pizza().toppings.length ? toppingLabels() : '—' }}
     </td>

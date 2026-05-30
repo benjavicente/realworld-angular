@@ -5,7 +5,8 @@ import {
   injectNavigate,
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
-import { DecimalPipe, DatePipe } from '@angular/common';
+import { DateFormatPipe } from '../../lib/pipes/date/date.pipe';
+import { NumberFormatPipe } from '../../lib/pipes/number/number.pipe';
 import { authUserQueryOptions } from '../../lib/services/auth';
 import { Spinner } from '../../lib/components/spinner/spinner';
 import { Pagination } from '../../lib/components/pagination/pagination';
@@ -21,7 +22,16 @@ export const Route = createLazyFileRoute('/(orders)/orders/')({
 
 @Component({
   selector: 'rw-orders-list-page',
-  imports: [Link, DecimalPipe, DatePipe, Spinner, Pagination, EmptyState, Callout, StatusBadge],
+  imports: [
+    Link,
+    NumberFormatPipe,
+    DateFormatPipe,
+    Spinner,
+    Pagination,
+    EmptyState,
+    Callout,
+    StatusBadge,
+  ],
   template: `
     <div class="py-10">
       <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">

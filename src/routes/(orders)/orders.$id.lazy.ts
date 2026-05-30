@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { Link, createLazyFileRoute, injectRouter } from '@benjavicente/angular-router-experimental';
-import { DecimalPipe, DatePipe, TitleCasePipe } from '@angular/common';
+import { DateFormatPipe } from '../../lib/pipes/date/date.pipe';
+import { NumberFormatPipe } from '../../lib/pipes/number/number.pipe';
+import { TitleCaseFormatPipe } from '../../lib/pipes/title-case/title-case.pipe';
 import { Callout } from '../../lib/components/callout/callout';
 import { Spinner } from '../../lib/components/spinner/spinner';
 import { Button } from '../../lib/components/button/button';
@@ -16,7 +18,16 @@ export const Route = createLazyFileRoute('/(orders)/orders/$id')({
 
 @Component({
   selector: 'rw-order-detail-page',
-  imports: [Link, DecimalPipe, DatePipe, TitleCasePipe, Spinner, Button, Callout, EmptyState],
+  imports: [
+    Link,
+    NumberFormatPipe,
+    DateFormatPipe,
+    TitleCaseFormatPipe,
+    Spinner,
+    Button,
+    Callout,
+    EmptyState,
+  ],
   template: `
     @if (orderResource.error()) {
       <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">

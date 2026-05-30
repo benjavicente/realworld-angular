@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DateFormatPipe } from '../../../../lib/pipes/date/date.pipe';
+import { NumberFormatPipe } from '../../../../lib/pipes/number/number.pipe';
 import { AdminOrderListItem } from '../../-models/order.models';
 import { Dialog } from '@angular/cdk/dialog';
 import {
@@ -18,13 +19,17 @@ import { icons } from '../../../../lib/assets';
 
 @Component({
   selector: 'tr[rw-admin-order-row]',
-  imports: [DecimalPipe, DatePipe, StatusBadge],
+  imports: [NumberFormatPipe, DateFormatPipe, StatusBadge],
   template: `
     <td class="max-w-56 truncate font-medium text-text">
       {{ order().createdAt | date: 'dd MMM, HH:mm' }}
     </td>
-    <td class="whitespace-nowrap tabular-nums text-text-muted">{{ order().items.length }} pizza(s)</td>
-    <td class="whitespace-nowrap tabular-nums text-text-muted">€{{ order().total | number: '1.2-2' }}</td>
+    <td class="whitespace-nowrap tabular-nums text-text-muted">
+      {{ order().items.length }} pizza(s)
+    </td>
+    <td class="whitespace-nowrap tabular-nums text-text-muted">
+      €{{ order().total | number: '1.2-2' }}
+    </td>
     <td><rw-status-badge [status]="order().status" /></td>
     <td class="w-px whitespace-nowrap ps-4 text-end align-middle">
       <span class="inline-flex items-center justify-end gap-2">

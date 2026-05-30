@@ -6,14 +6,14 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { NumberFormatPipe } from '../../../../lib/pipes/number/number.pipe';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Callout } from '../../../../lib/components/callout/callout';
 import { SelectedPizzaOption } from '../../../(pizzerias)/-models/pizza.models';
 import { PizzaOrderFormDialogData } from '../../-models/order.models';
 import { Button } from '../../../../lib/components/button/button';
 import { Modal } from '../../../../lib/components/modal/modal';
-import { CatalogImageUrlPipe } from '../../../../lib/pipes/catalog-image-url.pipe';
+import { CatalogImageUrlPipe } from '../../../../lib/pipes/catalog-image/catalog-image-url.pipe';
 import { SizeOptionField } from '../pizza-size-option-field/pizza-size-option-field';
 import { Spinner } from '../../../../lib/components/spinner/spinner';
 import { injectQuery } from '@benjavicente/angular-query';
@@ -36,7 +36,7 @@ interface PizzaOrderFormModel {
   selector: 'rw-pizza-order-form-dialog',
   imports: [
     Modal,
-    DecimalPipe,
+    NumberFormatPipe,
     Button,
     CatalogImageUrlPipe,
     TanStackField,
@@ -67,9 +67,7 @@ interface PizzaOrderFormModel {
         </div>
 
         <div class="flex flex-col gap-5">
-          <p class="m-0 text-sm leading-snug text-text-muted">
-            Comes with: {{ defaultToppings }}
-          </p>
+          <p class="m-0 text-sm leading-snug text-text-muted">Comes with: {{ defaultToppings }}</p>
 
           <ng-container
             [tanstackField]="orderForm"
@@ -172,14 +170,12 @@ interface PizzaOrderFormModel {
           <div class="flex flex-col gap-4 border-t border-border pt-4">
             <div class="flex items-center justify-between text-lg">
               <span>Total</span>
-              <strong class="text-xl tabular-nums text-primary">€{{ modalTotal() | number: '1.2-2' }}</strong>
+              <strong class="text-xl tabular-nums text-primary"
+                >€{{ modalTotal() | number: '1.2-2' }}</strong
+              >
             </div>
             <div class="flex justify-end [&_button[rw-button]]:min-w-32">
-              <button
-                rw-button
-                type="submit"
-                [isLoading]="orderFormState().isSubmitting"
-              >
+              <button rw-button type="submit" [isLoading]="orderFormState().isSubmitting">
                 Add to cart
               </button>
             </div>

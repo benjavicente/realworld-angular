@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { NumberFormatPipe } from '../../../../lib/pipes/number/number.pipe';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Callout } from '../../../../lib/components/callout/callout';
 import { Pizza } from '../../-models/pizza.models';
@@ -39,7 +39,16 @@ interface AdminPizzaFormModel {
 
 @Component({
   selector: 'rw-admin-pizza-form-dialog',
-  imports: [DecimalPipe, TanStackField, Input, Button, ImagePicker, Modal, ModalFooter, Callout],
+  imports: [
+    NumberFormatPipe,
+    TanStackField,
+    Input,
+    Button,
+    ImagePicker,
+    Modal,
+    ModalFooter,
+    Callout,
+  ],
   template: `
     <rw-modal [title]="isEditMode ? 'Edit Pizza' : 'New Pizza'">
       <form class="flex flex-col gap-5" (submit)="$event.preventDefault(); save()">
@@ -120,7 +129,12 @@ interface AdminPizzaFormModel {
           <button rw-button variant="ghost" palette="secondary" type="button" (click)="dismiss()">
             Cancel
           </button>
-          <button rw-button type="button" [isLoading]="pizzaFormState().isSubmitting" (click)="save()">
+          <button
+            rw-button
+            type="button"
+            [isLoading]="pizzaFormState().isSubmitting"
+            (click)="save()"
+          >
             {{ isEditMode ? 'Save changes' : 'Create pizza' }}
           </button>
         </div>

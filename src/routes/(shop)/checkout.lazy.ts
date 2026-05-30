@@ -13,7 +13,7 @@ import {
   injectNavigate,
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
-import { DecimalPipe } from '@angular/common';
+import { NumberFormatPipe } from '../../lib/pipes/number/number.pipe';
 import { map, Observable } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { TanStackWithForm, injectForm, injectStore } from '@tanstack/angular-form';
@@ -72,7 +72,7 @@ export const Route = createLazyFileRoute('/(shop)/checkout')({
   imports: [
     Link,
     Outlet,
-    DecimalPipe,
+    NumberFormatPipe,
     Callout,
     EmptyState,
     Spinner,
