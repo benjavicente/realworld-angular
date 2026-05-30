@@ -17,27 +17,7 @@ import { pizzeriasQueryOptions } from '../../lib/api/api-queries';
 import { injectQuery } from '@benjavicente/angular-query';
 import { icons } from '../../lib/assets';
 
-interface PizzeriaListSearch {
-  page?: number;
-  search?: string;
-}
-
 const PIZZERIAS_LIMIT = 12;
-
-function pageSearchValue(value: unknown): number {
-  const page = Number(value);
-  return Number.isInteger(page) && page > 0 ? page : 1;
-}
-
-function validatePizzeriaListSearch(search: Record<string, unknown>): PizzeriaListSearch {
-  const page = pageSearchValue(search['page']);
-  const searchText = typeof search['search'] === 'string' ? search['search'].trim() : '';
-
-  return {
-    ...(page > 1 ? { page } : {}),
-    ...(searchText ? { search: searchText } : {}),
-  };
-}
 
 export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/')({
   component: () => PizzeriaListPage,
@@ -100,6 +80,7 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/')({
                     <img
                       [src]="pizzeria.image | catalogImageUrl: 'pizzeria'"
                       alt=""
+                      fetchpriority="high"
                       class="size-full object-cover transition group-hover:scale-105"
                       width="600"
                       height="400"

@@ -7,6 +7,7 @@ import { appConfigServer } from './app.config.server';
 
 export default {
   fetch: createServerHandler<Register>(App, mergeApplicationConfig(appConfig, appConfigServer), {
-    document: '<!doctype html><html><head></head><body><rw-app-root></rw-app-root></body></html>',
+    document:
+      '<!doctype html><html lang="en"><head></head><body><rw-app-root></rw-app-root></body></html>',
   }),
 };

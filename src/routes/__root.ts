@@ -8,7 +8,9 @@ import { Header } from './-components/header/header';
 import { Footer } from './-components/footer/footer';
 import { NotFound } from './-components/not-found/not-found';
 import { images } from '../lib/assets';
+import { environment } from '../environments/environment';
 import stylesUrl from '../styles.css?url';
+import fontUrl from '@fontsource/geist/files/geist-latin-400.woff2?url';
 
 export const Route = createRootRouteWithContext<{
   inject: AngularInjectFn;
@@ -28,8 +30,10 @@ export const Route = createRootRouteWithContext<{
       },
       { title: 'Realworld Angular' },
       { name: 'description', content: 'Realworld Angular running on Angular Start.' },
+      { rel: 'preload', href: fontUrl, as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
     ],
     links: [
+      { rel: 'preconnect', href: environment.apiBaseUrl, crossorigin: 'anonymous' },
       { rel: 'icon', href: images.faviconSvg, type: 'image/svg+xml' },
       { rel: 'stylesheet', href: stylesUrl },
     ],
