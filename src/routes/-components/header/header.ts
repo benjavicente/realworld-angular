@@ -1,7 +1,15 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { Link, injectRouter } from '@benjavicente/angular-router-experimental';
-import { injectAuthState } from '../../../lib/services/auth';
+import { injectQuery } from '@benjavicente/angular-query';
+import { authUserQueryOptions } from '../../../lib/services/auth';
 import { Avatar } from '../../../lib/components/avatar/avatar';
 import { PizzaLogo } from '../../../lib/components/pizza-logo/pizza-logo';
 import { injectCartClientItemCount } from '../../(shop)/-store/inject-cart';
@@ -32,17 +40,17 @@ const navLinkClass =
         </a>
 
         <nav class="flex flex-1 items-center gap-2 max-md:hidden" aria-label="Main navigation">
-          @if (!auth.isAdmin()) {
+          @if (!isAdmin()) {
             <a [link]="{ to: '/', activeOptions: { exact: true } }" [class]="navLinkClass"
               >Pizzerias</a
             >
           }
 
-          @if (auth.isCustomer()) {
+          @if (isCustomer()) {
             <a [link]="{ to: '/orders' }" [class]="navLinkClass">My Orders</a>
           }
 
-          @if (auth.isAdmin()) {
+          @if (isAdmin()) {
             <a [link]="{ to: '/pizzerias/admin' }" [class]="navLinkClass">My Pizzeria</a>
             <a [link]="{ to: '/orders' }" [class]="navLinkClass">Orders</a>
           }
@@ -50,7 +58,7 @@ const navLinkClass =
 
         <!-- Actions -->
         <div class="ms-auto flex items-center gap-3">
-          @if (!auth.isAdmin()) {
+          @if (!isAdmin()) {
             <a
               [link]="{ to: '/cart' }"
               class="relative flex size-10 items-center justify-center rounded-full text-lg no-underline transition hover:bg-surface-alt hover:no-underline"
@@ -71,13 +79,13 @@ const navLinkClass =
             </a>
           }
 
-          @if (auth.isAuthenticated()) {
+          @if (isAuthenticated()) {
             <a
               [link]="{ to: '/profile' }"
               class="flex rounded-full no-underline transition hover:shadow-[0_0_0_3px_var(--color-border)] hover:no-underline"
-              aria-label="Profile for {{ auth.user()?.name }}"
+              aria-label="Profile for {{ user()?.name }}"
             >
-              <rw-avatar [name]="auth.user()!.name" size="sm" />
+              <rw-avatar [name]="user()!.name" size="sm" />
             </a>
           } @else {
             <a
@@ -142,7 +150,7 @@ const navLinkClass =
           </div>
           <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8 p-4">
             <div class="flex flex-col">
-              @if (!auth.isAdmin()) {
+              @if (!isAdmin()) {
                 <a
                   [link]="{ to: '/' }"
                   class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
@@ -150,7 +158,7 @@ const navLinkClass =
                 >
               }
 
-              @if (auth.isCustomer()) {
+              @if (isCustomer()) {
                 <a
                   [link]="{ to: '/orders' }"
                   class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
@@ -158,7 +166,7 @@ const navLinkClass =
                 >
               }
 
-              @if (auth.isAdmin()) {
+              @if (isAdmin()) {
                 <a
                   [link]="{ to: '/pizzerias/admin' }"
                   class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
@@ -171,7 +179,7 @@ const navLinkClass =
                 >
               }
 
-              @if (!auth.isAdmin()) {
+              @if (!isAdmin()) {
                 <a
                   [link]="{ to: '/cart' }"
                   class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
@@ -187,7 +195,7 @@ const navLinkClass =
                 </a>
               }
 
-              @if (auth.isAuthenticated()) {
+              @if (isAuthenticated()) {
                 <a
                   [link]="{ to: '/profile' }"
                   class="block w-full cursor-pointer border-b border-border py-3 text-left text-base font-medium text-text no-underline transition hover:text-primary hover:no-underline"
@@ -196,7 +204,7 @@ const navLinkClass =
               }
             </div>
 
-            @if (!auth.isAuthenticated()) {
+            @if (!isAuthenticated()) {
               <div class="mt-6 rounded-lg border border-border bg-surface-alt p-4">
                 <p class="mb-1 font-semibold text-text">Welcome back</p>
                 <p class="mb-4 text-sm text-text-muted">
@@ -224,7 +232,13 @@ const navLinkClass =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
-  protected readonly auth = injectAuthState();
+  private readonly apiFetch = injectRouter().options.context.apiFetch;
+  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.apiFetch));
+
+  protected readonly user = computed(() => this.userQuery.data() ?? null);
+  protected readonly isAuthenticated = computed(() => this.user() !== null);
+  protected readonly isCustomer = computed(() => this.user()?.role === 'CUSTOMER');
+  protected readonly isAdmin = computed(() => this.user()?.role === 'PIZZERIA_ADMIN');
   protected readonly cartItemCount = injectCartClientItemCount();
   protected readonly navLinkClass = navLinkClass;
   protected readonly icons = icons;

@@ -1,7 +1,5 @@
 import { DestroyRef, computed, inject, signal } from '@angular/core';
-import { injectQuery } from '@benjavicente/angular-query';
 import { injectRouter } from '@benjavicente/angular-router-experimental';
-import { cartPreviewQueryOptions } from '../../../lib/api/api-queries';
 import type { CartClientStore } from './cart-client.store';
 import type { CartClientState } from './cart.types';
 
@@ -43,21 +41,4 @@ export function injectCartClientState() {
 export function injectCartClientItemCount() {
   const items = injectCartClientState().items;
   return computed(() => items().reduce((sum, item) => sum + item.quantity, 0));
-}
-
-export function injectCartPreview() {
-  const { apiFetch } = injectRouter().options.context;
-  const { pizzeria, items } = injectCartClientState();
-
-  const query = injectQuery(() => cartPreviewQueryOptions(apiFetch, pizzeria(), items()));
-
-  return {
-    cart: computed(() => query.data() ?? null),
-    isLoading: computed(() => query.isPending()),
-    isError: computed(() => query.isError()),
-    totalPrice: computed(() => query.data()?.total ?? 0),
-    itemCount: computed(
-      () => query.data()?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0,
-    ),
-  };
 }

@@ -1,15 +1,12 @@
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   Link,
   Outlet,
   createLazyFileRoute,
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
-import { Title } from '@angular/platform-browser';
 import { Spinner } from '../../lib/components/spinner/spinner';
 import { Callout } from '../../lib/components/callout/callout';
-import { ROLES } from '../(auth)/-models/role.model';
-import { requireRole } from '../-guards';
 import { adminPizzeriaQueryOptions } from '../../lib/api/api-queries';
 import { injectQuery } from '@benjavicente/angular-query';
 import { icons } from '../../lib/assets';
@@ -81,19 +78,7 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/admin')({
 })
 class AdminPizzeriaDetailsPage {
   private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly title = inject(Title);
   protected readonly icons = icons;
 
   protected readonly pizzeriaResource = injectQuery(() => adminPizzeriaQueryOptions(this.apiFetch));
-
-  public constructor() {
-    effect(() => {
-      if (this.pizzeriaResource.isSuccess()) {
-        const pizzeria = this.pizzeriaResource.data();
-        if (pizzeria) {
-          this.title.setTitle(`${pizzeria.name} - Admin`);
-        }
-      }
-    });
-  }
 }

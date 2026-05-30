@@ -6,8 +6,6 @@ import { Pagination } from '../../lib/components/pagination/pagination';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
 import { AdminOrderRow } from './-components/admin-order-row/admin-order-row';
 import { createLazyFileRoute, injectRouter } from '@benjavicente/angular-router-experimental';
-import { ROLES } from '../(auth)/-models/role.model';
-import { requireRole } from '../-guards';
 import { adminOrdersQueryOptions } from '../../lib/api/api-queries';
 import { injectQuery } from '@benjavicente/angular-query';
 

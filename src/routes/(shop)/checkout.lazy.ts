@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import {
   Link,
   Outlet,
@@ -7,11 +14,22 @@ import {
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
 import { DecimalPipe } from '@angular/common';
-import { Title } from '@angular/platform-browser';
 import { map, Observable } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
-import { TanStackWithForm } from '@tanstack/angular-form';
-import { injectCartClientState, injectCartPreview } from './-store/inject-cart';
+import { TanStackWithForm, injectForm, injectStore } from '@tanstack/angular-form';
+import { injectMutation, injectQuery } from '@benjavicente/angular-query';
+import { cartPreviewQueryOptions } from '../../lib/api/api-queries';
+import { createOrderMutationOptions } from '../../lib/api/api-mutations';
+import type { Address } from '../../lib/models/address.model';
+import type { LocationValue } from '../../lib/components/photon-location-field/photon-location-field';
+import {
+  composeValidators,
+  maxTextLength,
+  requiredText,
+  requiredValue,
+  validateSubmitFields,
+} from '../../lib/forms/tanstack-form';
+import { injectCartClient, injectCartClientState } from './-store/inject-cart';
 import { Callout } from '../../lib/components/callout/callout';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
 import { Spinner } from '../../lib/components/spinner/spinner';
@@ -20,10 +38,30 @@ import {
   ConfirmDialogData,
   ConfirmDialogResult,
 } from '../../lib/components/confirm-dialog/confirm-dialog';
-import { requireAuth, requireCart } from '../-guards';
 import { CheckoutProgressStepper } from './-components/checkout-progress-stepper/checkout-progress-stepper';
-import { blockedCheckoutStep, parseCheckoutStep } from './-models/checkout-context';
-import { CHECKOUT_SCOPE, createCheckoutScope } from './-models/checkout-scope';
+import {
+  blockedCheckoutStep,
+  checkoutDefaultValues,
+  parseCheckoutStep,
+  type ValidatableStep,
+  type WizardStep,
+} from './-models/checkout-context';
+import { CHECKOUT_SCOPE, type CheckoutScope } from './-models/checkout-scope';
+
+const STEP_FIELDS: Record<ValidatableStep, readonly string[]> = {
+  delivery: [
+    'delivery.location',
+    'delivery.street',
+    'delivery.billingLocation',
+    'delivery.billingStreet',
+  ],
+  schedule: ['schedule.type', 'schedule.date', 'schedule.time', 'notes'],
+};
+
+const NEXT_STEP: Record<ValidatableStep, WizardStep> = {
+  delivery: 'schedule',
+  schedule: 'review',
+};
 
 export const Route = createLazyFileRoute('/(shop)/checkout')({
   component: () => CheckoutLayoutPage,
@@ -41,7 +79,7 @@ export const Route = createLazyFileRoute('/(shop)/checkout')({
     CheckoutProgressStepper,
     TanStackWithForm,
   ],
-  providers: [{ provide: CHECKOUT_SCOPE, useFactory: createCheckoutScope }],
+  providers: [{ provide: CHECKOUT_SCOPE, useExisting: CheckoutLayoutPage }],
   template: `
     <div class="py-10">
       <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8">
@@ -55,15 +93,15 @@ export const Route = createLazyFileRoute('/(shop)/checkout')({
           >
             <a [link]="{ to: '/pizzerias' }">Browse pizzerias</a>
           </rw-empty-state>
-        } @else if (cartPreview.isLoading() && !cartPreview.cart()) {
+        } @else if (cartPreviewQuery.isPending() && !cartPreviewQuery.data()) {
           <div class="flex justify-center p-16" aria-label="Loading cart"><rw-spinner /></div>
-        } @else if (cartPreview.isError() && !cartPreview.cart()) {
+        } @else if (cartPreviewQuery.isError() && !cartPreviewQuery.data()) {
           <rw-callout
             variant="error"
             heading="Could not load cart details"
             message="Your items are saved locally, but we could not reach the server."
           />
-        } @else if (cartPreview.cart(); as data) {
+        } @else if (cartPreviewQuery.data(); as data) {
           <nav
             class="mb-8 flex flex-wrap items-center gap-2 text-sm"
             aria-label="Checkout progress"
@@ -72,30 +110,30 @@ export const Route = createLazyFileRoute('/(shop)/checkout')({
               [order]="1"
               label="Delivery & Billing"
               [active]="isCurrentStep('delivery')"
-              [status]="checkout.stepStatus().delivery"
+              [status]="stepStatus().delivery"
             />
             <span class="text-lg text-border select-none" aria-hidden="true">›</span>
             <rw-checkout-progress-stepper
               [order]="2"
               label="Schedule & Notes"
               [active]="isCurrentStep('schedule')"
-              [status]="checkout.stepStatus().schedule"
+              [status]="stepStatus().schedule"
             />
             <span class="text-lg text-border select-none" aria-hidden="true">›</span>
             <rw-checkout-progress-stepper
               [order]="3"
               label="Review & Pay"
               [active]="isCurrentStep('review')"
-              [status]="checkout.stepStatus().review"
+              [status]="stepStatus().review"
             />
           </nav>
 
           <div class="grid grid-cols-1 items-start gap-8 md:grid-cols-[1fr_320px]">
             <section>
-              @if (checkout.submitError()) {
-                <rw-callout variant="error" [message]="checkout.submitError()" class="mb-4" />
+              @if (submitError()) {
+                <rw-callout variant="error" [message]="submitError()" class="mb-4" />
               }
-              <div [tanstackWithForm]="checkout.checkoutForm">
+              <div [tanstackWithForm]="checkoutForm">
                 <outlet />
               </div>
             </section>
@@ -117,9 +155,7 @@ export const Route = createLazyFileRoute('/(shop)/checkout')({
                 class="flex justify-between border-t border-border pt-3 text-base [&_strong]:text-lg [&_strong]:text-primary"
               >
                 <span>Total</span>
-                <strong class="tabular-nums"
-                  >€{{ checkout.totalWithTip() | number: '1.2-2' }}</strong
-                >
+                <strong class="tabular-nums">€{{ totalWithTip() | number: '1.2-2' }}</strong>
               </div>
             </aside>
           </div>
@@ -129,19 +165,140 @@ export const Route = createLazyFileRoute('/(shop)/checkout')({
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-class CheckoutLayoutPage {
+export class CheckoutLayoutPage implements CheckoutScope {
+  private readonly apiFetch = injectRouter().options.context.apiFetch;
+  private readonly cart = injectCartClient();
   protected readonly cartClient = injectCartClientState();
-  protected readonly cartPreview = injectCartPreview();
-  protected readonly checkout = inject(CHECKOUT_SCOPE);
-  private readonly router = injectRouter();
   private readonly navigate = injectNavigate();
-  private readonly title = inject(Title);
+  private readonly router = injectRouter();
   private readonly dialog = inject(Dialog);
+
+  protected readonly cartPreviewQuery = injectQuery(() =>
+    cartPreviewQueryOptions(this.apiFetch, this.cartClient.pizzeria(), this.cartClient.items()),
+  );
+
+  private readonly createOrderMutation = injectMutation(() =>
+    createOrderMutationOptions(this.apiFetch),
+  );
+
+  readonly stepStatus = signal<Record<WizardStep, 'success' | 'error' | null>>({
+    delivery: null,
+    schedule: null,
+    review: null,
+  });
+  readonly submitted = signal(false);
+  readonly submitError = signal('');
+
+  readonly requiredLocation = requiredValue('Choose a location from the list');
+  readonly requiredStreet = requiredText('Street address is required');
+  readonly maxStreet = maxTextLength(250, 'Max 250 characters');
+  readonly streetValidator = composeValidators(this.requiredStreet, this.maxStreet);
+  readonly maxNotes = maxTextLength(300, 'Max 300 characters');
+
+  readonly checkoutForm = injectForm({
+    defaultValues: checkoutDefaultValues,
+    onSubmit: async ({ value }) => {
+      this.submitError.set('');
+      const delivery: Address = {
+        street: value.delivery.street.trim(),
+        city: value.delivery.location!.city.trim(),
+        country: value.delivery.location!.country.trim(),
+      };
+      const billing: Address | undefined = !value.delivery.useSameAsBilling
+        ? {
+            street: value.delivery.billingStreet.trim(),
+            city: value.delivery.billingLocation!.city.trim(),
+            country: value.delivery.billingLocation!.country.trim(),
+          }
+        : undefined;
+
+      const tip = this.tipAmount();
+      const scheduledAt =
+        value.schedule.type === 'scheduled' && value.schedule.date && value.schedule.time
+          ? new Date(`${value.schedule.date}T${value.schedule.time}`).toISOString()
+          : undefined;
+
+      try {
+        const order = await this.createOrderMutation.mutateAsync({
+          pizzeriaId: this.cartClient.pizzeria()!.id,
+          deliveryAddress: delivery,
+          ...(billing ? { billingAddress: billing } : {}),
+          notes: value.notes?.trim() || undefined,
+          tipAmount: tip > 0 ? tip : undefined,
+          scheduledAt,
+          items: this.cartClient.items().map((item) => ({
+            pizzaId: item.pizzaId,
+            quantity: item.quantity,
+            selectedSizeId: item.selectedSizeId ?? undefined,
+            selectedOptionIds: item.selectedOptionIds,
+          })),
+        });
+        this.cart.clear();
+        this.submitted.set(true);
+        void this.navigate({ to: '/orders/' + order.id });
+      } catch {
+        this.submitError.set('Order failed. Please try again.');
+      }
+    },
+  });
+
+  readonly checkoutFormState = injectStore(this.checkoutForm);
+
+  readonly tipAmount = computed(() => {
+    const tip = this.checkoutFormState().values.tip;
+    const total = this.cartPreviewQuery.data()?.total ?? 0;
+    switch (tip.type) {
+      case 'none':
+        return 0;
+      case 'ten':
+        return Math.round(total * 10) / 100;
+      case 'fifteen':
+        return Math.round(total * 15) / 100;
+      case 'twenty':
+        return Math.round(total * 20) / 100;
+      case 'custom':
+        return Math.max(0, tip.customAmount);
+    }
+  });
+
+  readonly totalWithTip = computed(
+    () => (this.cartPreviewQuery.data()?.total ?? 0) + this.tipAmount(),
+  );
+
+  readonly requiredBillingLocation = ({ value }: { value: LocationValue | null }) =>
+    this.checkoutForm.state.values.delivery.useSameAsBilling
+      ? undefined
+      : this.requiredLocation({ value });
+
+  readonly requiredBillingStreet = ({ value }: { value: string }) =>
+    this.checkoutForm.state.values.delivery.useSameAsBilling
+      ? undefined
+      : this.requiredStreet({ value });
+
+  readonly billingStreetValidator = composeValidators(this.requiredBillingStreet, this.maxStreet);
+
+  readonly requiredScheduleDate = ({ value }: { value: string }) =>
+    this.checkoutForm.state.values.schedule.type === 'scheduled'
+      ? requiredText('Choose a delivery date')({ value })
+      : undefined;
+
+  readonly requiredScheduleTime = ({ value }: { value: string }) =>
+    this.checkoutForm.state.values.schedule.type === 'scheduled'
+      ? requiredText('Choose a delivery time')({ value })
+      : undefined;
 
   public constructor() {
     effect(() => {
-      const name = this.cartPreview.cart()?.pizzeria.name;
-      this.title.setTitle(name ? `Checkout - ${name}` : 'Checkout');
+      if (this.checkoutFormState().values.delivery.useSameAsBilling) {
+        const billing = this.checkoutForm.state.values.delivery;
+        if (billing.billingLocation !== null || billing.billingStreet !== '') {
+          this.checkoutForm.setFieldValue('delivery', {
+            ...billing,
+            billingLocation: null,
+            billingStreet: '',
+          });
+        }
+      }
     });
 
     effect(() => {
@@ -150,11 +307,31 @@ class CheckoutLayoutPage {
       if (!step) {
         return;
       }
-      const blocked = blockedCheckoutStep(this.checkout.checkoutFormState().values, step);
+      const blocked = blockedCheckoutStep(this.checkoutFormState().values, step);
       if (blocked) {
         void this.navigate({ to: '/checkout/' + blocked });
       }
     });
+  }
+
+  async validateStep(step: ValidatableStep): Promise<void> {
+    const valid = await validateSubmitFields(this.checkoutForm, STEP_FIELDS[step]);
+    if (valid) {
+      this.stepStatus.update((status) => ({ ...status, [step]: 'success' }));
+      void this.navigate({ to: '/checkout/' + NEXT_STEP[step] });
+    } else {
+      this.stepStatus.update((status) => ({ ...status, [step]: 'error' }));
+    }
+  }
+
+  goToStep(step: WizardStep): void {
+    void this.navigate({ to: '/checkout/' + step });
+  }
+
+  async placeOrder(): Promise<void> {
+    if (await validateSubmitFields(this.checkoutForm, ['tip.customAmount'])) {
+      await this.checkoutForm.handleSubmit();
+    }
   }
 
   protected isCurrentStep(step: string): boolean {
@@ -162,7 +339,7 @@ class CheckoutLayoutPage {
   }
 
   public canDeactivate(): boolean | Observable<boolean> {
-    if (this.checkout.submitted() || !this.checkout.checkoutFormState().isDirty) {
+    if (this.submitted() || !this.checkoutFormState().isDirty) {
       return true;
     }
     const ref = this.dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {

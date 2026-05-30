@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { createLazyFileRoute } from '@benjavicente/angular-router-experimental';
+import { createLazyFileRoute, injectRouter } from '@benjavicente/angular-router-experimental';
+import { injectQuery } from '@benjavicente/angular-query';
 import { TanStackField } from '@tanstack/angular-form';
+import { cartPreviewQueryOptions } from '../../lib/api/api-queries';
 import { Input } from '../../lib/components/input/input';
 import { Button } from '../../lib/components/button/button';
-import { injectCartPreview } from './-store/inject-cart';
+import { injectCartClientState } from './-store/inject-cart';
 import { CHECKOUT_SCOPE } from './-models/checkout-scope';
 
 export const Route = createLazyFileRoute('/(shop)/checkout/review')({
@@ -17,7 +19,7 @@ export const Route = createLazyFileRoute('/(shop)/checkout/review')({
   template: `
     <h2 class="mb-5 text-lg font-semibold">Review your order</h2>
 
-    @if (cartPreview.cart(); as data) {
+    @if (cartPreviewQuery.data(); as data) {
       <section class="mb-6">
         <h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-text-muted">Items</h3>
         <ul class="flex list-none flex-col gap-4">
@@ -29,13 +31,17 @@ export const Route = createLazyFileRoute('/(shop)/checkout/review')({
               </div>
               @if (item.size) {
                 <p class="mt-1 text-xs text-text-muted">
-                  {{ item.size.label }} — <span class="tabular-nums">€{{ item.size.price | number: '1.2-2' }}</span>
+                  {{ item.size.label }} —
+                  <span class="tabular-nums">€{{ item.size.price | number: '1.2-2' }}</span>
                 </p>
               }
               @if (item.extraToppings.length > 0) {
                 <p class="mt-1 text-xs text-text-muted">
                   @for (topping of item.extraToppings; track topping.id; let last = $last) {
-                    + {{ topping.label }} (<span class="tabular-nums">€{{ topping.price | number: '1.2-2' }}</span>)@if (!last) {
+                    + {{ topping.label }} (<span class="tabular-nums"
+                      >€{{ topping.price | number: '1.2-2' }}</span
+                    >)
+                    @if (!last) {
                       ,
                     }
                   }
@@ -140,7 +146,9 @@ export const Route = createLazyFileRoute('/(shop)/checkout/review')({
           [isLoading]="checkout.checkoutFormState().isSubmitting"
           (click)="placeOrder()"
         >
-          <span class="tabular-nums">Place order — €{{ checkout.totalWithTip() | number: '1.2-2' }}</span>
+          <span class="tabular-nums"
+            >Place order — €{{ checkout.totalWithTip() | number: '1.2-2' }}</span
+          >
         </button>
       </div>
     }
@@ -148,8 +156,12 @@ export const Route = createLazyFileRoute('/(shop)/checkout/review')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class CheckoutReviewStep {
+  private readonly apiFetch = injectRouter().options.context.apiFetch;
+  private readonly cartClient = injectCartClientState();
+  protected readonly cartPreviewQuery = injectQuery(() =>
+    cartPreviewQueryOptions(this.apiFetch, this.cartClient.pizzeria(), this.cartClient.items()),
+  );
   protected readonly checkout = inject(CHECKOUT_SCOPE);
-  protected readonly cartPreview = injectCartPreview();
 
   protected readonly tipOptions = [
     { value: 'ten' as const, label: '10%' },

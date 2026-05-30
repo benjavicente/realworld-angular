@@ -1,18 +1,10 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-  effect,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { Link, createLazyFileRoute, injectRouter } from '@benjavicente/angular-router-experimental';
 import { DecimalPipe, DatePipe, TitleCasePipe } from '@angular/common';
 import { Callout } from '../../lib/components/callout/callout';
 import { Spinner } from '../../lib/components/spinner/spinner';
 import { Button } from '../../lib/components/button/button';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
-import { Title } from '@angular/platform-browser';
 import { injectMutation, injectQuery } from '@benjavicente/angular-query';
 import { cancelOrderMutationOptions } from '../../lib/api/api-mutations';
 import { orderSubscriptionQueryOptions } from '../../lib/api/api-queries';
@@ -163,7 +155,6 @@ export const Route = createLazyFileRoute('/(orders)/orders/$id')({
 class OrderDetailPage {
   private readonly router = injectRouter();
   private readonly apiFetch = this.router.options.context.apiFetch;
-  private readonly title = inject(Title);
   private readonly params = Route.injectParams();
   private readonly cancelOrderMutation = injectMutation(() =>
     cancelOrderMutationOptions(this.apiFetch),
@@ -218,12 +209,6 @@ class OrderDetailPage {
   }
 
   protected readonly id = computed(() => this.params().id);
-
-  public constructor() {
-    effect(() => {
-      this.title.setTitle(`Order ${this.id()}`);
-    });
-  }
 
   protected async cancel(): Promise<void> {
     this.isCancelling.set(true);

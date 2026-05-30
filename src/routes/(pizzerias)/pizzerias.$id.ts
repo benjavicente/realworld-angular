@@ -23,4 +23,7 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/$id')({
       context.queryClient.ensureQueryData(pizzaOptionsQueryOptions(context.apiFetch, 'sizes')),
       context.queryClient.ensureQueryData(pizzaOptionsQueryOptions(context.apiFetch, 'toppings')),
     ]),
+  head: ({ loaderData }) => ({
+    meta: [{ title: loaderData?.[0]?.name ? `${loaderData[0].name} - Pizzeria` : 'Pizzeria' }],
+  }),
 });

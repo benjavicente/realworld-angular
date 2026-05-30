@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import {
   Link,
   createLazyFileRoute,
@@ -6,25 +6,14 @@ import {
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
 import { DecimalPipe, DatePipe } from '@angular/common';
-import { injectAuthState } from '../../lib/services/auth';
+import { authUserQueryOptions } from '../../lib/services/auth';
 import { Spinner } from '../../lib/components/spinner/spinner';
 import { Pagination } from '../../lib/components/pagination/pagination';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
 import { Callout } from '../../lib/components/callout/callout';
-import { Title } from '@angular/platform-browser';
 import { StatusBadge } from '../../lib/components/status-badge/status-badge';
-import { requireAuth } from '../-guards';
 import { ordersQueryOptions } from '../../lib/api/api-queries';
 import { injectQuery } from '@benjavicente/angular-query';
-
-interface OrdersSearch {
-  page?: number;
-}
-
-function validateOrdersSearch(search: Record<string, unknown>): OrdersSearch {
-  const page = Number(search['page']);
-  return Number.isInteger(page) && page > 1 ? { page } : {};
-}
 
 export const Route = createLazyFileRoute('/(orders)/orders/')({
   component: () => OrdersListPage,
@@ -97,23 +86,16 @@ class OrdersListPage {
   private readonly apiFetch = injectRouter().options.context.apiFetch;
   private readonly search = Route.injectSearch();
   private readonly navigate = injectNavigate();
-  private readonly auth = injectAuthState();
-  private readonly title = inject(Title);
+  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.apiFetch));
 
   protected readonly heading = computed<string>(() =>
-    this.auth.isAdmin() ? 'Orders' : 'My Orders',
+    this.userQuery.data()?.role === 'PIZZERIA_ADMIN' ? 'Orders' : 'My Orders',
   );
 
   protected readonly currentPage = computed(() => this.search().page ?? 1);
   protected readonly ordersResource = injectQuery(() =>
     ordersQueryOptions(this.apiFetch, this.currentPage(), 10),
   );
-
-  public constructor() {
-    effect(() => {
-      this.title.setTitle(this.heading());
-    });
-  }
 
   protected changePage(page: number): void {
     void this.navigate({

@@ -6,7 +6,6 @@ import {
   effect,
   untracked,
 } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import {
   createLazyFileRoute,
   injectNavigate,
@@ -93,7 +92,8 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/admin/configura
           </ng-container>
 
           <div class="flex justify-end">
-            <button rw-button
+            <button
+              rw-button
               type="button"
               [isLoading]="pizzeriaFormState().isSubmitting"
               (click)="handleSubmit($event)"
@@ -107,7 +107,8 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/admin/configura
               variant="error"
               message="Danger zone: deleting this pizzeria permanently removes it and cannot be undone."
             >
-              <button rw-button
+              <button
+                rw-button
                 type="button"
                 palette="danger"
                 [isLoading]="isDeleting()"
@@ -127,7 +128,6 @@ class AdminPizzeriaConfigurationPage {
   private readonly apiFetch = injectRouter().options.context.apiFetch;
   private readonly navigate = injectNavigate();
   private readonly dialog = inject(Dialog);
-  private readonly title = inject(Title);
   private readonly updatePizzeriaMutation = injectMutation(() =>
     updateMyPizzeriaMutationOptions(this.apiFetch),
   );
@@ -168,15 +168,6 @@ class AdminPizzeriaConfigurationPage {
   protected readonly requiredImage = requiredValue('Please select an image');
 
   public constructor() {
-    effect(() => {
-      if (this.pizzeriaResource.isSuccess()) {
-        const pizzeria = untracked(() => this.pizzeriaResource.data());
-        if (pizzeria) {
-          this.title.setTitle(`Configure your pizzeria - ${pizzeria.name}`);
-        }
-      }
-    });
-
     effect(() => {
       if (this.pizzeriaResource.isSuccess()) {
         const pizzeria = untracked(() => this.pizzeriaResource.data());

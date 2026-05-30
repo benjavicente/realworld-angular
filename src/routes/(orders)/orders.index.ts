@@ -1,6 +1,8 @@
 import { createFileRoute } from '@benjavicente/angular-router-experimental';
+import { ROLES } from '../(auth)/-models/role.model';
 import { requireAuth } from '../-guards';
 import { ordersQueryOptions } from '../../lib/api/api-queries';
+import { authUserQueryOptions } from '../../lib/services/auth';
 
 interface OrdersSearch {
   page?: number;
@@ -17,13 +19,19 @@ export const Route = createFileRoute('/(orders)/orders/')({
   loaderDeps: ({ search }) => ({
     page: search.page ?? 1,
   }),
-  loader: ({ context, deps }) => {
+  loader: async ({ context, deps }) => {
     if (import.meta.env.SSR) {
       return;
     }
 
-    return context.queryClient.ensureQueryData(
-      ordersQueryOptions(context.apiFetch, deps.page, 10),
-    );
+    const [orders, user] = await Promise.all([
+      context.queryClient.ensureQueryData(ordersQueryOptions(context.apiFetch, deps.page, 10)),
+      context.queryClient.ensureQueryData(authUserQueryOptions(context.apiFetch)),
+    ]);
+
+    return { orders, isPizzeriaAdmin: user?.role === ROLES.PIZZERIA_ADMIN };
   },
+  head: ({ loaderData }) => ({
+    meta: [{ title: loaderData?.isPizzeriaAdmin ? 'Orders' : 'My Orders' }],
+  }),
 });

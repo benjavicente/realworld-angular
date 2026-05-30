@@ -13,7 +13,7 @@ import {
   registerMutationOptions,
   registerPizzeriaOwnerMutationOptions,
 } from '../../lib/api/api-mutations';
-import { requireGuest, sanitizeRedirectPath, validateRedirectSearch } from '../-guards';
+import { sanitizeRedirectPath } from '../-guards';
 import { TanStackField, injectForm, injectStore } from '@tanstack/angular-form';
 import {
   composeValidators,
@@ -126,7 +126,8 @@ export const Route = createLazyFileRoute('/(auth)/auth/register')({
               </label>
             </rw-input>
           </ng-container>
-          <button rw-button
+          <button
+            rw-button
             type="submit"
             [isLoading]="registerFormState().isSubmitting"
             class="flex w-full flex-col"

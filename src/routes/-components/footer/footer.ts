@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Link } from '@benjavicente/angular-router-experimental';
-import { injectAuthState } from '../../../lib/services/auth';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import { Link, injectRouter } from '@benjavicente/angular-router-experimental';
+import { injectQuery } from '@benjavicente/angular-query';
+import { authUserQueryOptions } from '../../../lib/services/auth';
 
 @Component({
   selector: 'rw-footer',
@@ -47,7 +48,7 @@ import { injectAuthState } from '../../../lib/services/auth';
             class="text-sm text-text-muted no-underline hover:text-text hover:underline"
             >Terms and conditions</a
           >
-          @if (!auth.isAuthenticated()) {
+          @if (!isAuthenticated()) {
             <a
               [link]="{ to: '/auth/register-pizzeria' }"
               class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-text-on-primary no-underline transition hover:bg-primary-dark hover:no-underline whitespace-nowrap"
@@ -61,5 +62,9 @@ import { injectAuthState } from '../../../lib/services/auth';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Footer {
-  protected readonly auth = injectAuthState();
+  private readonly apiFetch = injectRouter().options.context.apiFetch;
+  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.apiFetch));
+
+  protected readonly user = computed(() => this.userQuery.data() ?? null);
+  protected readonly isAuthenticated = computed(() => this.user() !== null);
 }

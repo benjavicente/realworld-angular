@@ -3,7 +3,6 @@ import {
   Component,
   DestroyRef,
   computed,
-  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -14,11 +13,11 @@ import {
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
 import { DecimalPipe } from '@angular/common';
-import { Title } from '@angular/platform-browser';
 import { Pizza } from './-models/pizza.models';
 import { Spinner } from '../../lib/components/spinner/spinner';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
-import { injectAuthState } from '../../lib/services/auth';
+import { injectQuery } from '@benjavicente/angular-query';
+import { authUserQueryOptions } from '../../lib/services/auth';
 import { PizzaOrderFormDialog } from '../(orders)/-components/pizza-order-form-dialog/pizza-order-form-dialog';
 import { PizzaOrderFormDialogData } from '../(orders)/-models/order.models';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -27,23 +26,9 @@ import { merge, of, Subject, timer } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image-url.pipe';
 import { Button } from '../../lib/components/button/button';
-import {
-  pizzaOptionsQueryOptions,
-  pizzeriaPizzasQueryOptions,
-  pizzeriaQueryOptions,
-} from '../../lib/api/api-queries';
-import { injectQuery } from '@benjavicente/angular-query';
+import { pizzeriaPizzasQueryOptions, pizzeriaQueryOptions } from '../../lib/api/api-queries';
 import { injectCartClient } from '../(shop)/-store/inject-cart';
 import { icons } from '../../lib/assets';
-
-interface PizzeriaDetailSearch {
-  maxPrice?: number;
-}
-
-function validatePizzeriaDetailSearch(search: Record<string, unknown>): PizzeriaDetailSearch {
-  const maxPrice = Number(search['maxPrice']);
-  return Number.isFinite(maxPrice) && maxPrice >= 0 && maxPrice <= 50 ? { maxPrice } : {};
-}
 
 export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/$id')({
   component: () => PizzeriaDetailsPage,
@@ -173,7 +158,7 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/$id')({
                           >
                         </span>
 
-                        @if (!auth.isAdmin()) {
+                        @if (!isAdmin()) {
                           <button rw-button type="button" size="sm" (click)="openOrderModal(pizza)">
                             Add to cart
                           </button>
@@ -218,11 +203,12 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/$id')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class PizzeriaDetailsPage {
-  protected readonly auth = injectAuthState();
   private readonly apiFetch = injectRouter().options.context.apiFetch;
+  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.apiFetch));
+
+  protected readonly isAdmin = computed(() => this.userQuery.data()?.role === 'PIZZERIA_ADMIN');
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(Dialog);
-  private readonly title = inject(Title);
   private readonly cart = injectCartClient();
   private readonly navigate = injectNavigate();
   private readonly params = Route.injectParams();
@@ -271,17 +257,6 @@ class PizzeriaDetailsPage {
     ),
     { initialValue: false },
   );
-
-  public constructor() {
-    effect(() => {
-      if (this.pizzeriaResource.isSuccess()) {
-        const pizzeria = this.pizzeriaResource.data();
-        if (pizzeria) {
-          this.title.setTitle(`${pizzeria.name} - Pizzeria`);
-        }
-      }
-    });
-  }
 
   protected onPizzaNameSearch(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
