@@ -44,6 +44,9 @@ importers:
       '@tanstack/angular-hotkeys':
         specifier: ^0.10.0
         version: 0.10.0(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@tanstack/query-persist-client-core':
+        specifier: 5.100.14
+        version: 5.100.14
       '@tanstack/store':
         specifier: ^0.9.3
         version: 0.9.3
@@ -2125,6 +2128,9 @@ packages:
 
   '@tanstack/query-devtools@5.100.14':
     resolution: {integrity: sha512-g96SmSSQecYTYcyuAMRXr895GplJv01UGt7qttQWPOUyZ5EGz5tbRc589bMc2m5BsPFD6O0PCEAHdbDYNP6UBw==}
+
+  '@tanstack/query-persist-client-core@5.100.14':
+    resolution: {integrity: sha512-mn60cqoQO/xB6aHxp/hxlSj5mcdcTO4tjj4SXSz5MKzkaMZnvcEGySz3+cGQOT8McREN56fL41L0eR//v5RwNw==}
 
   '@tanstack/store@0.11.0':
     resolution: {integrity: sha512-WlzzCt3xi0G6pCAJu1U+2jiECwabETDpQDi3hfkFZvJii9AuZqEKbOiVarX1/bWhTNjU486yQtJCCasi/0q+Cw==}
@@ -6619,6 +6625,10 @@ snapshots:
   '@tanstack/query-core@5.100.14': {}
 
   '@tanstack/query-devtools@5.100.14': {}
+
+  '@tanstack/query-persist-client-core@5.100.14':
+    dependencies:
+      '@tanstack/query-core': 5.100.14
 
   '@tanstack/store@0.11.0': {}
 

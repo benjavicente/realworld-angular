@@ -1,6 +1,10 @@
 import { mutationOptions } from '@benjavicente/angular-query';
 import type { ApiFetch } from '../http/api-client';
-import { authUserQueryOptions } from '../services/auth';
+import {
+  authUserQueryOptions,
+  persistAuthUserQuery,
+  removePersistedAuthUserQuery,
+} from '../services/auth';
 import type { User } from '../models/user.model';
 import type { Address } from '../models/address.model';
 import type { Order } from '../../routes/(orders)/-models/order.models';
@@ -44,8 +48,9 @@ export const loginMutationOptions = (apiFetch: ApiFetch) =>
     mutationKey: ['auth', 'login'],
     mutationFn: (body: AuthCredentials) =>
       apiFetch<User>('/api/auth/login', { method: 'POST', body }),
-    onSuccess: (user, _vars, _result, { client }) => {
+    onSuccess: async (user, _vars, _result, { client }) => {
       client.setQueryData(authUserQueryOptions(apiFetch).queryKey, user);
+      await persistAuthUserQuery(client, apiFetch);
     },
   });
 
@@ -54,8 +59,9 @@ export const registerMutationOptions = (apiFetch: ApiFetch) =>
     mutationKey: ['auth', 'register'],
     mutationFn: (body: AuthCredentials) =>
       apiFetch<User>('/api/auth/register', { method: 'POST', body }),
-    onSuccess: (user, _vars, _result, { client }) => {
+    onSuccess: async (user, _vars, _result, { client }) => {
       client.setQueryData(authUserQueryOptions(apiFetch).queryKey, user);
+      await persistAuthUserQuery(client, apiFetch);
     },
   });
 
@@ -64,8 +70,9 @@ export const registerPizzeriaOwnerMutationOptions = (apiFetch: ApiFetch) =>
     mutationKey: ['auth', 'register-pizzeria-owner'],
     mutationFn: (body: AuthCredentials) =>
       apiFetch<User>('/api/auth/register-pizzeria-owner', { method: 'POST', body }),
-    onSuccess: (user, _vars, _result, { client }) => {
+    onSuccess: async (user, _vars, _result, { client }) => {
       client.setQueryData(authUserQueryOptions(apiFetch).queryKey, user);
+      await persistAuthUserQuery(client, apiFetch);
     },
   });
 
@@ -73,8 +80,9 @@ export const logoutMutationOptions = (apiFetch: ApiFetch) =>
   mutationOptions({
     mutationKey: ['auth', 'logout'],
     mutationFn: () => apiFetch<void>('/api/auth/logout', { method: 'POST', body: {} }),
-    onSuccess: (_void, _vars, _result, { client }) => {
+    onSuccess: async (_void, _vars, _result, { client }) => {
       client.setQueryData(authUserQueryOptions(apiFetch).queryKey, null);
+      await removePersistedAuthUserQuery();
     },
   });
 

@@ -32,6 +32,7 @@
     "@fontsource/geist": "^5.2.8",
     "@tanstack/angular-form": "^1.32.1",
     "@tanstack/angular-hotkeys": "^0.10.0",
+    "@tanstack/query-persist-client-core": "5.100.14",
     "@tanstack/store": "^0.9.3",
     "ofetch": "^1.5.1",
     "rxjs": "~7.8.0",
