@@ -9,17 +9,23 @@ importers:
   .:
     dependencies:
       '@angular/cdk':
-        specifier: ^21.2.10
-        version: 21.2.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)
+        specifier: ^21.2.13
+        version: 21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/common':
-        specifier: ^21.2.15
+        specifier: ^21.2.13
         version: 21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/compiler':
-        specifier: ^21.2.0
+        specifier: ^21.2.13
         version: 21.2.13
       '@angular/core':
-        specifier: ^21.2.0
+        specifier: ^21.2.13
         version: 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
+      '@angular/platform-browser':
+        specifier: ^21.2.13
+        version: 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@angular/platform-server':
+        specifier: ^21.2.13
+        version: 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@benjavicente/angular-query':
         specifier: 5.100.14
         version: 5.100.14(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
@@ -27,14 +33,20 @@ importers:
         specifier: 5.100.14
         version: 5.100.14(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@benjavicente/angular-query@5.100.14(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))
       '@benjavicente/angular-router-devtools':
-        specifier: 1.142.11
-        version: 1.142.11(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/router-core@1.168.9)(csstype@3.2.3)
+        specifier: 1.142.13
+        version: 1.142.13(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/router-core@1.169.2)(csstype@3.2.3)
       '@benjavicente/angular-router-experimental':
-        specifier: 1.142.11
-        version: 1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+        specifier: 1.142.15
+        version: 1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
       '@benjavicente/angular-start-experimental':
-        specifier: 1.145.5
-        version: 1.145.5(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/platform-server@21.2.14(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(vite@8.0.14)
+        specifier: 1.145.7
+        version: 1.145.7(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/platform-server@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/router-core@1.169.2)(vite@8.0.14)
+      '@benjavicente/angular-start-experimental-client':
+        specifier: 1.145.7
+        version: 1.145.7(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))
+      '@benjavicente/angular-start-experimental-server':
+        specifier: 1.145.7
+        version: 1.145.7(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/platform-server@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))
       '@fontsource/geist':
         specifier: ^5.2.8
         version: 5.2.9
@@ -83,7 +95,7 @@ importers:
         version: 4.2.2(vite@8.0.14)
       '@testing-library/angular':
         specifier: ^19.3.0
-        version: 19.3.0(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/router@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@testing-library/dom@10.4.1)
+        version: 19.3.0(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/router@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@testing-library/dom@10.4.1)
       '@testing-library/dom':
         specifier: ^10.4.1
         version: 10.4.1
@@ -288,8 +300,8 @@ packages:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: '*'
 
-  '@angular/cdk@21.2.11':
-    resolution: {integrity: sha512-QS5f0si1LgDQFgxXtpuDr7gBFVSQLl1fdnx3UA6GrzSmuV0sfzBhBq7NlZGxZTDaKy4ZxY34RFx4Bvm1zo+gBA==}
+  '@angular/cdk@21.2.13':
+    resolution: {integrity: sha512-nQGGJ6Efqi8n0qhT/PllsaIIY+vz+TL7/tpR7F2QKiqzS/9l4m7ea0vvS6fSMGrjEbqbkzTHbjLDsIg6X2hK+w==}
     peerDependencies:
       '@angular/common': ^21.0.0 || ^22.0.0
       '@angular/core': ^21.0.0 || ^22.0.0
@@ -325,25 +337,25 @@ packages:
       zone.js:
         optional: true
 
-  '@angular/platform-browser@21.2.13':
-    resolution: {integrity: sha512-96rcwLHsklqAYRuS2SEBOUdQS5PLkuUIEEIjpYu4rxU2PVvOMapJEImM/QBxrbwjnCgRbj/CivkgfjiR0R0wSA==}
+  '@angular/platform-browser@21.2.15':
+    resolution: {integrity: sha512-O4ZHVV/rxkK1AuiD9M3UssL/HkoQvBcZy2+U421IMNibclGhwH9aRwc/0ZlQ7zpseS9+KPZ23FebvN4/92IbPg==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     peerDependencies:
-      '@angular/animations': 21.2.13
-      '@angular/common': 21.2.13
-      '@angular/core': 21.2.13
+      '@angular/animations': 21.2.15
+      '@angular/common': 21.2.15
+      '@angular/core': 21.2.15
     peerDependenciesMeta:
       '@angular/animations':
         optional: true
 
-  '@angular/platform-server@21.2.14':
-    resolution: {integrity: sha512-NRaaZ0gvXA9C60Y610MaFp921gB81Uffqk0gJxaPTYQ887/b1of21UZvFOZo0unMaislSrx+KQ3yhRB74DqcKg==}
+  '@angular/platform-server@21.2.15':
+    resolution: {integrity: sha512-wRWkE/KLuTlodE1JY7MDYA5fvDNL/Py1rYKYzHnzoYGuySLZvWb3oQGngxt3JcPDCCdkI8h7+Bh9eir4tEjv8Q==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     peerDependencies:
-      '@angular/common': 21.2.14
-      '@angular/compiler': 21.2.14
-      '@angular/core': 21.2.14
-      '@angular/platform-browser': 21.2.14
+      '@angular/common': 21.2.15
+      '@angular/compiler': 21.2.15
+      '@angular/core': 21.2.15
+      '@angular/platform-browser': 21.2.15
       rxjs: ^6.5.3 || ^7.4.0
 
   '@angular/router@21.2.15':
@@ -473,44 +485,45 @@ packages:
       '@angular/common': '>=19.0.0'
       '@angular/core': '>=19.0.0'
 
-  '@benjavicente/angular-router-devtools@1.142.11':
-    resolution: {integrity: sha512-XtPsgll/lPh9BStj8x4vtwr5DVyMNxLJR9suGHrQfGMQPwZ6zDiFEyBaxNTcRIyCDlJ+fBCpDO9PcrM2P+tyFw==}
+  '@benjavicente/angular-router-devtools@1.142.13':
+    resolution: {integrity: sha512-0N+k8YAp3oo+bH0Jw3YUNxdarzQqGMlievR6dysIJPI6O/Zz5lmgFOfU9IcvXmgh0plF2CvZmwdBCyI9bMYGWA==}
     engines: {node: '>=20.19'}
     peerDependencies:
       '@angular/core': ^21.2.6
-      '@benjavicente/angular-router-experimental': ^1.142.11
+      '@benjavicente/angular-router-experimental': ^1.142.15
 
-  '@benjavicente/angular-router-experimental@1.142.11':
-    resolution: {integrity: sha512-we/9aU42i9sPDB87A45+g8g2H3AQ789nxP7Fs9jF4v0bXGzNsWAAh55T+Jfu7C1lu6AA5mCycaU6OmMQEV5k7g==}
+  '@benjavicente/angular-router-experimental@1.142.15':
+    resolution: {integrity: sha512-lSn55tPdancffd0BczLHtxDyH9iWB2npoNTPKxbnFVCqWVCuhxML1o1jEq0boStbRAKcVT89NOed1aw38hcAMA==}
     engines: {node: '>=20.19'}
     peerDependencies:
-      '@angular/common': ^21.2.6
       '@angular/core': ^21.2.6
 
-  '@benjavicente/angular-start-experimental-client@1.145.5':
-    resolution: {integrity: sha512-jWV8uxlNRxq6iS66S37khsN0nc4z8C2qfLfj+7LzyeKRu68TND98orpKL1EBIiYk7qNXaMJRxHc0JHiqxlmYSg==}
+  '@benjavicente/angular-start-experimental-client@1.145.7':
+    resolution: {integrity: sha512-mefGkakEgoAOx4zZq/73gOT0v2PNroSb7iAH5nyGLabqP5Ejrdu+c0FmrQyNTayZaI+vNsY9LODRCQ/fYeiOOg==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       '@angular/core': ^21.2.6
       '@angular/platform-browser': ^21.2.6
-      '@benjavicente/angular-router-experimental': 1.142.11
+      '@benjavicente/angular-router-experimental': 1.142.15
 
-  '@benjavicente/angular-start-experimental-server@1.145.5':
-    resolution: {integrity: sha512-TUh30nDGsC+5dAQ+KUEixGswsm1qPRAvskPV1zLPycY2aM5poxKrpvxjxfrjwy56vWjP30BfbAgyh5QATHeeIQ==}
+  '@benjavicente/angular-start-experimental-server@1.145.7':
+    resolution: {integrity: sha512-sP+Kbhko4mqAK7LDiyl6M2helfAe4sRrZEyoblYoHbAoVblMB4nX2fESIwWOQbByo0KVVxh50JMoeB48tb+Eyw==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       '@angular/compiler': ^21.2.6
       '@angular/core': ^21.2.6
       '@angular/platform-browser': ^21.2.6
       '@angular/platform-server': ^21.2.6
-      '@benjavicente/angular-router-experimental': 1.142.11
+      '@benjavicente/angular-router-experimental': 1.142.15
 
-  '@benjavicente/angular-start-experimental@1.145.5':
-    resolution: {integrity: sha512-zVTknUViId9fxxHsXf5LcI4R1lBBJNFiLeSoDzhivinad1lWN90Ert8r+RyalDzsJvbjKjYqvDI9ADtMz2fNYA==}
+  '@benjavicente/angular-start-experimental@1.145.7':
+    resolution: {integrity: sha512-eLmNn6Zm1F7ixtdpuCsXxHTSqtIxHOad05SLiLzGjshxSk/fbvUMWGa6pKV7vMSMgqK9x1FkEInwtoOUYyk8VQ==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       '@angular/core': ^21.2.6
       '@angular/platform-browser': ^21.2.6
+      '@benjavicente/angular-router-experimental': ^1.142.15
+      '@benjavicente/router-core': ^1.169.2
       vite: '>=7.0.0'
 
   '@benjavicente/history@1.161.6':
@@ -530,11 +543,15 @@ packages:
     engines: {node: '>=20.19'}
     hasBin: true
 
-  '@benjavicente/router-devtools-core@1.167.1':
-    resolution: {integrity: sha512-N6a9vR68THa/z/1rvTTdw7dflNVJB0cf/qsviPq2DDw4vZ2BjU2Qcx6//lW3fsw0hh48vk9tGoY6S/rVc7WJeA==}
+  '@benjavicente/router-core@1.169.2':
+    resolution: {integrity: sha512-eKWp73vSITd3NZHTvBUvZU1x/Ec4iklLcKNALsYJNMhIA334r2cIj5zvoXj0TpLS3vqhvSstGuLnHLeShX8oFA==}
+    engines: {node: '>=20.19'}
+
+  '@benjavicente/router-devtools-core@1.167.3':
+    resolution: {integrity: sha512-LRsLumbyyb++cCcwG2dDWLyFCbcrBW4MuLfK/YvGJ+KbPMgRDExKkzNEAH5JNEuQuD08EdjMk2AisSPPiUZphQ==}
     engines: {node: '>=20.19'}
     peerDependencies:
-      '@benjavicente/router-core': ^1.168.9
+      '@benjavicente/router-core': ^1.169.2
       csstype: ^3.0.10
     peerDependenciesMeta:
       csstype:
@@ -544,15 +561,18 @@ packages:
     resolution: {integrity: sha512-6PdEAJZRcdvmRJmSn1FZmcBA9mbfcBcRfiTBT+70sV/n3vdbWr3M/r3tsgVhnGrIg2z9xC0iRzJCDuch1ebKAw==}
     engines: {node: '>=20.19'}
 
-  '@benjavicente/router-plugin@1.167.12':
-    resolution: {integrity: sha512-aFaySdMGlG5gNIJyZ5xk/eG97/HybOK4XxhTbq/rYk2nL1K4kzg6VymJonSHQd5Q1QqvTZRTdBALXNsfKte6lw==}
+  '@benjavicente/router-generator@1.166.42':
+    resolution: {integrity: sha512-nwtBTexb4LomM4XOx3vOszLeGobdILj5cxXv7IIh3xrMdzxm6XeIw89EaC3MbweCsWEpvw0RFce4MfjnHvOK/g==}
     engines: {node: '>=20.19'}
-    hasBin: true
+
+  '@benjavicente/router-plugin@1.167.35':
+    resolution: {integrity: sha512-qNHKYFU+D7aSY39gs5IO9GIC6NUUojtsBT/6sJKgaVrgJLpOlMEf04qhSmYu7UppRAOSuY3HTVhyeLOFvXhWdw==}
+    engines: {node: '>=20.19'}
     peerDependencies:
-      '@benjavicente/react-router': ^1.168.10
-      '@rsbuild/core': '>=1.0.2'
-      vite: '>=5.0.0 || >=6.0.0 || >=7.0.0'
-      vite-plugin-solid: ^2.11.10
+      '@benjavicente/react-router': ^1.169.2
+      '@rsbuild/core': '>=1.0.2 || ^2.0.0'
+      vite: '>=5.0.0 || >=6.0.0 || >=7.0.0 || >=8.0.0'
+      vite-plugin-solid: ^2.11.10 || ^3.0.0-0
       webpack: '>=5.92.0'
     peerDependenciesMeta:
       '@benjavicente/react-router':
@@ -570,28 +590,36 @@ packages:
     resolution: {integrity: sha512-4TTHnczHOQAbAq5HNXb2JWtfgaHod/6FMw0ECwumgT2RL4eKaTik+HqoPKlkzTIySSBsYLmMnNWpVY2SfkSvDg==}
     engines: {node: '>=20.19'}
 
-  '@benjavicente/start-client-core@1.167.9':
-    resolution: {integrity: sha512-BXkP+ouM40WQIHAX3ObQdSHtjH6BKZt/xftdfiBZLpXmf8RnXoCQSp5nmJT/c9WF77Sz8gjpzBDpwFMyeor+Iw==}
-    engines: {node: '>=22.12.0'}
-    hasBin: true
+  '@benjavicente/router-utils@1.161.8':
+    resolution: {integrity: sha512-yhKrI39VTz0nuhDZKYPw7Lrxr9gcnkIt3MHC2EDh3eBlOf/+IGQRNJJUkoAd/C+q4Cx0y9Cg+Mftd+MYQMgHyQ==}
+    engines: {node: '>=20.19'}
 
-  '@benjavicente/start-fn-stubs@1.161.6':
-    resolution: {integrity: sha512-LZOz9X+gs7lHCQS4r2RovPPY0Y4Svy87JzKneh5+FRi8UIafrQwWzygM7gynPLURjmXnsOmi5Ur2lKdO1/0C/A==}
+  '@benjavicente/start-client-core@1.168.3':
+    resolution: {integrity: sha512-PhepV7wVOkXep+lCXtl3n2iADf79EFZhZhUi/fyc0Xq0T88yiLAxPDqV2mijbyBljiRXQcH4BfZgt+74Ee8l5w==}
     engines: {node: '>=22.12.0'}
 
-  '@benjavicente/start-plugin-core@1.167.17':
-    resolution: {integrity: sha512-HxAguaHIkT49zYVvQ8rNyGKfM7B3mlG9z9WkiiRUKqtdTReh2tcpFnmvXJ/hwG+jbvjQTRfP28O4NrmAkClBJQ==}
+  '@benjavicente/start-fn-stubs@1.161.7':
+    resolution: {integrity: sha512-+5U3hNKD5G5s5PHXLqjxbL0wSuNm2P8JE4uVcVfxQlxiBLoAIQYr1ASI3Z5fhRpsPf01yv/6VNDVhoh+rCsxYw==}
+    engines: {node: '>=22.12.0'}
+
+  '@benjavicente/start-plugin-core@1.169.21':
+    resolution: {integrity: sha512-BcJ57Z8gNsk+P/WlrRHv/3hPqTP+ssiASJ+Vk8wXsJJJfPXvf41OeU9+QKHg8GH657toQUy30hWXIvCokq+NLA==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
+      '@rsbuild/core': ^2.0.0
       vite: '>=7.0.0'
+    peerDependenciesMeta:
+      '@rsbuild/core':
+        optional: true
+      vite:
+        optional: true
 
-  '@benjavicente/start-server-core@1.167.9':
-    resolution: {integrity: sha512-X8GAxRafZvtolOlWmNJ6ZNaSVXWb3iu0qijYaLvpHYFlxAMdqQIRXpqykRaeF6Aq0aPVVvzihvwEesoTINm8tA==}
+  '@benjavicente/start-server-core@1.167.31':
+    resolution: {integrity: sha512-ZMVg+n8ieVPPWYFT5+/JPiOuYLgk21duk6JFrW3XTCBU5SlkmnvVTG6P+SX8iAQN0pMAmEjBUHTrZXyeYJlOcA==}
     engines: {node: '>=22.12.0'}
-    hasBin: true
 
-  '@benjavicente/start-storage-context@1.166.23':
-    resolution: {integrity: sha512-gJbIo+5J5NKaZxD+gsv42QTfCb05H00BRxrtwi4W6WhL87JawbewBtqGsfrGaxqwrON7d2/t1pbiD0ZnfFd6CQ==}
+  '@benjavicente/start-storage-context@1.166.35':
+    resolution: {integrity: sha512-fnleH9NOOz8TbHMfEsHG6mP2/3B3Oh0XUlsDb/zxanhyOy6WFw3QYTjbRZfYtmssYEW76Bgp3NQTdcXa3T4TAQ==}
     engines: {node: '>=22.12.0'}
 
   '@benjavicente/virtual-file-routes@1.161.7':
@@ -2719,6 +2747,9 @@ packages:
   cookie-es@2.0.1:
     resolution: {integrity: sha512-aVf4A4hI2w70LnF7GG+7xDQUkliwiXWXFvTjkip4+b64ygDQ2sJPRSKFDHbxn8o0xu9QzPkMuuiWIXyFSE2slA==}
 
+  cookie-es@3.1.1:
+    resolution: {integrity: sha512-UaXxwISYJPTr9hwQxMFYZ7kNhSXboMXP+Z3TRX6f1/NyaGPfuNUZOWP1pUEb75B2HjfklIYLVRfWiFZJyC6Npg==}
+
   cookie-signature@1.2.2:
     resolution: {integrity: sha512-D76uU73ulSXrD1UXF4KE2TMxVVwhsnCgfAyTg9k8P6KGZjlXKrOLe4dJQKI3Bxi5wjesZoFXJWElNWBjPZMbhg==}
     engines: {node: '>=6.6.0'}
@@ -3078,6 +3109,9 @@ packages:
       picomatch:
         optional: true
 
+  fetchdts@0.1.7:
+    resolution: {integrity: sha512-YoZjBdafyLIop9lSxXVI33oLD5kN31q4Td+CasofLLYeLXRFeOsuOw0Uo+XNRi9PZlbfdlN2GmRtm4tCEQ9/KA==}
+
   file-entry-cache@8.0.0:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
     engines: {node: '>=16.0.0'}
@@ -3187,8 +3221,8 @@ packages:
   h3@1.15.11:
     resolution: {integrity: sha512-L3THSe2MPeBwgIZVSH5zLdBBU90TOxarvhK9d04IDY2AmVS8j2Jz2LIWtwsGOU3lu2I5jCN7FNvVfY2+XyF+mg==}
 
-  h3@2.0.1-rc.16:
-    resolution: {integrity: sha512-h+pjvyujdo9way8qj6FUbhaQcHlR8FEq65EhTX9ViT5pK8aLj68uFl4hBkF+hsTJAH+H1END2Yv6hTIsabGfag==}
+  h3@2.0.1-rc.20:
+    resolution: {integrity: sha512-28ljodXuUp0fZovdiSRq4G9OgrxCztrJe5VdYzXAB7ueRvI7pIUqLU14Xi3XqdYJ/khXjfpUOOD2EQa6CmBgsg==}
     engines: {node: '>=20.11.1'}
     hasBin: true
     peerDependencies:
@@ -4529,9 +4563,9 @@ packages:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
 
-  unplugin@2.3.11:
-    resolution: {integrity: sha512-5uKD0nqiYVzlmCRs01Fhs2BdkEgBS3SAVP6ndrBsuK42iC2+JHyxM05Rm9G8+5mkmRtzMZGY8Ct5+mliZxU/Ww==}
-    engines: {node: '>=18.12.0'}
+  unplugin@3.0.0:
+    resolution: {integrity: sha512-0Mqk3AT2TZCXWKdcoaufeXNukv2mTrEZExeXlHIOZXdqYoHHr4n51pymnwV8x2BOVxwXbK2HLlI7usrqMpycdg==}
+    engines: {node: ^20.19.0 || >=22.12.0}
 
   unstorage@1.17.5:
     resolution: {integrity: sha512-0i3iqvRfx29hkNntHyQvJTpf5W9dQ9ZadSoRU8+xVlhVtT7jAX57fazYO9EHvcRCfBCyi5YRya7XCDOsbTgkPg==}
@@ -5104,11 +5138,11 @@ snapshots:
       eslint: 10.4.0(jiti@2.7.0)
       typescript: 5.9.3
 
-  '@angular/cdk@21.2.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)':
+  '@angular/cdk@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
-      '@angular/platform-browser': 21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@angular/platform-browser': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
       parse5: 8.0.1
       rxjs: 7.8.2
       tslib: 2.8.1
@@ -5156,27 +5190,27 @@ snapshots:
     optionalDependencies:
       '@angular/compiler': 21.2.13
 
-  '@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))':
+  '@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))':
     dependencies:
       '@angular/common': 21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
       tslib: 2.8.1
 
-  '@angular/platform-server@21.2.14(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)':
+  '@angular/platform-server@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/compiler': 21.2.13
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
-      '@angular/platform-browser': 21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@angular/platform-browser': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
       rxjs: 7.8.2
       tslib: 2.8.1
       xhr2: 0.2.1
 
-  '@angular/router@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)':
+  '@angular/router@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
-      '@angular/platform-browser': 21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@angular/platform-browser': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
       rxjs: 7.8.2
       tslib: 2.8.1
 
@@ -5334,60 +5368,59 @@ snapshots:
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
       '@tanstack/query-core': 5.100.14
 
-  '@benjavicente/angular-router-devtools@1.142.11(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/router-core@1.168.9)(csstype@3.2.3)':
+  '@benjavicente/angular-router-devtools@1.142.13(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/router-core@1.169.2)(csstype@3.2.3)':
     dependencies:
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
-      '@benjavicente/angular-router-experimental': 1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
-      '@benjavicente/router-devtools-core': 1.167.1(@benjavicente/router-core@1.168.9)(csstype@3.2.3)
+      '@benjavicente/angular-router-experimental': 1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@benjavicente/router-devtools-core': 1.167.3(@benjavicente/router-core@1.169.2)(csstype@3.2.3)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@benjavicente/router-core'
       - csstype
 
-  '@benjavicente/angular-router-experimental@1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))':
+  '@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))':
     dependencies:
-      '@angular/common': 21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
       '@benjavicente/history': 1.161.6
-      '@benjavicente/router-core': 1.168.9
+      '@benjavicente/router-core': 1.169.2
+      '@tanstack/store': 0.9.3
       isbot: 5.1.40
       tslib: 2.8.1
 
-  '@benjavicente/angular-start-experimental-client@1.145.5(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/angular-router-experimental@1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))':
+  '@benjavicente/angular-start-experimental-client@1.145.7(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))':
     dependencies:
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
-      '@angular/platform-browser': 21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
-      '@benjavicente/angular-router-experimental': 1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
-      '@benjavicente/start-client-core': 1.167.9
+      '@angular/platform-browser': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@benjavicente/angular-router-experimental': 1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@benjavicente/start-client-core': 1.168.3
 
-  '@benjavicente/angular-start-experimental-server@1.145.5(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/platform-server@21.2.14(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))':
+  '@benjavicente/angular-start-experimental-server@1.145.7(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/platform-server@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))':
     dependencies:
       '@angular/compiler': 21.2.13
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
-      '@angular/platform-browser': 21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
-      '@angular/platform-server': 21.2.14(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)
-      '@benjavicente/angular-router-experimental': 1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
-      '@benjavicente/router-core': 1.168.9
-      '@benjavicente/start-server-core': 1.167.9
+      '@angular/platform-browser': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@angular/platform-server': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)
+      '@benjavicente/angular-router-experimental': 1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@benjavicente/router-core': 1.169.2
+      '@benjavicente/start-server-core': 1.167.31
     transitivePeerDependencies:
       - crossws
 
-  '@benjavicente/angular-start-experimental@1.145.5(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/platform-server@21.2.14(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(vite@8.0.14)':
+  '@benjavicente/angular-start-experimental@1.145.7(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/platform-server@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/router-core@1.169.2)(vite@8.0.14)':
     dependencies:
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
-      '@angular/platform-browser': 21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
-      '@benjavicente/angular-router-experimental': 1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
-      '@benjavicente/angular-start-experimental-client': 1.145.5(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/angular-router-experimental@1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))
-      '@benjavicente/angular-start-experimental-server': 1.145.5(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/platform-server@21.2.14(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.11(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))
-      '@benjavicente/router-core': 1.168.9
-      '@benjavicente/router-utils': 1.161.6
-      '@benjavicente/start-client-core': 1.167.9
-      '@benjavicente/start-plugin-core': 1.167.17(vite@8.0.14)
-      '@benjavicente/start-server-core': 1.167.9
+      '@angular/platform-browser': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@benjavicente/angular-router-experimental': 1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@benjavicente/angular-start-experimental-client': 1.145.7(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))
+      '@benjavicente/angular-start-experimental-server': 1.145.7(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/platform-server@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/compiler@21.2.13)(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@benjavicente/angular-router-experimental@1.142.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))
+      '@benjavicente/router-core': 1.169.2
+      '@benjavicente/router-utils': 1.161.8
+      '@benjavicente/start-client-core': 1.168.3
+      '@benjavicente/start-plugin-core': 1.169.21(vite@8.0.14)
+      '@benjavicente/start-server-core': 1.167.31
       pathe: 2.0.3
       vite: 8.0.14(@types/node@22.19.19)(@vitejs/devtools@0.1.13)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0)
     transitivePeerDependencies:
-      - '@angular/common'
       - '@angular/compiler'
       - '@angular/platform-server'
       - '@benjavicente/react-router'
@@ -5418,9 +5451,16 @@ snapshots:
       seroval: 1.5.4
       seroval-plugins: 1.5.4(seroval@1.5.4)
 
-  '@benjavicente/router-devtools-core@1.167.1(@benjavicente/router-core@1.168.9)(csstype@3.2.3)':
+  '@benjavicente/router-core@1.169.2':
     dependencies:
-      '@benjavicente/router-core': 1.168.9
+      '@benjavicente/history': 1.161.6
+      cookie-es: 3.1.1
+      seroval: 1.5.4
+      seroval-plugins: 1.5.4(seroval@1.5.4)
+
+  '@benjavicente/router-devtools-core@1.167.3(@benjavicente/router-core@1.169.2)(csstype@3.2.3)':
+    dependencies:
+      '@benjavicente/router-core': 1.169.2
       clsx: 2.1.1
       goober: 2.1.19(csstype@3.2.3)
     optionalDependencies:
@@ -5439,7 +5479,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@benjavicente/router-plugin@1.167.12(vite@8.0.14)':
+  '@benjavicente/router-generator@1.166.42':
+    dependencies:
+      '@babel/types': 7.29.0
+      '@benjavicente/router-core': 1.169.2
+      '@benjavicente/router-utils': 1.161.8
+      '@benjavicente/virtual-file-routes': 1.161.7
+      jiti: 2.7.0
+      magic-string: 0.30.21
+      prettier: 3.8.3
+      recast: 0.23.11
+      source-map: 0.7.6
+      tsx: 4.22.3
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - supports-color
+
+  '@benjavicente/router-plugin@1.167.35(vite@8.0.14)':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-syntax-jsx': 7.29.7(@babel/core@7.29.0)
@@ -5447,12 +5503,12 @@ snapshots:
       '@babel/template': 7.28.6
       '@babel/traverse': 7.29.0
       '@babel/types': 7.29.0
-      '@benjavicente/router-core': 1.168.9
-      '@benjavicente/router-generator': 1.166.24
-      '@benjavicente/router-utils': 1.161.6
+      '@benjavicente/router-core': 1.169.2
+      '@benjavicente/router-generator': 1.166.42
+      '@benjavicente/router-utils': 1.161.8
       '@benjavicente/virtual-file-routes': 1.161.7
       chokidar: 3.6.0
-      unplugin: 2.3.11
+      unplugin: 3.0.0
       zod: 3.25.76
     optionalDependencies:
       vite: 8.0.14(@types/node@22.19.19)(@vitejs/devtools@0.1.13)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0)
@@ -5473,61 +5529,78 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@benjavicente/start-client-core@1.167.9':
+  '@benjavicente/router-utils@1.161.8':
     dependencies:
-      '@benjavicente/router-core': 1.168.9
-      '@benjavicente/start-fn-stubs': 1.161.6
-      '@benjavicente/start-storage-context': 1.166.23
+      '@babel/core': 7.29.0
+      '@babel/generator': 7.29.1
+      '@babel/parser': 7.29.3
+      '@babel/types': 7.29.0
+      ansis: 4.3.0
+      babel-dead-code-elimination: 1.0.12
+      diff: 8.0.4
+      pathe: 2.0.3
+      tinyglobby: 0.2.16
+    transitivePeerDependencies:
+      - supports-color
+
+  '@benjavicente/start-client-core@1.168.3':
+    dependencies:
+      '@benjavicente/router-core': 1.169.2
+      '@benjavicente/start-fn-stubs': 1.161.7
+      '@benjavicente/start-storage-context': 1.166.35
       seroval: 1.5.4
 
-  '@benjavicente/start-fn-stubs@1.161.6': {}
+  '@benjavicente/start-fn-stubs@1.161.7': {}
 
-  '@benjavicente/start-plugin-core@1.167.17(vite@8.0.14)':
+  '@benjavicente/start-plugin-core@1.169.21(vite@8.0.14)':
     dependencies:
       '@babel/code-frame': 7.27.1
       '@babel/core': 7.29.0
       '@babel/types': 7.29.0
-      '@benjavicente/router-core': 1.168.9
-      '@benjavicente/router-generator': 1.166.24
-      '@benjavicente/router-plugin': 1.167.12(vite@8.0.14)
-      '@benjavicente/router-utils': 1.161.6
-      '@benjavicente/start-client-core': 1.167.9
-      '@benjavicente/start-server-core': 1.167.9
+      '@benjavicente/router-core': 1.169.2
+      '@benjavicente/router-generator': 1.166.42
+      '@benjavicente/router-plugin': 1.167.35(vite@8.0.14)
+      '@benjavicente/router-utils': 1.161.8
+      '@benjavicente/start-client-core': 1.168.3
+      '@benjavicente/start-server-core': 1.167.31
       '@rolldown/pluginutils': 1.0.0-beta.40
       cheerio: 1.2.0
       exsolve: 1.0.8
+      lightningcss: 1.32.0
       pathe: 2.0.3
       picomatch: 4.0.4
+      seroval: 1.5.4
       source-map: 0.7.6
       srvx: 0.11.16
       tinyglobby: 0.2.16
       ufo: 1.6.4
-      vite: 8.0.14(@types/node@22.19.19)(@vitejs/devtools@0.1.13)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0)
       vitefu: 1.1.3(vite@8.0.14)
       xmlbuilder2: 4.0.3
       zod: 3.25.76
+    optionalDependencies:
+      vite: 8.0.14(@types/node@22.19.19)(@vitejs/devtools@0.1.13)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.3)(yaml@2.9.0)
     transitivePeerDependencies:
       - '@benjavicente/react-router'
-      - '@rsbuild/core'
       - crossws
       - supports-color
       - vite-plugin-solid
       - webpack
 
-  '@benjavicente/start-server-core@1.167.9':
+  '@benjavicente/start-server-core@1.167.31':
     dependencies:
       '@benjavicente/history': 1.161.6
-      '@benjavicente/router-core': 1.168.9
-      '@benjavicente/start-client-core': 1.167.9
-      '@benjavicente/start-storage-context': 1.166.23
-      h3-v2: h3@2.0.1-rc.16
+      '@benjavicente/router-core': 1.169.2
+      '@benjavicente/start-client-core': 1.168.3
+      '@benjavicente/start-storage-context': 1.166.35
+      fetchdts: 0.1.7
+      h3-v2: h3@2.0.1-rc.20
       seroval: 1.5.4
     transitivePeerDependencies:
       - crossws
 
-  '@benjavicente/start-storage-context@1.166.23':
+  '@benjavicente/start-storage-context@1.166.35':
     dependencies:
-      '@benjavicente/router-core': 1.168.9
+      '@benjavicente/router-core': 1.169.2
 
   '@benjavicente/virtual-file-routes@1.161.7': {}
 
@@ -6634,12 +6707,12 @@ snapshots:
 
   '@tanstack/store@0.9.3': {}
 
-  '@testing-library/angular@19.3.0(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/router@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@testing-library/dom@10.4.1)':
+  '@testing-library/angular@19.3.0(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(@angular/router@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2))(@testing-library/dom@10.4.1)':
     dependencies:
       '@angular/common': 21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)
-      '@angular/platform-browser': 21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
-      '@angular/router': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.13(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)
+      '@angular/platform-browser': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))
+      '@angular/router': 21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(@angular/platform-browser@21.2.15(@angular/common@21.2.15(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@21.2.13(@angular/compiler@21.2.13)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@testing-library/dom': 10.4.1
       tslib: 2.8.1
 
@@ -7447,6 +7520,8 @@ snapshots:
 
   cookie-es@2.0.1: {}
 
+  cookie-es@3.1.1: {}
+
   cookie-signature@1.2.2: {}
 
   cookie@0.7.2: {}
@@ -7839,6 +7914,8 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.4
 
+  fetchdts@0.1.7: {}
+
   file-entry-cache@8.0.0:
     dependencies:
       flat-cache: 4.0.1
@@ -7955,7 +8032,7 @@ snapshots:
       ufo: 1.6.4
       uncrypto: 0.1.3
 
-  h3@2.0.1-rc.16:
+  h3@2.0.1-rc.20:
     dependencies:
       rou3: 0.8.1
       srvx: 0.11.16
@@ -9368,10 +9445,9 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unplugin@2.3.11:
+  unplugin@3.0.0:
     dependencies:
       '@jridgewell/remapping': 2.3.5
-      acorn: 8.16.0
       picomatch: 4.0.4
       webpack-virtual-modules: 0.6.2
 

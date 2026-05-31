@@ -80,15 +80,11 @@ const shopCheckoutIndexRoute = shopCheckoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => shopCheckoutRoute,
 } as any)
-const pizzeriasPizzeriasIndexRoute = pizzeriasPizzeriasIndexRouteImport
-  .update({
-    id: '/(pizzerias)/pizzerias/',
-    path: '/pizzerias/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-  .lazy(() =>
-    import('./routes/(pizzerias)/pizzerias.index.lazy').then((d) => d.Route),
-  )
+const pizzeriasPizzeriasIndexRoute = pizzeriasPizzeriasIndexRouteImport.update({
+  id: '/(pizzerias)/pizzerias/',
+  path: '/pizzerias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ordersOrdersIndexRoute = ordersOrdersIndexRouteImport
   .update({
     id: '/(orders)/orders/',

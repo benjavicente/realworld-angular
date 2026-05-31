@@ -18,4 +18,4 @@ This is a fork of the [RealWorld Angular](https://github.com/realworld-angular/r
 - Oxlint and Oxfmt for linting and formatting
 - No directives
 
-The outcome of this experiment may be closes to a real React application than a real world Angular application.
+The outcome of this experiment may be closer to a real React application than a real world Angular application.

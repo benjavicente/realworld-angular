@@ -2,15 +2,40 @@ import { angular } from '@oxc-angular/vite';
 import { tanstackStart } from '@benjavicente/angular-start-experimental/plugin/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
+import '@angular/compiler';
 
 const TSS_ROUTER_BASEPATH = '';
 const TSS_SERVER_FN_BASE = '/_serverFn/';
 
+const ANGULAR_PACKAGES = [
+  '@angular/cdk',
+  '@angular/common',
+  '@angular/compiler',
+  '@angular/core',
+  '@angular/platform-browser',
+  '@angular/platform-server',
+] as const;
+
 export default defineConfig(({ mode }) => ({
   server: {
     port: 4200,
+    sourcemapIgnoreList: (sourcePath) => sourcePath.includes('@angular/'),
+  },
+  ssr: {
+    noExternal: ['@angular/compiler'],
   },
   resolve: {
+    dedupe: [
+      ...ANGULAR_PACKAGES,
+      '@benjavicente/angular-query',
+      '@benjavicente/angular-router-experimental',
+      '@benjavicente/angular-router-devtools',
+      '@benjavicente/angular-start-experimental',
+      '@benjavicente/angular-start-experimental-client',
+      '@benjavicente/angular-start-experimental-server',
+      '@tanstack/angular-form',
+      'rxjs',
+    ],
     tsconfigPaths: true,
   },
   define: {

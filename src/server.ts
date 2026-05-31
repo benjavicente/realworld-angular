@@ -1,3 +1,4 @@
+import '@angular/compiler';
 import { mergeApplicationConfig } from '@angular/core';
 import { createServerHandler } from '@benjavicente/angular-start-experimental/server';
 import type { Register } from '@benjavicente/angular-router-experimental';

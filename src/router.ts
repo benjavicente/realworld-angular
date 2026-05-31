@@ -4,7 +4,6 @@ import { ofetch } from 'ofetch';
 import { environment } from './environments/environment';
 import { routeTree } from './routeTree.gen';
 import { createCartClientStore } from './routes/(shop)/-store/cart-client.store';
-import { RoutePending } from './routes/-components/route-pending/route-pending';
 
 export function getRouter() {
   const queryClient = new QueryClient({
@@ -31,7 +30,6 @@ export function getRouter() {
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
     defaultPendingMinMs: 0,
-    defaultPendingComponent: () => RoutePending,
     scrollRestoration: true,
   });
 }

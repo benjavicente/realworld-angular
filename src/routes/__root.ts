@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-// @ts-expect-error package ships empty .d.ts; export exists in the FESM bundle
 import { TanStackRouterDevtools } from '@benjavicente/angular-router-devtools';
 import { Outlet, createRootRouteWithContext } from '@benjavicente/angular-router-experimental';
 import type { AngularInjectFn } from '@benjavicente/angular-router-experimental';
@@ -13,6 +12,10 @@ import { images } from '../lib/assets';
 import { environment } from '../environments/environment';
 import stylesUrl from '../styles.css?url';
 import fontUrl from '@fontsource/geist/files/geist-latin-400-normal.woff2?url';
+
+const siteTitle = 'Fakeworld Angular playground';
+const siteDescription =
+  'A fork of RealWorld Angular, refactored to be as less "Angular" as possible while still being Angular.';
 
 export const Route = createRootRouteWithContext<{
   inject: AngularInjectFn;
@@ -30,12 +33,21 @@ export const Route = createRootRouteWithContext<{
         name: 'viewport',
         content: 'width=device-width, initial-scale=1.0',
       },
-      { title: 'Realworld Angular' },
-      { name: 'description', content: 'Realworld Angular running on Angular Start.' },
-      { rel: 'preload', href: fontUrl, as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
+      { title: siteTitle },
+      { name: 'description', content: siteDescription },
+      { property: 'og:title', content: siteTitle },
+      { property: 'og:description', content: siteDescription },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:site_name', content: 'Fakeworld Angular' },
+      { property: 'og:image', content: images.heroBanner },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: siteTitle },
+      { name: 'twitter:description', content: siteDescription },
+      { name: 'twitter:image', content: images.heroBanner },
     ],
     links: [
       { rel: 'preconnect', href: environment.apiBaseUrl, crossorigin: 'anonymous' },
+      { rel: 'preload', href: fontUrl, as: 'font', type: 'font/woff2', crossorigin: 'anonymous' },
       { rel: 'icon', href: images.faviconSvg, type: 'image/svg+xml' },
       { rel: 'stylesheet', href: stylesUrl },
     ],
