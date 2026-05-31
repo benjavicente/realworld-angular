@@ -21,7 +21,9 @@ export const Route = createLazyFileRoute('/(legal)/terms-and-conditions')({
               rel="noopener noreferrer"
               >RealWorld Angular</a
             >
-            learning initiative.
+            learning initiative, and this frontend deploy in particular showcases the use case of
+            agnostic tools in a unrealistic fashion. The rest of the terms here are from the
+            original project.
           </p>
         </header>
 

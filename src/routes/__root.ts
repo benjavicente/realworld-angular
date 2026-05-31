@@ -13,7 +13,7 @@ import { environment } from '../environments/environment';
 import stylesUrl from '../styles.css?url';
 import fontUrl from '@fontsource/geist/files/geist-latin-400-normal.woff2?url';
 
-const siteTitle = 'Fakeworld Angular playground';
+const siteTitle = 'Unrealworld Angular playground';
 const siteDescription =
   'A fork of RealWorld Angular, refactored to be as less "Angular" as possible while still being Angular.';
 
@@ -38,7 +38,7 @@ export const Route = createRootRouteWithContext<{
       { property: 'og:title', content: siteTitle },
       { property: 'og:description', content: siteDescription },
       { property: 'og:type', content: 'website' },
-      { property: 'og:site_name', content: 'Fakeworld Angular' },
+      { property: 'og:site_name', content: 'Unrealworld Angular' },
       { property: 'og:image', content: images.heroBanner },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: siteTitle },

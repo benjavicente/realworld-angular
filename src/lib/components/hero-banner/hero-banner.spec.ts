@@ -6,7 +6,7 @@ describe('HeroBanner', () => {
   it('should render the edition variant', async () => {
     await render(HeroBanner);
 
-    expect(screen.getByText('Starter')).toBeTruthy();
+    expect(screen.getByText('Unreal')).toBeTruthy();
   });
 
   it('should render the banner image', async () => {
@@ -14,12 +14,12 @@ describe('HeroBanner', () => {
 
     const img = container.querySelector('img');
     expect(img).toBeTruthy();
-    expect(img?.getAttribute('src')).toContain('realworld-angular-banner.png');
+    expect(img?.getAttribute('src')).toContain('unrealworld-angular-banner.png');
   });
 
   it('should have a heading in the sr-only section', async () => {
     await render(HeroBanner);
 
-    expect(screen.getByRole('heading', { name: 'RealWorld Angular' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'UnrealWorld Angular' })).toBeTruthy();
   });
 });

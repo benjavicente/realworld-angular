@@ -1,8 +1,8 @@
-![Fakeworld Angular banner](src/assets/images/fakeworld-angular-banner.png)
+![Unrealworld Angular banner](src/assets/images/unrealworld-angular-banner.png)
 
-# Fakeworld Angular playground
+# Unrealworld Angular playground
 
-This is a fork of the [RealWorld Angular](https://github.com/realworld-angular/realworld-angular) project, but refractored to be as less “Angular” as possible while still being Angular.
+This is a fork of the [RealWorld Angular](https://github.com/realworld-angular/realworld-angular) project, but refractored to be as less “Angular” as possible while still being Angular. Basically an unrealistic Angular application, witout going to into the experimental territory by using agnostic tools as a fundation.
 
 ## Differences with RealWorld Angular
 

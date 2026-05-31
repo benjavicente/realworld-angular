@@ -48,7 +48,7 @@ export class Button {
 
   protected readonly stateClasses = computed<string>(() =>
     [
-      'relative inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border-2 border-transparent font-medium leading-none no-underline transition hover:no-underline focus-visible:shadow-focus focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+      'relative inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border-2 border-solid font-medium leading-none no-underline transition hover:no-underline focus-visible:shadow-focus focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
       this.size() === 'sm' ? 'rounded-sm px-3 py-2 text-sm' : 'px-5 py-3 text-base',
       this.variantClasses(),
       this.isLoading() ? 'text-transparent' : '',

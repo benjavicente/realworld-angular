@@ -20,14 +20,14 @@ import { authUserQueryOptions } from '../../../lib/services/auth';
               href="https://github.com/realworld-angular/realworld-angular"
               target="_blank"
               rel="noopener noreferrer"
-              >Realworld Angular</a
+              >Unrealworld Angular</a
             >
             <span class="text-sm text-text-muted select-none"> - </span>
             <a
               href="https://github.com/benjavicente/realworld-angular"
               target="_blank"
               rel="noopener noreferrer"
-              >Fakeworld Angular</a
+              >Unrealworld Angular</a
             >
           </p>
 

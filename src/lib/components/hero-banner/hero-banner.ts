@@ -41,5 +41,5 @@ import { images } from '../../assets';
 })
 export class HeroBanner {
   protected readonly images = images;
-  public readonly editionVariant = 'Starter';
+  public readonly editionVariant = 'Unreal';
 }
