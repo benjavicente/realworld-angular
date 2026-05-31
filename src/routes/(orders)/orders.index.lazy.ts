@@ -57,7 +57,7 @@ export const Route = createLazyFileRoute('/(orders)/orders/')({
                 <li>
                   <a
                     [link]="{ to: '/orders/' + order.id }"
-                    class="grid grid-cols-[1fr_auto] gap-4 rounded-lg border border-border bg-surface p-4 transition hover:shadow-md"
+                    class="grid grid-cols-[1fr_auto] gap-4 rounded-lg border border-border bg-surface p-4 no-underline transition hover:shadow-md hover:no-underline"
                     aria-label="View order {{ order.id }}"
                   >
                     <div>
