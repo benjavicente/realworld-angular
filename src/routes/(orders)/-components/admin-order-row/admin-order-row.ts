@@ -59,13 +59,11 @@ import { icons } from '../../../../lib/assets';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminOrderRow {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly dialog = inject(Dialog);
-  private readonly cancelOrderMutation = injectMutation(() =>
-    cancelOrderMutationOptions(this.apiFetch),
-  );
-  private readonly deliverOrderMutation = injectMutation(() =>
-    deliverOrderMutationOptions(this.apiFetch),
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #dialog = inject(Dialog);
+  readonly #cancelOrderMutation = injectMutation(() => cancelOrderMutationOptions(this.#apiFetch));
+  readonly #deliverOrderMutation = injectMutation(() =>
+    deliverOrderMutationOptions(this.#apiFetch),
   );
 
   public readonly order = input.required<AdminOrderListItem>();
@@ -75,7 +73,7 @@ export class AdminOrderRow {
   public readonly showFeedback = output<{ variant: 'error' | 'success'; message: string }>();
 
   public promptCancelOrder(): void {
-    const ref = this.dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
+    const ref = this.#dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
       data: {
         title: 'Cancel order?',
         message: 'Cancel this pending order? This sets the status to cancelled.',
@@ -87,7 +85,7 @@ export class AdminOrderRow {
     ref.closed.subscribe(async (result) => {
       if (result !== 'confirmed') return;
       try {
-        const updated = await this.cancelOrderMutation.mutateAsync(this.order().id);
+        const updated = await this.#cancelOrderMutation.mutateAsync(this.order().id);
         this.updateOrder.emit(updated);
         this.showFeedback.emit({ variant: 'success', message: 'Order cancelled.' });
       } catch (err: unknown) {
@@ -100,7 +98,7 @@ export class AdminOrderRow {
   }
 
   public promptDeliverOrder(): void {
-    const ref = this.dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
+    const ref = this.#dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
       data: {
         title: 'Mark delivered?',
         message: 'Mark this order as delivered?',
@@ -112,7 +110,7 @@ export class AdminOrderRow {
     ref.closed.subscribe(async (result) => {
       if (result !== 'confirmed') return;
       try {
-        const updated = await this.deliverOrderMutation.mutateAsync(this.order().id);
+        const updated = await this.#deliverOrderMutation.mutateAsync(this.order().id);
         this.updateOrder.emit(updated);
         this.showFeedback.emit({ variant: 'success', message: 'Order marked as delivered.' });
       } catch (err: unknown) {

@@ -35,7 +35,7 @@ export type ButtonSize = 'sm' | 'md';
   },
 })
 export class Button {
-  private readonly host = inject<ElementRef<HTMLButtonElement | HTMLAnchorElement>>(ElementRef);
+  readonly #host = inject<ElementRef<HTMLButtonElement | HTMLAnchorElement>>(ElementRef);
 
   public readonly variant = input<ButtonVariant>('plain');
   public readonly palette = input<ButtonPalette>('primary');
@@ -44,13 +44,13 @@ export class Button {
   public readonly isDisabled = input(false);
   public readonly isLoading = input(false);
 
-  protected readonly isButtonHost = computed(() => this.host.nativeElement.tagName === 'BUTTON');
+  protected readonly isButtonHost = computed(() => this.#host.nativeElement.tagName === 'BUTTON');
 
   protected readonly stateClasses = computed<string>(() =>
     [
       'relative inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-md border-2 border-solid font-medium leading-none no-underline transition hover:no-underline focus-visible:shadow-focus focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
       this.size() === 'sm' ? 'rounded-sm px-3 py-2 text-sm' : 'px-5 py-3 text-base',
-      this.variantClasses(),
+      this.#variantClasses(),
       this.isLoading() ? 'text-transparent' : '',
       !this.isButtonHost() && (this.isDisabled() || this.isLoading())
         ? 'pointer-events-none opacity-50'
@@ -97,7 +97,7 @@ export class Button {
     }
   }
 
-  private variantClasses(): string {
+  #variantClasses(): string {
     const variant = this.variant();
     const palette = this.palette();
     if (variant === 'plain' && palette === 'danger') {

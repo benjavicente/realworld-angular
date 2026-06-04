@@ -62,9 +62,9 @@ import { authUserQueryOptions } from '../../../lib/services/auth';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Footer {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.apiFetch));
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #userQuery = injectQuery(() => authUserQueryOptions(this.#apiFetch));
 
-  protected readonly user = computed(() => this.userQuery.data() ?? null);
+  protected readonly user = computed(() => this.#userQuery.data() ?? null);
   protected readonly isAuthenticated = computed(() => this.user() !== null);
 }

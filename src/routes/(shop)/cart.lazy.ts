@@ -195,15 +195,15 @@ export const Route = createLazyFileRoute('/(shop)/cart')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class CartPage {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
   protected readonly cart = injectCartClient();
   protected readonly cartClient = injectCartClientState();
   protected readonly cartPreviewQuery = injectQuery(() =>
-    cartPreviewQueryOptions(this.apiFetch, this.cartClient.pizzeria(), this.cartClient.items()),
+    cartPreviewQueryOptions(this.#apiFetch, this.cartClient.pizzeria(), this.cartClient.items()),
   );
-  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.apiFetch));
+  readonly #userQuery = injectQuery(() => authUserQueryOptions(this.#apiFetch));
 
-  protected readonly isAuthenticated = computed(() => this.userQuery.data() !== null);
+  protected readonly isAuthenticated = computed(() => this.#userQuery.data() !== null);
   protected readonly icons = icons;
 
   protected formatExtraToppings(toppings: CartOption[]): string {

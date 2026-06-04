@@ -1,5 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/angular';
+import { render, screen, fireEvent, waitFor } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
+import { QueryClient, provideTanStackQuery } from '@benjavicente/angular-query';
 import { describe, expect, it, vi } from 'vitest';
 import type { PhotonLocationSuggestion } from '../../api/photon';
 import { PHOTON_SEARCH_PLACES, PhotonLocationField } from './photon-location-field';
@@ -16,17 +17,17 @@ describe('PhotonLocationField', () => {
     searchPlacesFn.mockReset();
     searchPlacesFn.mockResolvedValue([]);
     return render(PhotonLocationField, {
-      providers: [{ provide: PHOTON_SEARCH_PLACES, useValue: searchPlacesFn }],
+      providers: [
+        provideTanStackQuery(new QueryClient()),
+        { provide: PHOTON_SEARCH_PLACES, useValue: searchPlacesFn },
+      ],
     });
   }
 
-  function openWithSuggestions(
-    component: PhotonLocationField,
-    fixture: { detectChanges: () => void },
-  ) {
-    (component as any).panelOpen.set(true);
-    (component as any).suggestions.set(mockSuggestions);
-    fixture.detectChanges();
+  async function searchWithSuggestions(query = 'ro') {
+    searchPlacesFn.mockResolvedValue(mockSuggestions);
+    fireEvent.input(screen.getByRole('combobox'), { target: { value: query } });
+    await waitFor(() => expect(screen.getByText('Rome, Italy')).toBeTruthy());
   }
 
   it('should render the label', async () => {
@@ -42,17 +43,17 @@ describe('PhotonLocationField', () => {
   });
 
   it('should open suggestions panel when search results arrive', async () => {
-    const { fixture } = await renderField();
+    await renderField();
 
-    openWithSuggestions(fixture.componentInstance, fixture);
+    await searchWithSuggestions();
 
     expect(screen.getByLabelText('Location suggestions')).toBeTruthy();
   });
 
   it('should display suggestion labels', async () => {
-    const { fixture } = await renderField();
+    await renderField();
 
-    openWithSuggestions(fixture.componentInstance, fixture);
+    await searchWithSuggestions();
 
     expect(screen.getByText('Rome, Italy')).toBeTruthy();
     expect(screen.getByText('Rotherham, United Kingdom')).toBeTruthy();
@@ -61,7 +62,7 @@ describe('PhotonLocationField', () => {
   it('should commit value when suggestion is selected', async () => {
     const user = userEvent.setup();
     const { fixture } = await renderField();
-    openWithSuggestions(fixture.componentInstance, fixture);
+    await searchWithSuggestions();
 
     await user.pointer({ keys: '[MouseLeft]', target: screen.getByText('Rome, Italy') });
 
@@ -69,20 +70,19 @@ describe('PhotonLocationField', () => {
   });
 
   it('should show loading hint while searching', async () => {
-    const { fixture } = await renderField();
-    (fixture.componentInstance as any).panelOpen.set(true);
-    (fixture.componentInstance as any).isLoading.set(true);
-    fixture.detectChanges();
+    searchPlacesFn.mockReturnValue(new Promise(() => {}));
+    await renderField();
 
-    expect(screen.getByText('Searching…')).toBeTruthy();
+    fireEvent.input(screen.getByRole('combobox'), { target: { value: 'ro' } });
+
+    await waitFor(() => expect(screen.getByText('Searching…')).toBeTruthy());
   });
 
   it('should close panel on Escape key', async () => {
-    const { fixture } = await renderField();
-    openWithSuggestions(fixture.componentInstance, fixture);
+    await renderField();
+    await searchWithSuggestions();
 
     fireEvent.keyDown(screen.getByRole('combobox'), { key: 'Escape' });
-    await fixture.whenStable();
 
     expect(screen.queryByLabelText('Location suggestions')).toBeNull();
   });

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { injectQuery } from '@benjavicente/angular-query';
 import {
   Link,
@@ -7,7 +6,7 @@ import {
   injectNavigate,
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { injectDebouncedValue } from '@tanstack/angular-pacer';
 import { pizzeriasQueryOptions } from '../../lib/api/api-queries';
 import { Callout } from '../../lib/components/callout/callout';
 import { EmptyState } from '../../lib/components/empty-state/empty-state';
@@ -157,28 +156,28 @@ export const Route = createFileRoute('/(pizzerias)/pizzerias/')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class PizzeriaListPage {
-  private readonly routerContext = injectRouter().options.context;
-  private readonly search = Route.injectSearch();
-  private readonly navigate = injectNavigate();
+  readonly #routerContext = injectRouter().options.context;
+  readonly #search = Route.injectSearch();
+  readonly #navigate = injectNavigate();
   protected readonly icons = icons;
 
-  protected readonly searchInput = signal(this.search().search ?? '');
-  private readonly debouncedSearch = toSignal(
-    toObservable(this.searchInput).pipe(
-      debounceTime(300),
-      map((search: string) => search.trim()),
-      distinctUntilChanged(),
-    ),
-    { initialValue: '' },
+  protected readonly searchInput = signal(this.#search().search ?? '');
+  readonly #trimmedSearchInput = computed(() => this.searchInput().trim());
+  readonly #debouncedSearch = injectDebouncedValue(
+    this.#trimmedSearchInput,
+    this.#trimmedSearchInput(),
+    {
+      wait: 300,
+    },
   );
-  protected readonly activeSearch = computed(() => this.search().search ?? '');
+  protected readonly activeSearch = computed(() => this.#search().search ?? '');
   protected readonly hasActiveSearch = computed<boolean>(() => this.activeSearch().length > 0);
 
-  protected readonly currentPage = computed(() => this.search().page ?? 1);
+  protected readonly currentPage = computed(() => this.#search().page ?? 1);
   protected readonly limit = PIZZERIAS_LIMIT;
 
   protected readonly pizzeriasResource = injectQuery(() =>
-    pizzeriasQueryOptions(this.routerContext.apiFetch, {
+    pizzeriasQueryOptions(this.#routerContext.apiFetch, {
       page: this.currentPage(),
       limit: this.limit,
       ...(this.hasActiveSearch() ? { search: this.activeSearch() } : {}),
@@ -187,13 +186,13 @@ class PizzeriaListPage {
 
   public constructor() {
     effect(() => {
-      const search = this.debouncedSearch();
+      const search = this.#debouncedSearch();
       const currentSearch = this.activeSearch();
       if (search === currentSearch) {
         return;
       }
 
-      void this.navigate({
+      void this.#navigate({
         to: '.',
         search: { page: 1, ...(search ? { search } : {}) },
         replace: true,
@@ -204,7 +203,7 @@ class PizzeriaListPage {
 
   protected changePage(page: number): void {
     const search = this.activeSearch();
-    void this.navigate({
+    void this.#navigate({
       to: '.',
       search: { ...(page > 1 ? { page } : {}), ...(search ? { search } : {}) },
       resetScroll: false,

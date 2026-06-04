@@ -10,11 +10,12 @@ import {
   Link,
   Outlet,
   createLazyFileRoute,
+  injectBlocker,
   injectNavigate,
   injectRouter,
 } from '@benjavicente/angular-router-experimental';
 import { NumberFormatPipe } from '../../lib/pipes/number/number.pipe';
-import { map, Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { TanStackWithForm, injectForm, injectStore } from '@tanstack/angular-form';
 import { injectMutation, injectQuery } from '@benjavicente/angular-query';
@@ -166,20 +167,18 @@ export const Route = createLazyFileRoute('/(shop)/checkout')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckoutLayoutPage implements CheckoutScope {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly cart = injectCartClient();
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #cart = injectCartClient();
   protected readonly cartClient = injectCartClientState();
-  private readonly navigate = injectNavigate();
-  private readonly router = injectRouter();
-  private readonly dialog = inject(Dialog);
+  readonly #navigate = injectNavigate();
+  readonly #router = injectRouter();
+  readonly #dialog = inject(Dialog);
 
   protected readonly cartPreviewQuery = injectQuery(() =>
-    cartPreviewQueryOptions(this.apiFetch, this.cartClient.pizzeria(), this.cartClient.items()),
+    cartPreviewQueryOptions(this.#apiFetch, this.cartClient.pizzeria(), this.cartClient.items()),
   );
 
-  private readonly createOrderMutation = injectMutation(() =>
-    createOrderMutationOptions(this.apiFetch),
-  );
+  readonly #createOrderMutation = injectMutation(() => createOrderMutationOptions(this.#apiFetch));
 
   readonly stepStatus = signal<Record<WizardStep, 'success' | 'error' | null>>({
     delivery: null,
@@ -219,7 +218,7 @@ export class CheckoutLayoutPage implements CheckoutScope {
           : undefined;
 
       try {
-        const order = await this.createOrderMutation.mutateAsync({
+        const order = await this.#createOrderMutation.mutateAsync({
           pizzeriaId: this.cartClient.pizzeria()!.id,
           deliveryAddress: delivery,
           ...(billing ? { billingAddress: billing } : {}),
@@ -233,9 +232,9 @@ export class CheckoutLayoutPage implements CheckoutScope {
             selectedOptionIds: item.selectedOptionIds,
           })),
         });
-        this.cart.clear();
+        this.#cart.clear();
         this.submitted.set(true);
-        void this.navigate({ to: '/orders/' + order.id });
+        void this.#navigate({ to: '/orders/' + order.id });
       } catch {
         this.submitError.set('Order failed. Please try again.');
       }
@@ -288,6 +287,17 @@ export class CheckoutLayoutPage implements CheckoutScope {
       : undefined;
 
   public constructor() {
+    injectBlocker({
+      disabled: () => this.submitted() || !this.checkoutFormState().isDirty,
+      enableBeforeUnload: () => !this.submitted() && this.checkoutFormState().isDirty,
+      shouldBlockFn: async ({ current, next }) => {
+        if (!isCheckoutPath(current.pathname) || isCheckoutPath(next.pathname)) {
+          return false;
+        }
+        return !(await this.#confirmLeaveCheckout());
+      },
+    });
+
     effect(() => {
       if (this.checkoutFormState().values.delivery.useSameAsBilling) {
         const billing = this.checkoutForm.state.values.delivery;
@@ -302,14 +312,14 @@ export class CheckoutLayoutPage implements CheckoutScope {
     });
 
     effect(() => {
-      const pathname = this.router.state.location.pathname;
+      const pathname = this.#router.state.location.pathname;
       const step = parseCheckoutStep(pathname);
       if (!step) {
         return;
       }
       const blocked = blockedCheckoutStep(this.checkoutFormState().values, step);
       if (blocked) {
-        void this.navigate({ to: '/checkout/' + blocked });
+        void this.#navigate({ to: '/checkout/' + blocked });
       }
     });
   }
@@ -318,14 +328,14 @@ export class CheckoutLayoutPage implements CheckoutScope {
     const valid = await validateSubmitFields(this.checkoutForm, STEP_FIELDS[step]);
     if (valid) {
       this.stepStatus.update((status) => ({ ...status, [step]: 'success' }));
-      void this.navigate({ to: '/checkout/' + NEXT_STEP[step] });
+      void this.#navigate({ to: '/checkout/' + NEXT_STEP[step] });
     } else {
       this.stepStatus.update((status) => ({ ...status, [step]: 'error' }));
     }
   }
 
   goToStep(step: WizardStep): void {
-    void this.navigate({ to: '/checkout/' + step });
+    void this.#navigate({ to: '/checkout/' + step });
   }
 
   async placeOrder(): Promise<void> {
@@ -335,14 +345,11 @@ export class CheckoutLayoutPage implements CheckoutScope {
   }
 
   protected isCurrentStep(step: string): boolean {
-    return this.router.state.location.pathname.endsWith('/' + step);
+    return this.#router.state.location.pathname.endsWith('/' + step);
   }
 
-  public canDeactivate(): boolean | Observable<boolean> {
-    if (this.submitted() || !this.checkoutFormState().isDirty) {
-      return true;
-    }
-    const ref = this.dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
+  async #confirmLeaveCheckout(): Promise<boolean> {
+    const ref = this.#dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
       data: {
         title: 'Leave checkout?',
         message:
@@ -351,6 +358,10 @@ export class CheckoutLayoutPage implements CheckoutScope {
         confirmLabel: 'Leave',
       },
     });
-    return ref.closed.pipe(map((result) => result === 'confirmed'));
+    return (await firstValueFrom(ref.closed)) === 'confirmed';
   }
+}
+
+function isCheckoutPath(pathname: string): boolean {
+  return pathname === '/checkout' || pathname.startsWith('/checkout/');
 }

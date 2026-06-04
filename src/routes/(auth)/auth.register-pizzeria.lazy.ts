@@ -146,14 +146,14 @@ export const Route = createLazyFileRoute('/(auth)/auth/register-pizzeria')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class RegisterPage {
-  private readonly routerContext = injectRouter().options.context;
-  private readonly search = Route.injectSearch();
-  private readonly navigate = injectNavigate();
-  private readonly registerMutation = injectMutation(() =>
-    registerMutationOptions(this.routerContext.apiFetch),
+  readonly #routerContext = injectRouter().options.context;
+  readonly #search = Route.injectSearch();
+  readonly #navigate = injectNavigate();
+  readonly #registerMutation = injectMutation(() =>
+    registerMutationOptions(this.#routerContext.apiFetch),
   );
-  private readonly registerPizzeriaOwnerMutation = injectMutation(() =>
-    registerPizzeriaOwnerMutationOptions(this.routerContext.apiFetch),
+  readonly #registerPizzeriaOwnerMutation = injectMutation(() =>
+    registerPizzeriaOwnerMutationOptions(this.#routerContext.apiFetch),
   );
 
   public readonly registerAsPizzeriaOwner = input<boolean>(false);
@@ -161,7 +161,7 @@ class RegisterPage {
   protected readonly submitError = signal('');
   protected readonly icons = icons;
   protected readonly redirectTarget = () =>
-    sanitizeRedirectPath(this.search().redirect, '/pizzerias/admin/new');
+    sanitizeRedirectPath(this.#search().redirect, '/pizzerias/admin/new');
 
   protected readonly registerForm = injectForm({
     defaultValues: { email: '', password: '', confirmPassword: '' },
@@ -173,10 +173,10 @@ class RegisterPage {
       }
       try {
         const mutation = this.registerAsPizzeriaOwner()
-          ? this.registerPizzeriaOwnerMutation
-          : this.registerMutation;
+          ? this.#registerPizzeriaOwnerMutation
+          : this.#registerMutation;
         await mutation.mutateAsync({ email: value.email, password: value.password });
-        void this.navigate({
+        void this.#navigate({
           href: this.registerAsPizzeriaOwner() ? this.redirectTarget() : '/',
         });
       } catch {

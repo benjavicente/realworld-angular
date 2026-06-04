@@ -224,21 +224,21 @@ const navLinkClass =
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.apiFetch));
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #userQuery = injectQuery(() => authUserQueryOptions(this.#apiFetch));
 
-  protected readonly user = computed(() => this.userQuery.data() ?? null);
+  protected readonly user = computed(() => this.#userQuery.data() ?? null);
   protected readonly isAuthenticated = computed(() => this.user() !== null);
   protected readonly isCustomer = computed(() => this.user()?.role === 'CUSTOMER');
   protected readonly isAdmin = computed(() => this.user()?.role === 'PIZZERIA_ADMIN');
   protected readonly cartItemCount = injectCartClientItemCount();
   protected readonly navLinkClass = navLinkClass;
   protected readonly icons = icons;
-  private readonly router = injectRouter();
+  readonly #router = injectRouter();
 
   protected readonly isMobileMenuOpen = signal(false);
   protected readonly redirectPath = () => {
-    const href = this.router.state.location.href;
+    const href = this.#router.state.location.href;
     return href.startsWith('/auth/') ? '/' : href;
   };
 

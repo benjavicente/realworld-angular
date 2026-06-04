@@ -187,16 +187,16 @@ interface PizzaOrderFormModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PizzaOrderFormDialog {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly dialogRef = inject(DialogRef);
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #dialogRef = inject(DialogRef);
   protected readonly data = inject<PizzaOrderFormDialogData>(DIALOG_DATA);
-  private readonly cart = this.data.cart;
+  readonly #cart = this.data.cart;
 
   protected readonly sizesResource = injectQuery(() =>
-    pizzaOptionsQueryOptions(this.apiFetch, 'sizes'),
+    pizzaOptionsQueryOptions(this.#apiFetch, 'sizes'),
   );
   protected readonly toppingsResource = injectQuery(() =>
-    pizzaOptionsQueryOptions(this.apiFetch, 'toppings'),
+    pizzaOptionsQueryOptions(this.#apiFetch, 'toppings'),
   );
 
   protected readonly toppingsOptions = computed(() => this.toppingsResource.data() ?? []);
@@ -216,12 +216,12 @@ export class PizzaOrderFormDialog {
     onSubmit: ({ value }) => {
       this.submitError.set('');
       try {
-        if (this.cart.hasItemsForOtherPizzeria(this.data.pizzeriaId)) {
-          this.cart.clear();
+        if (this.#cart.hasItemsForOtherPizzeria(this.data.pizzeriaId)) {
+          this.#cart.clear();
         }
 
         const { selectedSize, extraToppings, quantity } = value;
-        this.cart.addItem(
+        this.#cart.addItem(
           this.data.pizza.id,
           Number(quantity),
           selectedSize?.id ?? null,
@@ -232,7 +232,7 @@ export class PizzaOrderFormDialog {
             .filter((t): t is string => t !== null),
           this.data.pizzeriaId,
         );
-        this.dialogRef.close('added');
+        this.#dialogRef.close('added');
       } catch {
         this.submitError.set('Could not add to cart. Please try again.');
       }

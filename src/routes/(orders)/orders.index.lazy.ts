@@ -93,22 +93,22 @@ export const Route = createLazyFileRoute('/(orders)/orders/')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class OrdersListPage {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly search = Route.injectSearch();
-  private readonly navigate = injectNavigate();
-  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.apiFetch));
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #search = Route.injectSearch();
+  readonly #navigate = injectNavigate();
+  readonly #userQuery = injectQuery(() => authUserQueryOptions(this.#apiFetch));
 
   protected readonly heading = computed<string>(() =>
-    this.userQuery.data()?.role === 'PIZZERIA_ADMIN' ? 'Orders' : 'My Orders',
+    this.#userQuery.data()?.role === 'PIZZERIA_ADMIN' ? 'Orders' : 'My Orders',
   );
 
-  protected readonly currentPage = computed(() => this.search().page ?? 1);
+  protected readonly currentPage = computed(() => this.#search().page ?? 1);
   protected readonly ordersResource = injectQuery(() =>
-    ordersQueryOptions(this.apiFetch, this.currentPage(), 10),
+    ordersQueryOptions(this.#apiFetch, this.currentPage(), 10),
   );
 
   protected changePage(page: number): void {
-    void this.navigate({
+    void this.#navigate({
       to: '.',
       search: page > 1 ? { page } : {},
       resetScroll: false,

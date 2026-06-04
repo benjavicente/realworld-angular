@@ -156,10 +156,10 @@ export const Route = createLazyFileRoute('/(shop)/checkout/review')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class CheckoutReviewStep {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly cartClient = injectCartClientState();
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #cartClient = injectCartClientState();
   protected readonly cartPreviewQuery = injectQuery(() =>
-    cartPreviewQueryOptions(this.apiFetch, this.cartClient.pizzeria(), this.cartClient.items()),
+    cartPreviewQueryOptions(this.#apiFetch, this.#cartClient.pizzeria(), this.#cartClient.items()),
   );
   protected readonly checkout = inject(CHECKOUT_SCOPE);
 

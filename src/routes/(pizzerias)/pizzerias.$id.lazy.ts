@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import {
   Link,
   createLazyFileRoute,
@@ -20,15 +13,14 @@ import { injectQuery } from '@benjavicente/angular-query';
 import { authUserQueryOptions } from '../../lib/services/auth';
 import { PizzaOrderFormDialog } from '../(orders)/-components/pizza-order-form-dialog/pizza-order-form-dialog';
 import { PizzaOrderFormDialogData } from '../(orders)/-models/order.models';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { merge, of, Subject, timer } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { CatalogImageUrlPipe } from '../../lib/pipes/catalog-image/catalog-image-url.pipe';
 import { Button } from '../../lib/components/button/button';
 import { pizzeriaPizzasQueryOptions, pizzeriaQueryOptions } from '../../lib/api/api-queries';
 import { injectCartClient } from '../(shop)/-store/inject-cart';
 import { icons } from '../../lib/assets';
+import { injectDebouncedValue, injectDebouncer } from '@tanstack/angular-pacer';
 
 export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/$id')({
   component: () => PizzeriaDetailsPage,
@@ -203,59 +195,51 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/$id')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class PizzeriaDetailsPage {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.apiFetch));
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #userQuery = injectQuery(() => authUserQueryOptions(this.#apiFetch));
 
-  protected readonly isAdmin = computed(() => this.userQuery.data()?.role === 'PIZZERIA_ADMIN');
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly dialog = inject(Dialog);
-  private readonly cart = injectCartClient();
-  private readonly navigate = injectNavigate();
-  private readonly params = Route.injectParams();
-  private readonly search = Route.injectSearch();
-  protected readonly id = computed(() => this.params().id);
+  protected readonly isAdmin = computed(() => this.#userQuery.data()?.role === 'PIZZERIA_ADMIN');
+  readonly #dialog = inject(Dialog);
+  readonly #cart = injectCartClient();
+  readonly #navigate = injectNavigate();
+  readonly #params = Route.injectParams();
+  readonly #search = Route.injectSearch();
+  protected readonly id = computed(() => this.#params().id);
   protected readonly icons = icons;
 
-  private readonly showBanner$ = new Subject<void>();
-  private readonly dismissBanner$ = new Subject<void>();
-
   protected readonly pizzeriaResource = injectQuery(() =>
-    pizzeriaQueryOptions(this.apiFetch, this.id()),
+    pizzeriaQueryOptions(this.#apiFetch, this.id()),
   );
 
   // Pizza name search
   protected readonly pizzaNameSearch = signal('');
-  protected readonly maxPrice = signal(this.search().maxPrice ?? 50);
-  private readonly debouncedSearch = toSignal(
-    toObservable(this.pizzaNameSearch).pipe(
-      debounceTime(300),
-      map((search: string) => search.trim()),
-      distinctUntilChanged(),
-    ),
-    { initialValue: '' },
+  protected readonly maxPrice = signal(this.#search().maxPrice ?? 50);
+  readonly #trimmedPizzaNameSearch = computed(() => this.pizzaNameSearch().trim());
+  readonly #debouncedSearch = injectDebouncedValue(
+    this.#trimmedPizzaNameSearch,
+    this.#trimmedPizzaNameSearch(),
+    { wait: 300 },
   );
 
   protected readonly pizzasResource = injectQuery(() =>
     pizzeriaPizzasQueryOptions(
-      this.apiFetch,
+      this.#apiFetch,
       this.id(),
-      this.hasActivePizzaSearch() ? this.debouncedSearch() : undefined,
+      this.hasActivePizzaSearch() ? this.#debouncedSearch() : undefined,
     ),
   );
 
   protected readonly hasActivePizzaSearch = computed<boolean>(
-    () => this.debouncedSearch().length > 0,
+    () => this.#debouncedSearch().length > 0,
   );
   protected readonly filteredPizzas = computed(() =>
     (this.pizzasResource.data() ?? []).filter((pizza) => pizza.basePrice <= this.maxPrice()),
   );
 
-  protected readonly addedToCartBannerVisible = toSignal(
-    merge(
-      this.showBanner$.pipe(switchMap(() => merge(of(true), timer(5000).pipe(map(() => false))))),
-      this.dismissBanner$.pipe(map(() => false)),
-    ),
-    { initialValue: false },
+  protected readonly addedToCartBannerVisible = signal(false);
+  readonly #hideAddedToCartBanner = injectDebouncer(
+    () => this.addedToCartBannerVisible.set(false),
+    { wait: 5000 },
   );
 
   protected onPizzaNameSearch(event: Event): void {
@@ -270,7 +254,7 @@ class PizzeriaDetailsPage {
   protected onMaxPriceChange(event: Event): void {
     const maxPrice = (event.target as HTMLInputElement).valueAsNumber;
     this.maxPrice.set(maxPrice);
-    void this.navigate({
+    void this.#navigate({
       to: '.',
       search: maxPrice === 50 ? {} : { maxPrice },
       replace: true,
@@ -278,32 +262,33 @@ class PizzeriaDetailsPage {
     });
   }
 
-  protected openOrderModal(pizza: Pizza): void {
-    const ref = this.dialog.open<string, PizzaOrderFormDialogData, PizzaOrderFormDialog>(
+  protected async openOrderModal(pizza: Pizza): Promise<void> {
+    const ref = this.#dialog.open<string, PizzaOrderFormDialogData, PizzaOrderFormDialog>(
       PizzaOrderFormDialog,
       {
         data: {
           pizza,
           pizzeriaId: this.id(),
           displayPizzeriaName: this.pizzeriaResource.data()?.name ?? '',
-          cart: this.cart,
+          cart: this.#cart,
         },
         disableClose: false,
       },
     );
 
-    ref.closed.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result) => {
-      if (result === 'added') {
-        this.showAddedToCartBanner();
-      }
-    });
+    const result = await firstValueFrom(ref.closed);
+    if (result === 'added') {
+      this.showAddedToCartBanner();
+    }
   }
 
   protected dismissAddedToCartBanner(): void {
-    this.dismissBanner$.next();
+    this.#hideAddedToCartBanner.cancel();
+    this.addedToCartBannerVisible.set(false);
   }
 
   protected showAddedToCartBanner(): void {
-    this.showBanner$.next();
+    this.addedToCartBannerVisible.set(true);
+    this.#hideAddedToCartBanner.maybeExecute();
   }
 }

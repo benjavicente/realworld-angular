@@ -30,12 +30,12 @@ import { icons } from '../../assets';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Modal {
-  public readonly dialogRef = inject(DialogRef);
+  readonly #dialogRef = inject(DialogRef);
   protected readonly icons = icons;
 
   public readonly title = input('');
 
   protected closeDialog(): void {
-    this.dialogRef.close();
+    this.#dialogRef.close();
   }
 }

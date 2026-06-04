@@ -28,7 +28,7 @@ interface PizzeriaForm {
   imports: [Button, TanStackField, ImagePicker, Callout, PhotonLocationField],
   template: `
     <div class="py-10">
-      <div class="mx-auto w-full max-w-app px-4 md:px-6 lg:px-8 max-w-[680px]">
+      <div class="mx-auto w-full px-4 md:px-6 lg:px-8 max-w-[680px]">
         <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
           <h1 class="text-2xl">New Pizzeria</h1>
         </div>
@@ -61,7 +61,8 @@ interface PizzeriaForm {
           </ng-container>
 
           <div class="flex justify-end">
-            <button rw-button
+            <button
+              rw-button
               type="button"
               [isLoading]="pizzeriaFormState().isSubmitting"
               (click)="handleSubmit($event)"
@@ -76,10 +77,10 @@ interface PizzeriaForm {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class AdminPizzeriaFormPage {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly navigate = injectNavigate();
-  private readonly createPizzeriaMutation = injectMutation(() =>
-    createPizzeriaMutationOptions(this.apiFetch),
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #navigate = injectNavigate();
+  readonly #createPizzeriaMutation = injectMutation(() =>
+    createPizzeriaMutationOptions(this.#apiFetch),
   );
 
   protected readonly submitError = signal('');
@@ -92,7 +93,7 @@ class AdminPizzeriaFormPage {
     onSubmit: async ({ value }) => {
       this.submitError.set('');
       try {
-        await this.createPizzeriaMutation.mutateAsync({
+        await this.#createPizzeriaMutation.mutateAsync({
           city: value.location!.city,
           country: value.location!.country,
           imageFilename: value.image!,
@@ -101,7 +102,7 @@ class AdminPizzeriaFormPage {
         this.submitError.set('Failed to create pizzeria');
         return;
       }
-      void this.navigate({ to: '/pizzerias/admin/pizzas' });
+      void this.#navigate({ to: '/pizzerias/admin/pizzas' });
     },
   });
   protected readonly pizzeriaFormState = injectStore(this.pizzeriaForm);

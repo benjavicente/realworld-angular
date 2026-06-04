@@ -77,8 +77,10 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/admin')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class AdminPizzeriaDetailsPage {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
   protected readonly icons = icons;
 
-  protected readonly pizzeriaResource = injectQuery(() => adminPizzeriaQueryOptions(this.apiFetch));
+  protected readonly pizzeriaResource = injectQuery(() =>
+    adminPizzeriaQueryOptions(this.#apiFetch),
+  );
 }

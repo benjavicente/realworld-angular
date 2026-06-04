@@ -35,7 +35,7 @@ export const Route = createLazyFileRoute('/(account)/profile')({
                 rw-button
                 variant="outlined"
                 palette="danger"
-                [isLoading]="this.logoutMutation.isPending()"
+                [isLoading]="logoutMutation.isPending()"
                 (click)="logout()"
               >
                 Log out
@@ -49,17 +49,17 @@ export const Route = createLazyFileRoute('/(account)/profile')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class ProfilePage {
-  private readonly routerContext = injectRouter().options.context;
-  private readonly navigate = injectNavigate();
-  private readonly userQuery = injectQuery(() => authUserQueryOptions(this.routerContext.apiFetch));
-  private readonly logoutMutation = injectMutation(() =>
-    logoutMutationOptions(this.routerContext.apiFetch),
+  readonly #routerContext = injectRouter().options.context;
+  readonly #navigate = injectNavigate();
+  readonly #userQuery = injectQuery(() => authUserQueryOptions(this.#routerContext.apiFetch));
+  protected readonly logoutMutation = injectMutation(() =>
+    logoutMutationOptions(this.#routerContext.apiFetch),
   );
 
-  protected readonly user = computed(() => this.userQuery.data() ?? null);
+  protected readonly user = computed(() => this.#userQuery.data() ?? null);
 
   protected async logout(): Promise<void> {
     await this.logoutMutation.mutateAsync();
-    await this.navigate({ to: '/' });
+    await this.#navigate({ to: '/' });
   }
 }

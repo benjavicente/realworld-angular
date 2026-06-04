@@ -54,11 +54,9 @@ import { icons } from '../../../../lib/assets';
   host: { '[attr.aria-label]': '"Pizza: " + pizza().name' },
 })
 export class AdminPizzaRow {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly dialog = inject(Dialog);
-  private readonly deletePizzaMutation = injectMutation(() =>
-    deletePizzaMutationOptions(this.apiFetch),
-  );
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #dialog = inject(Dialog);
+  readonly #deletePizzaMutation = injectMutation(() => deletePizzaMutationOptions(this.#apiFetch));
 
   readonly pizza = input.required<Pizza>();
 
@@ -81,7 +79,7 @@ export class AdminPizzaRow {
   protected promptDelete(): void {
     const pizza = this.pizza();
     const message = `Delete "${pizza.name}"? This removes the pizza from the menu. Customers can no longer order it.`;
-    const ref = this.dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
+    const ref = this.#dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
       data: { title: 'Delete pizza?', message, cancelLabel: 'Cancel', confirmLabel: 'Delete' },
     });
 
@@ -90,7 +88,7 @@ export class AdminPizzaRow {
       this.deleteError.emit('');
       this.deleting.set(true);
       try {
-        await this.deletePizzaMutation.mutateAsync(pizza.id);
+        await this.#deletePizzaMutation.mutateAsync(pizza.id);
         this.deleted.emit(pizza);
       } catch (err: unknown) {
         this.deleteError.emit(err instanceof Error && err.message ? err.message : 'Delete failed');

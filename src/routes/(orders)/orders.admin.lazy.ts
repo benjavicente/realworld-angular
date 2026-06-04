@@ -75,11 +75,11 @@ export const Route = createLazyFileRoute('/(orders)/orders/admin')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class AdminOrderListPage {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly queryClient = injectRouter().options.context.queryClient;
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #queryClient = injectRouter().options.context.queryClient;
 
   public readonly ordersResource = injectQuery(() =>
-    adminOrdersQueryOptions(this.apiFetch, this.currentPage(), this.limit),
+    adminOrdersQueryOptions(this.#apiFetch, this.currentPage(), this.limit),
   );
 
   protected readonly currentPage = signal(1);
@@ -98,8 +98,8 @@ class AdminOrderListPage {
     if (!page) {
       return;
     }
-    this.queryClient.setQueryData(
-      adminOrdersQueryOptions(this.apiFetch, this.currentPage(), this.limit).queryKey,
+    this.#queryClient.setQueryData(
+      adminOrdersQueryOptions(this.#apiFetch, this.currentPage(), this.limit).queryKey,
       {
         ...page,
         items: page.items.map((orderItem) => (orderItem.id === updated.id ? updated : orderItem)),

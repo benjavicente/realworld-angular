@@ -76,24 +76,24 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/admin/pizzas')(
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class AdminPizzaListPage {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly queryClient = injectRouter().options.context.queryClient;
-  private readonly dialog = inject(Dialog);
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #queryClient = injectRouter().options.context.queryClient;
+  readonly #dialog = inject(Dialog);
 
-  protected readonly pizzasResource = injectQuery(() => adminPizzasQueryOptions(this.apiFetch));
+  protected readonly pizzasResource = injectQuery(() => adminPizzasQueryOptions(this.#apiFetch));
 
   protected readonly deleteError = signal('');
 
   protected openCreate(): void {
-    this.openPizzaFormDialog(null);
+    this.#openPizzaFormDialog(null);
   }
 
   protected openEdit(pizza: Pizza): void {
-    this.openPizzaFormDialog(pizza);
+    this.#openPizzaFormDialog(pizza);
   }
 
-  private openPizzaFormDialog(pizza: Pizza | null): void {
-    const ref = this.dialog.open<
+  #openPizzaFormDialog(pizza: Pizza | null): void {
+    const ref = this.#dialog.open<
       { pizza: Pizza; mode: 'create' | 'edit' },
       Pizza | null,
       AdminPizzaFormDialog
@@ -105,13 +105,13 @@ class AdminPizzaListPage {
       if (!event) return;
       const { pizza, mode } = event;
       if (mode === 'edit') {
-        this.queryClient.setQueryData(adminPizzasQueryOptions(this.apiFetch).queryKey, () =>
+        this.#queryClient.setQueryData(adminPizzasQueryOptions(this.#apiFetch).queryKey, () =>
           (this.pizzasResource.data() ?? []).map((existingPizza) =>
             existingPizza.id === pizza.id ? pizza : existingPizza,
           ),
         );
       } else {
-        this.queryClient.setQueryData(adminPizzasQueryOptions(this.apiFetch).queryKey, [
+        this.#queryClient.setQueryData(adminPizzasQueryOptions(this.#apiFetch).queryKey, [
           ...(this.pizzasResource.data() ?? []),
           pizza,
         ]);
@@ -120,7 +120,7 @@ class AdminPizzaListPage {
   }
 
   protected onPizzaDeleted(pizza: Pizza): void {
-    this.queryClient.setQueryData(adminPizzasQueryOptions(this.apiFetch).queryKey, () =>
+    this.#queryClient.setQueryData(adminPizzasQueryOptions(this.#apiFetch).queryKey, () =>
       (this.pizzasResource.data() ?? []).filter((p) => p.id !== pizza.id),
     );
   }

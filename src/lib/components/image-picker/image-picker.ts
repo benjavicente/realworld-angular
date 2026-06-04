@@ -66,7 +66,7 @@ import { fieldErrorMessage, type FieldLike } from '../../forms/tanstack-form';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImagePicker {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
 
   public readonly category = input.required<string>();
   public readonly label = input.required<string>();
@@ -90,7 +90,7 @@ export class ImagePicker {
   );
 
   protected readonly filenamesResource = injectQuery(() =>
-    catalogImagesQueryOptions(this.apiFetch, this.category()),
+    catalogImagesQueryOptions(this.#apiFetch, this.category()),
   );
 
   protected imageButtonClasses(filename: string): string {

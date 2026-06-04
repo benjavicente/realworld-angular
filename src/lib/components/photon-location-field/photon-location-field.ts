@@ -2,17 +2,19 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
-  effect,
   inject,
   InjectionToken,
   input,
+  linkedSignal,
   model,
-  signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, debounceTime, distinctUntilChanged, from, switchMap } from 'rxjs';
-import { searchPlaces, type PhotonLocationSuggestion } from '../../api/photon';
+import { injectQuery } from '@benjavicente/angular-query';
+import { injectDebouncedValue } from '@tanstack/angular-pacer';
+import {
+  photonLocationSuggestionsQueryOptions,
+  searchPlaces,
+  type PhotonLocationSuggestion,
+} from '../../api/photon';
 import { fieldErrorMessage, type FieldLike } from '../../forms/tanstack-form';
 
 export interface LocationValue {
@@ -94,9 +96,8 @@ let nextFieldId = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhotonLocationField {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly searchPlaces = inject(PHOTON_SEARCH_PLACES);
-  private readonly fieldId = `rw-photon-location-${++nextFieldId}`;
+  readonly #searchPlaces = inject(PHOTON_SEARCH_PLACES);
+  readonly #fieldId = `rw-photon-location-${++nextFieldId}`;
 
   public readonly value = model<LocationValue | null>(null);
   public readonly touched = model<boolean>(false);
@@ -107,91 +108,62 @@ export class PhotonLocationField {
   public readonly label = input('Location (city and country)');
   protected readonly fieldErrorMessage = fieldErrorMessage;
 
-  protected readonly inputId = this.fieldId;
-  protected readonly listboxId = `${this.fieldId}-listbox`;
+  protected readonly inputId = this.#fieldId;
+  protected readonly listboxId = `${this.#fieldId}-listbox`;
 
-  protected readonly displayText = signal('');
-  private readonly committedValue = signal<LocationValue | null>(null);
-  protected readonly suggestions = signal<PhotonLocationSuggestion[]>([]);
-  protected readonly panelOpen = signal(false);
-  protected readonly isLoading = signal(false);
-  protected readonly activeIndex = signal(-1);
+  readonly #externalValue = computed(() => this.field()?.state.value ?? this.value());
+  protected readonly displayText = linkedSignal({
+    source: this.#externalValue,
+    computation: (location) =>
+      location?.city && location?.country ? formatLocationLabel(location) : '',
+  });
+  readonly #committedValue = linkedSignal(() => this.#externalValue());
+  protected readonly currentValue = computed(() => this.#committedValue());
+  readonly #searchText = computed(() => this.displayText().trim());
+  readonly #debouncedSearchText = injectDebouncedValue(this.#searchText, '', { wait: 280 });
+  protected readonly suggestionsResource = injectQuery(() =>
+    photonLocationSuggestionsQueryOptions(this.#searchPlaces, this.#debouncedSearchText()),
+  );
+  protected readonly suggestions = computed(() => this.suggestionsResource.data() ?? []);
+  protected readonly isLoading = computed(() => this.suggestionsResource.isFetching());
+  protected readonly activeIndex = linkedSignal({
+    source: this.suggestions,
+    computation: (suggestions, previous) => {
+      const previousSuggestion =
+        previous && previous.value >= 0 ? previous.source[previous.value] : undefined;
+      const preservedIndex = previousSuggestion
+        ? suggestions.findIndex((suggestion) => sameSuggestion(suggestion, previousSuggestion))
+        : -1;
+      return preservedIndex >= 0 ? preservedIndex : suggestions.length > 0 ? 0 : -1;
+    },
+  });
+  protected readonly panelOpen = linkedSignal({
+    source: this.currentValue,
+    computation: (location, previous) =>
+      location?.city && location?.country ? false : (previous?.value ?? false),
+  });
 
   protected readonly showPanel = computed(
     () => this.panelOpen() && (this.isLoading() || this.suggestions().length > 0),
   );
-  protected readonly currentValue = computed(() => this.field() ? this.committedValue() : this.value());
   protected readonly isTouched = computed(
     () => this.field()?.state.meta.isTouched ?? this.touched(),
   );
   protected readonly errors = computed(() => this.field()?.state.meta.errors ?? []);
 
-  /** Label of the last committed suggestion (or external value sync). */
-  private readonly pickedLabel = signal<string | null>(null);
-  private readonly search$ = new Subject<string>();
-
-  constructor() {
-    this.search$
-      .pipe(
-        debounceTime(280),
-        distinctUntilChanged(),
-        switchMap((query) => {
-          this.isLoading.set(query.trim().length >= 2);
-          return from(this.searchPlaces(query));
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((list) => {
-        this.isLoading.set(false);
-        this.suggestions.set(list);
-        this.activeIndex.set(list.length > 0 ? 0 : -1);
-      });
-
-    effect(() => {
-      const field = this.field();
-      if (field) {
-        this.committedValue.set(field.state.value);
-        return;
-      }
-      this.committedValue.set(this.value());
-    });
-
-    effect(() => {
-      const location = this.currentValue();
-      if (location?.city && location?.country) {
-        const label = formatLocationLabel(location);
-        this.pickedLabel.set(label);
-        this.displayText.set(label);
-        this.closePanel();
-        return;
-      }
-      if (!location && this.pickedLabel() !== null) {
-        this.pickedLabel.set(null);
-        this.displayText.set('');
-        this.suggestions.set([]);
-        this.isLoading.set(false);
-      }
-    });
-  }
+  readonly #pickedLabel = computed(() => {
+    const location = this.currentValue();
+    return location?.city && location?.country ? formatLocationLabel(location) : null;
+  });
 
   protected onInput(ev: Event): void {
     const text = (ev.target as HTMLInputElement).value;
+
+    if (text !== this.#pickedLabel()) {
+      this.#setValue(null);
+    }
     this.displayText.set(text);
     this.panelOpen.set(true);
-    this.activeIndex.set(-1);
-
-    if (text !== this.pickedLabel()) {
-      this.pickedLabel.set(null);
-      this.setValue(null);
-    }
-
-    const trimmed = text.trim();
-    if (trimmed.length >= 2) {
-      this.search$.next(text);
-    } else {
-      this.isLoading.set(false);
-      this.suggestions.set([]);
-    }
   }
 
   protected onFocus(): void {
@@ -205,18 +177,16 @@ export class PhotonLocationField {
     if (wrap.contains(ev.relatedTarget as Node | null)) {
       return;
     }
-    this.markTouched();
-    this.closePanel();
+    this.#markTouched();
+    this.#closePanel();
     if (!this.currentValue() && this.displayText().trim()) {
       this.displayText.set('');
-      this.suggestions.set([]);
-      this.isLoading.set(false);
     }
   }
 
   protected selectSuggestion(ev: Event, suggestion: PhotonLocationSuggestion): void {
     ev.preventDefault();
-    this.commitSuggestion(suggestion);
+    this.#commitSuggestion(suggestion);
   }
 
   protected onKeydown(ev: KeyboardEvent): void {
@@ -238,28 +208,27 @@ export class PhotonLocationField {
         const selected = list[idx];
         if (selected) {
           ev.preventDefault();
-          this.commitSuggestion(selected);
+          this.#commitSuggestion(selected);
         }
         break;
       }
       case 'Escape':
         ev.preventDefault();
-        this.closePanel();
+        this.#closePanel();
         break;
     }
   }
 
-  private commitSuggestion(suggestion: PhotonLocationSuggestion): void {
-    this.pickedLabel.set(suggestion.label);
+  #commitSuggestion(suggestion: PhotonLocationSuggestion): void {
+    this.#setValue({ city: suggestion.city, country: suggestion.country });
     this.displayText.set(suggestion.label);
-    this.setValue({ city: suggestion.city, country: suggestion.country });
-    this.markTouched();
-    this.closePanel();
+    this.#markTouched();
+    this.#closePanel();
   }
 
-  private setValue(value: LocationValue | null): void {
+  #setValue(value: LocationValue | null): void {
     const field = this.field();
-    this.committedValue.set(value);
+    this.#committedValue.set(value);
     if (field) {
       field.handleChange(value);
     } else {
@@ -267,19 +236,21 @@ export class PhotonLocationField {
     }
   }
 
-  private markTouched(): void {
+  #markTouched(): void {
     this.touched.set(true);
     this.field()?.handleBlur();
   }
 
-  private closePanel(): void {
+  #closePanel(): void {
     this.panelOpen.set(false);
     this.activeIndex.set(-1);
-    this.suggestions.set([]);
-    this.isLoading.set(false);
   }
 }
 
 function formatLocationLabel(location: LocationValue): string {
   return `${location.city}, ${location.country}`;
+}
+
+function sameSuggestion(left: PhotonLocationSuggestion, right: PhotonLocationSuggestion): boolean {
+  return left.label === right.label && left.city === right.city && left.country === right.country;
 }

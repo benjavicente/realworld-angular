@@ -2,7 +2,11 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Callout } from '../../lib/components/callout/callout';
 import { Input } from '../../lib/components/input/input';
 import { Button } from '../../lib/components/button/button';
-import { Link, createLazyFileRoute, injectNavigate } from '@benjavicente/angular-router-experimental';
+import {
+  Link,
+  createLazyFileRoute,
+  injectNavigate,
+} from '@benjavicente/angular-router-experimental';
 import { injectMutation } from '@benjavicente/angular-query';
 import { loginMutationOptions } from '../../lib/api/api-mutations';
 import { sanitizeRedirectPath } from '../-guards';
@@ -75,7 +79,8 @@ export const Route = createLazyFileRoute('/(auth)/auth/login')({
               </label>
             </rw-input>
           </ng-container>
-          <button rw-button
+          <button
+            rw-button
             type="submit"
             [isLoading]="loginFormState().isSubmitting"
             class="flex w-full flex-col"
@@ -86,7 +91,9 @@ export const Route = createLazyFileRoute('/(auth)/auth/login')({
 
         <p class="mt-4 text-center text-sm text-text-muted">
           Don't have an account?
-          <a [link]="{ to: '/auth/register', search: { redirect: redirectTarget() } }">Create one</a>
+          <a [link]="{ to: '/auth/register', search: { redirect: redirectTarget() } }"
+            >Create one</a
+          >
         </p>
       </div>
     </div>
@@ -94,24 +101,24 @@ export const Route = createLazyFileRoute('/(auth)/auth/login')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class LoginPage {
-  private readonly routerContext = Route.injectRouteContext();
-  private readonly search = Route.injectSearch();
-  private readonly navigate = injectNavigate();
-  private readonly loginMutation = injectMutation(() =>
-    loginMutationOptions(this.routerContext().apiFetch),
+  readonly #routerContext = Route.injectRouteContext();
+  readonly #search = Route.injectSearch();
+  readonly #navigate = injectNavigate();
+  readonly #loginMutation = injectMutation(() =>
+    loginMutationOptions(this.#routerContext().apiFetch),
   );
 
   protected readonly submitError = signal('');
   protected readonly icons = icons;
-  protected readonly redirectTarget = () => sanitizeRedirectPath(this.search().redirect);
+  protected readonly redirectTarget = () => sanitizeRedirectPath(this.#search().redirect);
 
   protected readonly loginForm = injectForm({
     defaultValues: { email: '', password: '' },
     onSubmit: async ({ value }) => {
       this.submitError.set('');
       try {
-        await this.loginMutation.mutateAsync(value);
-        void this.navigate({ href: this.redirectTarget() });
+        await this.#loginMutation.mutateAsync(value);
+        void this.#navigate({ href: this.redirectTarget() });
       } catch {
         this.submitError.set('Invalid credentials');
       }

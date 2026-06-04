@@ -34,14 +34,14 @@ export type ConfirmDialogResult = 'confirmed' | 'dismissed';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialog {
-  private readonly dialogRef = inject(DialogRef<ConfirmDialogResult>);
-  public readonly data = inject<ConfirmDialogData>(DIALOG_DATA);
+  readonly #dialogRef = inject(DialogRef<ConfirmDialogResult>);
+  protected readonly data = inject<ConfirmDialogData>(DIALOG_DATA);
 
   protected dismiss(): void {
-    this.dialogRef.close('dismissed');
+    this.#dialogRef.close('dismissed');
   }
 
   protected confirm(): void {
-    this.dialogRef.close('confirmed');
+    this.#dialogRef.close('confirmed');
   }
 }

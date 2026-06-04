@@ -125,17 +125,19 @@ export const Route = createLazyFileRoute('/(pizzerias)/pizzerias/admin/configura
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class AdminPizzeriaConfigurationPage {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly navigate = injectNavigate();
-  private readonly dialog = inject(Dialog);
-  private readonly updatePizzeriaMutation = injectMutation(() =>
-    updateMyPizzeriaMutationOptions(this.apiFetch),
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #navigate = injectNavigate();
+  readonly #dialog = inject(Dialog);
+  readonly #updatePizzeriaMutation = injectMutation(() =>
+    updateMyPizzeriaMutationOptions(this.#apiFetch),
   );
-  private readonly deletePizzeriaMutation = injectMutation(() =>
-    deleteMyPizzeriaMutationOptions(this.apiFetch),
+  readonly #deletePizzeriaMutation = injectMutation(() =>
+    deleteMyPizzeriaMutationOptions(this.#apiFetch),
   );
 
-  protected readonly pizzeriaResource = injectQuery(() => adminPizzeriaQueryOptions(this.apiFetch));
+  protected readonly pizzeriaResource = injectQuery(() =>
+    adminPizzeriaQueryOptions(this.#apiFetch),
+  );
 
   protected readonly isDeleting = signal(false);
   protected readonly submitSuccess = signal(false);
@@ -151,7 +153,7 @@ class AdminPizzeriaConfigurationPage {
       this.submitError.set('');
       const location = value.location!;
       try {
-        await this.updatePizzeriaMutation.mutateAsync({
+        await this.#updatePizzeriaMutation.mutateAsync({
           city: location.city,
           country: location.country,
           imageFilename: value.image!,
@@ -193,7 +195,7 @@ class AdminPizzeriaConfigurationPage {
     const pizzeria = this.pizzeriaResource.data()!;
 
     const message = `Are you sure you want to delete "${pizzeria.name}"? This action cannot be undone.`;
-    const ref = this.dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
+    const ref = this.#dialog.open<ConfirmDialogResult, ConfirmDialogData>(ConfirmDialog, {
       data: {
         title: 'Delete pizzeria',
         message,
@@ -206,8 +208,8 @@ class AdminPizzeriaConfigurationPage {
       if (result !== 'confirmed') return;
       this.isDeleting.set(true);
       try {
-        await this.deletePizzeriaMutation.mutateAsync();
-        void this.navigate({ to: '/pizzerias/admin/new' });
+        await this.#deletePizzeriaMutation.mutateAsync();
+        void this.#navigate({ to: '/pizzerias/admin/new' });
       } finally {
         this.isDeleting.set(false);
       }

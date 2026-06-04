@@ -1,4 +1,5 @@
 import { ofetch } from 'ofetch';
+import { queryOptions } from '@benjavicente/angular-query';
 
 export interface PhotonLocationSuggestion {
   label: string;
@@ -52,6 +53,18 @@ export async function searchPlaces(query: string, limit = 10): Promise<PhotonLoc
   } catch {
     return [];
   }
+}
+
+export function photonLocationSuggestionsQueryOptions(
+  searchPlacesFn: typeof searchPlaces,
+  query: string,
+) {
+  return queryOptions({
+    queryKey: ['photon-location-suggestions', query],
+    enabled: query.length >= 2,
+    placeholderData: (previousData) => previousData,
+    queryFn: () => searchPlacesFn(query),
+  });
 }
 
 function toSuggestion(feature: PhotonFeature): PhotonLocationSuggestion {

@@ -42,8 +42,6 @@ import { fieldErrorMessage, type FieldLike } from '../../forms/tanstack-form';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Textarea {
-  private static nextId = 0;
-
   public readonly label = input<string>('');
   public readonly placeholder = input<string>('');
   public readonly isRequired = input<boolean>(false);

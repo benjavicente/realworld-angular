@@ -4,6 +4,7 @@ import {
   provideTanStackQuery,
   withNoQueryHydration,
 } from '@benjavicente/angular-query';
+import { APP_BASE_HREF } from '@angular/common';
 import { injectRouter } from '@benjavicente/angular-router-experimental';
 import { withDevtools } from '@benjavicente/angular-query-devtools';
 
@@ -13,5 +14,9 @@ const QUERY_CLIENT = new InjectionToken<QueryClient>('TanStackQueryClient', {
 });
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideTanStackQuery(QUERY_CLIENT, withDevtools(), withNoQueryHydration())],
+  providers: [
+    // Base href required for Angular Dialog
+    { provide: APP_BASE_HREF, useValue: '/' },
+    provideTanStackQuery(QUERY_CLIENT, withDevtools(), withNoQueryHydration()),
+  ],
 };

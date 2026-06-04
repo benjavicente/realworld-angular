@@ -144,20 +144,16 @@ interface AdminPizzaFormModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminPizzaFormDialog {
-  private readonly apiFetch = injectRouter().options.context.apiFetch;
-  private readonly dialogRef = inject(DialogRef);
-  public readonly data = inject<Pizza | null>(DIALOG_DATA, { optional: true });
-  private readonly createPizzaMutation = injectMutation(() =>
-    createPizzaMutationOptions(this.apiFetch),
-  );
-  private readonly updatePizzaMutation = injectMutation(() =>
-    updatePizzaMutationOptions(this.apiFetch),
-  );
+  readonly #apiFetch = injectRouter().options.context.apiFetch;
+  readonly #dialogRef = inject(DialogRef);
+  protected readonly data = inject<Pizza | null>(DIALOG_DATA, { optional: true });
+  readonly #createPizzaMutation = injectMutation(() => createPizzaMutationOptions(this.#apiFetch));
+  readonly #updatePizzaMutation = injectMutation(() => updatePizzaMutationOptions(this.#apiFetch));
 
   protected readonly isEditMode = this.data !== null;
 
   protected readonly toppingsResource = injectQuery(() =>
-    pizzaOptionsQueryOptions(this.apiFetch, 'toppings'),
+    pizzaOptionsQueryOptions(this.#apiFetch, 'toppings'),
   );
 
   protected readonly submitError = signal('');
@@ -185,9 +181,9 @@ export class AdminPizzaFormDialog {
       this.submitError.set('');
       try {
         const pizza = this.isEditMode
-          ? await this.updatePizzaMutation.mutateAsync({ id: this.data!.id, body: payload })
-          : await this.createPizzaMutation.mutateAsync(payload);
-        this.dialogRef.close({ pizza, mode: this.isEditMode ? 'edit' : 'create' });
+          ? await this.#updatePizzaMutation.mutateAsync({ id: this.data!.id, body: payload })
+          : await this.#createPizzaMutation.mutateAsync(payload);
+        this.#dialogRef.close({ pizza, mode: this.isEditMode ? 'edit' : 'create' });
       } catch {
         this.submitError.set('Save failed');
       }
@@ -246,6 +242,6 @@ export class AdminPizzaFormDialog {
   }
 
   protected dismiss(): void {
-    this.dialogRef.close();
+    this.#dialogRef.close();
   }
 }

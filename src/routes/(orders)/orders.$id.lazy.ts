@@ -164,15 +164,13 @@ export const Route = createLazyFileRoute('/(orders)/orders/$id')({
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class OrderDetailPage {
-  private readonly router = injectRouter();
-  private readonly apiFetch = this.router.options.context.apiFetch;
-  private readonly params = Route.injectParams();
-  private readonly cancelOrderMutation = injectMutation(() =>
-    cancelOrderMutationOptions(this.apiFetch),
-  );
+  readonly #router = injectRouter();
+  readonly #apiFetch = this.#router.options.context.apiFetch;
+  readonly #params = Route.injectParams();
+  readonly #cancelOrderMutation = injectMutation(() => cancelOrderMutationOptions(this.#apiFetch));
 
   protected readonly orderResource = injectQuery(() =>
-    orderSubscriptionQueryOptions(this.apiFetch, this.id()),
+    orderSubscriptionQueryOptions(this.#apiFetch, this.id()),
   );
 
   protected readonly isCancelling = signal(false);
@@ -219,15 +217,15 @@ class OrderDetailPage {
     return options.map((option) => option.label).join(', ');
   }
 
-  protected readonly id = computed(() => this.params().id);
+  protected readonly id = computed(() => this.#params().id);
 
   protected async cancel(): Promise<void> {
     this.isCancelling.set(true);
     this.cancelFeedback.set(null);
     try {
-      const order = await this.cancelOrderMutation.mutateAsync(this.id());
-      this.router.options.context.queryClient.setQueryData(
-        orderSubscriptionQueryOptions(this.apiFetch, this.id()).queryKey,
+      const order = await this.#cancelOrderMutation.mutateAsync(this.id());
+      this.#router.options.context.queryClient.setQueryData(
+        orderSubscriptionQueryOptions(this.#apiFetch, this.id()).queryKey,
         order,
       );
       this.cancelFeedback.set({
