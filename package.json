@@ -8,7 +8,7 @@
     "start": "node .output/server/index.mjs",
     "build": "vite build",
     "preview": "vite preview",
-    "preview:client": "serve dist/client -c ../../serve.json",
+    "serve": "serve dist/client -c ../../serve.json",
     "generate": "tsr generate",
     "test": "vitest run",
     "lint": "pnpm run lint:oxlint && pnpm run lint:eslint",
