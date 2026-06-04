@@ -234,7 +234,7 @@ export class CheckoutLayoutPage implements CheckoutScope {
         });
         this.#cart.clear();
         this.submitted.set(true);
-        void this.#navigate({ to: '/orders/' + order.id });
+        void this.#navigate({ to: '/orders/' + order.id, ignoreBlocker: true });
       } catch {
         this.submitError.set('Order failed. Please try again.');
       }
@@ -319,7 +319,7 @@ export class CheckoutLayoutPage implements CheckoutScope {
       }
       const blocked = blockedCheckoutStep(this.checkoutFormState().values, step);
       if (blocked) {
-        void this.#navigate({ to: '/checkout/' + blocked });
+        void this.#navigate({ to: '/checkout/' + blocked, ignoreBlocker: true });
       }
     });
   }
@@ -328,14 +328,14 @@ export class CheckoutLayoutPage implements CheckoutScope {
     const valid = await validateSubmitFields(this.checkoutForm, STEP_FIELDS[step]);
     if (valid) {
       this.stepStatus.update((status) => ({ ...status, [step]: 'success' }));
-      void this.#navigate({ to: '/checkout/' + NEXT_STEP[step] });
+      void this.#navigate({ to: '/checkout/' + NEXT_STEP[step], ignoreBlocker: true });
     } else {
       this.stepStatus.update((status) => ({ ...status, [step]: 'error' }));
     }
   }
 
   goToStep(step: WizardStep): void {
-    void this.#navigate({ to: '/checkout/' + step });
+    void this.#navigate({ to: '/checkout/' + step, ignoreBlocker: true });
   }
 
   async placeOrder(): Promise<void> {

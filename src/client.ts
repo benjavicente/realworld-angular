@@ -1,8 +1,9 @@
-async function main(): Promise<void> {
-  if (import.meta.env.DEV) {
-    await import('@angular/compiler');
-  }
+import { publishFacade } from '@angular/compiler';
 
+// Vite can tree-shake the compiler entry side effect; register the facade explicitly.
+publishFacade(globalThis);
+
+async function main(): Promise<void> {
   const [{ bootstrapTanstackStartApplication }, { App }, { appConfig }] = await Promise.all([
     import('@benjavicente/angular-start-experimental/client'),
     import('./app'),
