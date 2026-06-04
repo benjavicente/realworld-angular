@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { searchPlaces } from './photon';
+import { ofetch } from 'ofetch';
 
 const mockGeoJson = {
   features: [
@@ -28,8 +29,6 @@ const mockGeoJson = {
 vi.mock('ofetch', () => ({
   ofetch: vi.fn(),
 }));
-
-import { ofetch } from 'ofetch';
 
 const ofetchMock = vi.mocked(ofetch);
 

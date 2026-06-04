@@ -4,7 +4,7 @@ import lintAngular from '@benjavicente/lint-angular';
 export default defineConfig({
   plugins: ['typescript', 'unicorn', 'oxc', 'import'],
   categories: { correctness: 'error' },
-  ignorePatterns: ['.output/**', 'dist/**', 'coverage/**', 'src/routeTree.gen.ts', '**/*.spec.ts'],
+  ignorePatterns: ['.output/**', 'dist/**', 'coverage/**', 'src/routeTree.gen.ts'],
   env: { builtin: true, browser: true },
   jsPlugins: [
     '@angular-eslint/eslint-plugin',

@@ -20,6 +20,6 @@ describe('HeroBanner', () => {
   it('should have a heading in the sr-only section', async () => {
     await render(HeroBanner);
 
-    expect(screen.getByRole('heading', { name: 'UnrealWorld Angular' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'RealWorld Angular' })).toBeTruthy();
   });
 });

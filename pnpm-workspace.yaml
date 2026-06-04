@@ -6,6 +6,7 @@ allowBuilds:
   esbuild: true
   lmdb: false
   msgpackr-extract: false
+  vue-demi: false
 
 auditConfig:
   ignoreDependencies:
@@ -17,3 +18,5 @@ auditConfig:
 
 minimumReleaseAgeExclude:
   - '@benjavicente/*'
+  - '@oxc-angular/*'
+  - '@testing-library/*'
