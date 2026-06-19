@@ -6,6 +6,7 @@ import {
   withInMemoryScrolling,
 } from '@angular/router';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
+import { provideTanStackQuery, QueryClient } from '@benjavicente/angular-query';
 import { routes } from './app.routes';
 import { credentialsInterceptor } from './core/interceptors/credentials.interceptor';
 import { Auth } from './core/services/auth';
@@ -23,6 +24,7 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideHttpClient(withInterceptors([baseUrlInterceptor, credentialsInterceptor]), withFetch()),
+    provideTanStackQuery(new QueryClient()),
     provideAppInitializer(() => inject(Auth).init()),
   ],
 };

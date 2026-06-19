@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Routes, Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { provideTanStackQuery, QueryClient } from '@benjavicente/angular-query';
 import { CheckoutWizard } from './checkout-wizard';
 import { checkoutRoutes } from '../checkout.routes';
 import { CartStore, CartItem, CartData } from '../../cart/cart.store';
@@ -35,6 +36,7 @@ describe('CheckoutWizard', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter(testRoutes),
+        provideTanStackQuery(new QueryClient()),
         CheckoutWizard,
         { provide: CartStore, useValue: cartStoreStub },
         { provide: OrderApi, useValue: orderApiStub },

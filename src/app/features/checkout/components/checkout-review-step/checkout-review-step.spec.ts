@@ -2,6 +2,8 @@ import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideRouter, Routes } from '@angular/router';
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { provideTanStackQuery, QueryClient } from '@benjavicente/angular-query';
+import { of } from 'rxjs';
 import { CheckoutReviewStep } from './checkout-review-step';
 import { CheckoutWizard } from '../../services/checkout-wizard';
 import { checkoutRoutes } from '../../checkout.routes';
@@ -43,6 +45,7 @@ const cartStoreStub = {
 
 const orderApiStub = {
   createOrder: vi.fn(),
+  validateCoupon: vi.fn(() => of({ valid: true, discountPercent: 20 })),
 };
 
 describe('CheckoutReviewStep', () => {
@@ -54,6 +57,7 @@ describe('CheckoutReviewStep', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter(testRoutes),
+        provideTanStackQuery(new QueryClient()),
         CheckoutWizard,
         { provide: CartStore, useValue: cartStoreStub },
         { provide: OrderApi, useValue: orderApiStub },
@@ -103,10 +107,12 @@ describe('CheckoutReviewStep', () => {
     expect(el.querySelector('#coupon-hint')).toBeTruthy();
   });
 
-  it('should show discount line when a coupon is applied', () => {
+  it('should show discount line when a coupon is applied', async () => {
     wizard.discount.set(20);
     wizard.checkoutForm.coupon.code().value.set('SAVE20');
+    await fixture.whenStable();
     fixture.detectChanges();
+
     expect(wizard.discountAmount()).toBe(6);
     expect(el.textContent).toContain('Discount');
     expect(el.textContent).toContain('6.00');

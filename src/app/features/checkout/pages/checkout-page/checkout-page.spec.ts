@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { provideTanStackQuery, QueryClient } from '@benjavicente/angular-query';
 import { CheckoutPage } from './checkout-page';
 import { CartStore, CartData, CartItem } from '../../../cart/cart.store';
 import { CheckoutWizard } from '../../services/checkout-wizard';
@@ -50,6 +51,7 @@ describe('CheckoutPage', () => {
           { path: 'checkout/schedule', component: CheckoutRouteStub },
           { path: 'checkout/review', component: CheckoutRouteStub },
         ]),
+        provideTanStackQuery(new QueryClient()),
         CheckoutWizard,
         { provide: CartStore, useValue: cartStoreStub },
         { provide: OrderApi, useValue: { createOrder: vi.fn() } },

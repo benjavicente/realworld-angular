@@ -1,6 +1,7 @@
-import { signal, computed, effect, inject, Service } from '@angular/core';
+import { signal, computed, effect, inject, Service, type ResourceRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { injectQuery, skipToken } from '@benjavicente/angular-query';
 import {
   form,
   required,
@@ -10,7 +11,6 @@ import {
   FieldTree,
   applyWhenValue,
 } from '@angular/forms/signals';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { CartStore } from '../../cart/cart.store';
 import { OrderApi } from '../../orders/services/order-api';
 import type { LocationValue } from '../../../shared/components/photon-location-field/photon-location-field';
@@ -85,6 +85,8 @@ export class CheckoutWizard {
 
   readonly submitted = signal(false);
 
+  readonly couponCode = computed(() => this.model().coupon.code);
+
   readonly checkoutForm = form(
     this.model,
     (schema) => {
@@ -118,18 +120,20 @@ export class CheckoutWizard {
         (path) =>
           validateAsync(path, {
             debounce: 300,
-            params: ({ fieldTreeOf }) => ({
-              fieldTreeOf,
-            }),
-            factory: (params) =>
-              rxResource({
-                params,
-                stream: ({ params }) =>
-                  this.api.validateCoupon(
-                    params.fieldTreeOf(schema.coupon.code)().value(),
-                    this.discount,
-                  ),
-              }),
+            params: ({ value }) => value(),
+            factory: (params) => injectQuery(() => {
+              const code = params();
+              if (!code) return {
+                queryKey: ['coupon-validation', code],
+                queryFn: skipToken,
+              }
+
+              return {
+                queryKey: ['coupon-validation', code],
+                queryFn: () => firstValueFrom(this.api.validateCoupon(code, this.discount)),
+              };
+              // Needed for type compatibility, in runtime, the interface matches
+            }).resource as unknown as ResourceRef<CouponValidation | undefined>,
             onSuccess: (response: CouponValidation) => {
               if (!response.valid) {
                 console.error('Invalid coupon code', response);
@@ -159,17 +163,17 @@ export class CheckoutWizard {
           };
           const billing: Address | undefined = !formValue.delivery.useSameAsBilling
             ? {
-                street: formValue.delivery.billingStreet.trim(),
-                city: formValue.delivery.billingLocation!.city.trim(),
-                country: formValue.delivery.billingLocation!.country.trim(),
-              }
+              street: formValue.delivery.billingStreet.trim(),
+              city: formValue.delivery.billingLocation!.city.trim(),
+              country: formValue.delivery.billingLocation!.country.trim(),
+            }
             : undefined;
 
           const tipAmount = this.tipAmount();
           const scheduledAt =
             formValue.schedule.type === 'scheduled' &&
-            formValue.schedule.date &&
-            formValue.schedule.time
+              formValue.schedule.date &&
+              formValue.schedule.time
               ? new Date(`${formValue.schedule.date}T${formValue.schedule.time}`).toISOString()
               : undefined;
 
@@ -224,9 +228,9 @@ export class CheckoutWizard {
   });
 
   readonly discountAmount = computed(() => {
-    const codeField = this.checkoutForm.coupon.code();
+    const code = this.couponCode();
     const pct = this.discount();
-    if (!codeField.value() || pct <= 0) return 0;
+    if (!code || pct <= 0) return 0;
     return Math.round(this.cartStore.totalPrice() * pct) / 100;
   });
 

@@ -12,6 +12,7 @@ import {
 } from '@angular/router';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { provideTanStackQuery, QueryClient } from '@benjavicente/angular-query';
 import { checkoutStepGuard } from './checkout-step.guard';
 import { CheckoutWizard } from '../services/checkout-wizard';
 import { CartStore, CartItem, CartData } from '../../cart/cart.store';
@@ -96,6 +97,7 @@ describe('checkoutStepGuard', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter(testCheckoutRoutes),
+        provideTanStackQuery(new QueryClient()),
         CheckoutWizard,
         { provide: CartStore, useValue: cartStoreStub },
         { provide: OrderApi, useValue: orderApiStub },

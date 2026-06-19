@@ -35,13 +35,13 @@
     <input
       type="text"
       class="coupon-input"
-      [class.coupon-input--valid]="wizard.discount() > 0 && codeField.value()"
+      [class.coupon-input--valid]="wizard.discount() > 0 && wizard.couponCode()"
       [class.coupon-input--invalid]="!codeField.pending() && codeField.errors().length"
       [formField]="wizard.checkoutForm.coupon.code"
       aria-describedby="coupon-hint"
     />
     <div class="coupon-input-action">
-      @if (codeField.value()) {
+      @if (wizard.couponCode()) {
         @if (codeField.pending()) {
           <span class="coupon-spinner" role="status" aria-label="Checking coupon"></span>
         } @else {
@@ -64,7 +64,7 @@
     [class.coupon-hint--invalid]="
       !codeField.pending() && codeField.errors().length && codeField.dirty()
     "
-    [class.coupon-hint--valid]="wizard.discount() > 0 && codeField.value()"
+    [class.coupon-hint--valid]="wizard.discount() > 0 && wizard.couponCode()"
     [attr.role]="
       !codeField.pending() && codeField.errors().length && codeField.dirty() ? 'alert' : 'status'
     "
@@ -75,7 +75,7 @@
     } @else if (codeField.errors().length && codeField.dirty()) {
       <img ngSrc="/icons/error.svg" alt="" width="16" height="16" class="coupon-hint__icon" />
       {{ codeField.errors()[0].message }}
-    } @else if (wizard.discount() > 0 && codeField.value()) {
+    } @else if (wizard.discount() > 0 && wizard.couponCode()) {
       <img ngSrc="/icons/check.svg" alt="" width="16" height="16" class="coupon-hint__icon" />
       {{ wizard.discount() }}% discount applied
     } @else {

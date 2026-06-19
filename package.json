@@ -24,7 +24,10 @@
     "@angular/forms": "^22.0.0",
     "@angular/platform-browser": "^22.0.0",
     "@angular/router": "^22.0.0",
+    "@benjavicente/angular-query": "5.100.16",
+    "@benjavicente/angular-query-devtools": "5.100.16",
     "@fontsource/geist": "^5.2.8",
+    "@tanstack/query-persist-client-core": "5.101.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
